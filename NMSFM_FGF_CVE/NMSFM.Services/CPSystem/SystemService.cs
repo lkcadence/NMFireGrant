@@ -1,0 +1,485 @@
+using NMSFM.Data;
+using NMSFM.Services.Audit;
+using NMSFM.Services.Logging;
+using NMSFM.Services.Models;
+using NMSFM.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Humanizer;
+
+namespace NMSFM.Services.CPSystem
+{
+	public class SystemService : ISystemService
+	{
+		private ICodepalWebModel cwmContext;
+		private IAuditService auditService;
+		private ILogging logger;
+
+		public SystemService(ICodepalWebModel codepalWebModel, ILogging codepalLogger)
+		{
+			cwmContext = codepalWebModel;
+			logger = codepalLogger;
+			auditService = new AuditService(logger);
+		}
+
+		public async Task<string> GetCodepalSetting(string propertyField, Guid? agencyId, string userName = "")
+		{
+			string retval = "";
+			Setting setting;
+			try
+			{
+				if (userName != null && userName != "")
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField && s.UserName == userName);
+				}
+				else if (agencyId != null && agencyId != Guid.Empty)
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField && s.AgencyId == agencyId);
+				}
+				else
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField);
+				}
+				if (setting != null)
+				{
+					retval = setting.ValueField;
+				}
+			}
+			catch (Exception ex)
+            {
+                _ = ex;
+				logger.Error("Unexpected exception caught while retrieving setting '" + propertyField + "' for Agency '" + agencyId + ".", ex);
+			}
+			return retval;
+		}
+
+		public async Task<bool> GetCodepalBooleanSettingAsync(string propertyField, Guid? agencyId, string userName = "")
+		{
+			bool retval = false;
+			Setting setting;
+			try
+			{
+				if (userName != null && userName != "")
+				{
+					setting = await cwmContext.Settings.FirstOrDefaultAsync(s => s.PropertyField == propertyField && s.UserName == userName);
+				}
+				else if (agencyId != null && agencyId != Guid.Empty)
+				{
+					setting = await cwmContext.Settings.FirstOrDefaultAsync(s => s.PropertyField == propertyField && s.AgencyId == agencyId);
+				}
+				else
+				{
+					setting = await cwmContext.Settings.FirstOrDefaultAsync(s => s.PropertyField == propertyField);
+				}
+				if (setting != null)
+				{
+					retval = Convert.ToBoolean(Convert.ToInt32(setting.ValueField));
+				}
+			}
+			catch (Exception ex)
+            {
+                _ = ex;
+				logger.Error("Unexpected exception caught while retrieving setting '" + propertyField + "' for Agency '" + agencyId + ".", ex);
+			}
+			return retval;
+		}
+
+		public async Task<bool> GetCodepalBooleanSetting(string propertyField, Guid? agencyId, string userName = "")
+		{
+			bool retval = false;
+			Setting setting;
+			try
+			{
+				if (userName != null && userName != "")
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField && s.UserName == userName);
+				}
+				else if (agencyId != null && agencyId != Guid.Empty)
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField && s.AgencyId == agencyId);
+				}
+				else
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(s => s.PropertyField == propertyField);
+				}
+				if (setting != null)
+				{
+					retval = Convert.ToBoolean(setting.ValueField);
+				}
+			}
+			catch (Exception ex)
+            {
+                _ = ex;
+				logger.Error("Unexpected exception caught while retrieving setting '" + propertyField + "' for Agency '" + agencyId + ".", ex);
+			}
+			return retval;
+		}
+
+		public async Task<AgencyAliases> GetAliases(Guid? agencyId)
+		{
+			AgencyAliases result = new AgencyAliases();
+			var aliases = await cwmContext.v_ModuleAliases.Where(m => m.AgencyId == (agencyId ?? Guid.Empty)).ToListAsync();
+
+			foreach (v_ModuleAliases moduleAlias in aliases)
+			{
+				switch (moduleAlias.ModuleDesc)
+				{
+					case "Address":
+
+						result.AddressAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.AddressAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Complaint":
+					case "Request":
+						result.ComplaintAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.ComplaintAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Fee":
+						result.FeeAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.FeeAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Inspection":
+					case "Activity":
+						result.ActivityAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.ActivityAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Inspection Detail":
+						result.InspectionDetailAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.InspectionDetailAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Memorandum":
+						result.MemorandumAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.MemorandumAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Mileage":
+						result.MileageAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.MileageAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Party":
+						result.PartyAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.PartyAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Permit":
+						result.PermitAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.PermitAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Agency":
+						result.AgencyAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.AgencyAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Item":
+						result.ItemAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.ItemAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Location":
+						result.LocationAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.LocationAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Invoice":
+						result.InvoiceAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.InvoiceAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Certifications":
+						result.CertificationAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.CertificationAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					case "Project":
+						result.ProjectAlias = moduleAlias.ModuleAlias.Singularize(false);
+						result.ProjectAliasP = moduleAlias.ModuleAlias.Pluralize(false);
+						break;
+
+					default:
+						break;
+				}
+			}
+			return result;
+		}
+
+		public async Task<Guid?> GetModuleId(Guid? AgencyId, string ModuleName)
+		{
+			return (await cwmContext.Modules.FirstOrDefaultAsync(m => m.AgencyId == AgencyId && m.ModuleDesc == ModuleName)).ModuleId;
+		}
+		
+		public async Task<Inspector> GetUserAsync(Guid? userId)
+		{
+			return await cwmContext.Inspectors.FirstOrDefaultAsync(u => u.InspectorId == userId);
+		}
+
+		public async Task<string> GetUserNameAsync(Guid? userId)
+		{
+			return (await cwmContext.Inspectors.FirstOrDefaultAsync(u => u.InspectorId == userId)).InspectorName;
+		}
+
+		public async Task<Guid?> GetAgencyIdFromNameAsync(string agencyName)
+		{
+			return (await cwmContext.Agencies.FirstOrDefaultAsync(a => a.AgencyName == agencyName)).AgencyId;
+		}
+
+		public async Task<List<Inspector>> GetInspectorListAsync()
+		{
+			List<Inspector> result = null;
+			try
+			{
+				result = await cwmContext.Inspectors.OrderBy(a => a.InspectorName).ToListAsync();
+			}
+			catch (Exception ex)
+            {
+                _ = ex;
+				logger.Error("Unexpected exception caught while retrieving the inspector list.", ex);
+			}
+			return result;
+		}
+
+		public async Task CreateInspector(DetailedInspector model)
+        {
+			if (model != null)
+			{
+				// The user is saving a new party
+				var inspector = await cwmContext.Inspectors.SingleOrDefaultAsync(a => a.InspectorName == model.InspectorName);
+
+				if (inspector != null)
+				{
+					logger.Error("Unable to create party '" + model.InspectorName.ToString() + "'.  The inspector name is already in the database.");
+					return;
+				}
+
+				var newAudit = new AuditModel { TableName = "Inspectors", RecordId = model.InspectorId, AuditAction = "RECORD CREATED", Description = "Inspector Created From Fire Grant Application" };
+				var newAuditFields = new List<AuditFieldModel>();
+
+				inspector = cwmContext.Inspectors.Add(new Data.Inspector());
+				inspector.rowguid = Guid.NewGuid();
+				inspector.Code = null;
+				inspector.InspectorName = null;
+				inspector.Login = null;
+				inspector.Password = null;
+				inspector.Admin = false;
+				inspector.AgencyId = null;
+				inspector.InspectorPhone = null;
+				inspector.Signature = null;
+				inspector.LoggedIn = null;
+				inspector.Madmin = false;
+				inspector.GroupId = null;
+				inspector.Inactive = false;
+				inspector.ExternalId = null;
+				inspector.Email = null;
+				inspector.CodeExempt = false;
+				inspector.GlobalUser = false;
+				inspector.RCLevel = null;
+				inspector.ActiveModules = "000000000000";
+				inspector.DateUpdated = DateTime.Now; 
+				inspector.DateInserted = DateTime.Now;
+				inspector.DisablePWChange = true;
+				inspector.SecQOne = null;
+				inspector.SecAOne = null;
+				inspector.SecQTwo = null;
+				inspector.SecATwo = null;
+				inspector.Title = null;
+
+
+				newAuditFields.Add(new AuditFieldModel { ControlName = "", FieldDesc = "", OldId = null, OldValue = null, NewId = model.InspectorId, NewValue = null });
+				inspector.InspectorId = model.InspectorId;
+
+				if (model.InspectorName != null && model.InspectorName != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "InspectorName", FieldDesc = "Inspector Name", OldId = null, OldValue = null, NewId = null, NewValue = model.InspectorName });
+					inspector.InspectorName = model.InspectorName;
+
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Code", FieldDesc = "Code", OldId = null, OldValue = null, NewId = null, NewValue = model.Code });
+					inspector.Code = "fgs_" + model.InspectorName.Substring(0, 5);
+				}
+
+				if (model.Email != null && model.Email != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Email", FieldDesc = "Email", OldId = null, OldValue = null, NewId = null, NewValue = model.Email });
+					inspector.Email = model.Email;
+				}
+
+				if (model.InspectorPhone != null && model.InspectorPhone != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "InspectorPhone", FieldDesc = "InspectorPhone", OldId = null, OldValue = null, NewId = null, NewValue = model.InspectorPhone });
+					inspector.InspectorPhone = model.InspectorPhone;
+				}
+
+				if (model.Login != null && model.Login != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Login", FieldDesc = "Login", OldId = null, OldValue = null, NewId = null, NewValue = model.Login });
+					inspector.Login = model.Login;
+				}
+
+				if (model.Password != null && model.Password != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Password", FieldDesc = "Password", OldId = null, OldValue = null, NewId = null, NewValue = model.Password });
+					inspector.Password = model.Password;
+				}
+
+				if (model.AgencyId != null && model.AgencyId.ToString() != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "AgencyId", FieldDesc = "AgencyId", OldId = null, OldValue = null, NewId = null, NewValue = model.Password });
+					inspector.AgencyId = model.AgencyId;
+				}
+
+				if (cwmContext is DbContext)
+				{
+					try
+					{
+						await ((DbContext)cwmContext).SaveChangesAsync();
+						if (newAuditFields.Count() > 0)
+						{
+							await auditService.UpdateAudit(newAudit, newAuditFields);
+						}
+					}
+					catch (Exception ex)
+            {
+                _ = ex;
+						logger.Error("Unable to create inspector '" + model.InspectorName.ToString() + "'.", ex);
+					}
+				}
+				else
+				{
+					logger.Error("Unable to create inspector '" + model.InspectorName.ToString() + "', DbContext was not available.");
+				}
+			}
+			else
+			{
+				logger.Error("CreateParty was called with a null reference.");
+			}
+		}
+
+		public async Task UpdateInspector(DetailedInspector model)
+		{
+			if (model != null)
+			{
+				// The user is saving a new party
+				var inspector = await cwmContext.Inspectors.SingleOrDefaultAsync(a => a.InspectorId == model.InspectorId);
+
+				if (inspector == null)
+				{
+					logger.Error("Unable to update inspector '" + model.InspectorName.ToString() + "'.  The inspector name is not in the database.");
+					return;
+				}
+
+				var newAudit = new AuditModel { TableName = "Inspectors", RecordId = model.InspectorId, AuditAction = "RECORD UPDATED", Description = "Inspector Updated From Fire Grant Application" };
+				var newAuditFields = new List<AuditFieldModel>();
+
+
+				if (model.InspectorName != null && model.InspectorName != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "InspectorName", FieldDesc = "Inspector Name", OldId = null, OldValue = null, NewId = null, NewValue = model.InspectorName });
+					inspector.InspectorName = model.InspectorName;
+				}
+
+				if (model.Email != null && model.Email != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Email", FieldDesc = "Email", OldId = null, OldValue = null, NewId = null, NewValue = model.Email });
+					inspector.Email = model.Email;
+				}
+
+				if (model.InspectorPhone != null && model.InspectorPhone != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "InspectorPhone", FieldDesc = "InspectorPhone", OldId = null, OldValue = null, NewId = null, NewValue = model.InspectorPhone });
+					inspector.InspectorPhone = model.InspectorPhone;
+				}
+
+				if (model.Login != null && model.Login != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "Login", FieldDesc = "Login", OldId = null, OldValue = null, NewId = null, NewValue = model.Login });
+					inspector.Login = model.Login;
+				}
+
+				//if (model.Password != null && model.Password != String.Empty)
+				//{
+				//	newAuditFields.Add(new AuditFieldModel { ControlName = "Password", FieldDesc = "Password", OldId = null, OldValue = null, NewId = null, NewValue = model.Password });
+				//	inspector.Password = model.Password;
+				//}
+
+				if (model.AgencyId != null && model.AgencyId.ToString() != String.Empty)
+				{
+					newAuditFields.Add(new AuditFieldModel { ControlName = "AgencyId", FieldDesc = "AgencyId", OldId = null, OldValue = null, NewId = null, NewValue = model.Password });
+					inspector.AgencyId = model.AgencyId;
+				}
+
+				if (cwmContext is DbContext)
+				{
+					try
+					{
+						await ((DbContext)cwmContext).SaveChangesAsync();
+						if (newAuditFields.Count() > 0)
+						{
+							await auditService.UpdateAudit(newAudit, newAuditFields);
+						}
+					}
+					catch (Exception ex)
+            {
+                _ = ex;
+						logger.Error("Unable to update inspector '" + model.InspectorName.ToString() + "'.", ex);
+					}
+				}
+				else
+				{
+					logger.Error("Unable to update inspector '" + model.InspectorName.ToString() + "', DbContext was not available.");
+				}
+			}
+			else
+			{
+				logger.Error("Update Inspector was called with a null reference.");
+			}
+		}
+
+		public async Task<IEnumerable<Group>> GetGroupListAsync(Guid? id)
+		{
+			IEnumerable<Group> result = null;
+			try
+			{
+				var agencyId = (Guid)System.Web.HttpContext.Current.Session["AgencyId"];
+				result = await cwmContext.Groups.Where(a => (a.AgencyId == agencyId || a.AgencyId == null || a.GroupId == id) && a.Inactive == false && a.WebViewable == true).ToListAsync();
+			}
+			catch (Exception ex)
+            {
+                _ = ex;
+				logger.Error("Unexpected exception caught while retrieving the Group list.", ex);
+			}
+			return result;
+		}
+
+		public async Task<string> DecryptField(string Value)
+		{
+			string result = "";
+			TripleDES Decryptor = new TripleDES();
+
+			result = Decryptor.Decrypt(Value);
+
+			return await Task.FromResult(result);
+		}
+
+		public async Task<string> EncryptField(string Value)
+		{
+			string result = "";
+			TripleDES Encryptor = new TripleDES();
+
+			result = Encryptor.Encrypt(Value);
+
+			return await Task.FromResult(result);
+		}
+
+
+	}
+}
+

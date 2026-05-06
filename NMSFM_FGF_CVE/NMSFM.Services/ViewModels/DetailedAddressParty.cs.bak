@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace CodepalToolkit.ViewModels
+{
+    public class DetailedAddressParty
+    {
+        public string PartyName { get; set; }
+        public string Email { get; set; }
+        public string Phone { get; set; }
+        public string PhoneExt { get; set; }
+        public string Fax { get; set; }
+        public string FaxExt { get; set; }
+        public string Cell { get; set; }
+        public string CellExt { get; set; }
+        public string Pager { get; set; }
+        public string PagerExt { get; set; }
+        public string RoleType { get; set; }
+    }
+}

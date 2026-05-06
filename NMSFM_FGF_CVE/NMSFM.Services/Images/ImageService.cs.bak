@@ -1,0 +1,64 @@
+﻿using CodepalToolkit.Data;
+using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace CodepalToolkit.Services.Images
+{
+    public class ImageService : IImageService
+    {
+        private ICodepalWebModel cwmContext;
+        private List<string> imageSuffixes = new List<string> { ".bmp", ".gif", ".jpeg", ".png", ".tiff", ".tif", ".jpg", ".pdf"};
+
+        public ImageService(ICodepalWebModel codepalWebModel)
+        {
+            cwmContext = codepalWebModel;
+        }
+
+        public async Task<CodepalToolkit.Data.File> RetrieveImageAsync(Guid id)
+        {
+            return await cwmContext.Files.SingleOrDefaultAsync(f => f.FileId == id);
+        }
+
+        // Only returning the required fields for the displayed list of links, individual requests are required to get the image data.
+        // The full record would include the embedded image, the query just returns a small number of fields to minimize network traffic.
+        public async Task<IEnumerable<CodepalToolkit.Data.File>> GetAttachedImageListAsync(Guid id)
+        {
+            var itemList = await cwmContext.Files.Where(f => !f.AdminViewOnly && f.FileData != null && f.RecordId == id && !f.Linked && f.FileName != null)
+                                           .Select(f => new { FileDesc = f.FileDesc, FileId = f.FileId, SeqNum = f.SeqNum, FileName = f.FileName }).ToListAsync();
+            itemList = itemList.Where(f => CheckSuffix(f.FileName.TrimEnd())).ToList();
+            return itemList.Select(f => new CodepalToolkit.Data.File
+            {
+                FileDesc = String.IsNullOrWhiteSpace(f.FileDesc) ? "description unavailable" : f.FileDesc,
+                FileId = f.FileId,
+                SeqNum = f.SeqNum,
+                FileName = f.FileName
+            }).ToList();
+        }
+
+        public async Task<CodepalToolkit.Data.File> GetAttachedImageByIdAsync(Guid id)
+        {
+            var item = await cwmContext.Files.Where(f => f.FileId == id).Select(f => new { FileDesc = f.FileDesc, FileId = f.FileId, SeqNum = f.SeqNum, FileName = f.FileName }).FirstOrDefaultAsync();
+            return new CodepalToolkit.Data.File
+            {
+                FileDesc = String.IsNullOrWhiteSpace(item.FileDesc) ? "description unavailable" : item.FileDesc,
+                FileId = item.FileId,
+                SeqNum = item.SeqNum,
+                FileName = item.FileName
+            };
+
+        }
+
+        private bool CheckSuffix(string filename)
+        {
+            if (!String.IsNullOrWhiteSpace(filename))
+            {
+                return imageSuffixes.Any(f => filename.ToLower().EndsWith(f));
+            }
+            return false;
+        }
+    }
+}

@@ -1,0 +1,74 @@
+{
+  "generatedAtUtc": "2026-03-25T18:17:37.5476878Z",
+  "threshold": "high",
+  "suppressedIds": [],
+  "counts": {
+    "all": 6,
+    "suppressed": 0,
+    "warnings": 1,
+    "failures": 5
+  },
+  "result": "fail",
+  "findings": [
+    {
+      "vulnId": "GHSA-25c8-p796-jg6r",
+      "packageName": "Microsoft.AspNet.Identity.Owin",
+      "packageVersion": "2.2.3",
+      "severity": "high",
+      "severityRank": 3,
+      "summary": " Microsoft Security Advisory CVE-2023-33170: .NET Security Feature Bypass Vulnerability",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-25c8-p796-jg6r",
+      "status": "failure"
+    },
+    {
+      "vulnId": "GHSA-5crp-9r3c-p9vr",
+      "packageName": "Newtonsoft.Json",
+      "packageVersion": "12.0.2",
+      "severity": "high",
+      "severityRank": 3,
+      "summary": "Improper Handling of Exceptional Conditions in Newtonsoft.Json",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-5crp-9r3c-p9vr",
+      "status": "failure"
+    },
+    {
+      "vulnId": "GHSA-jpcq-cgw6-v4j6",
+      "packageName": "jQuery",
+      "packageVersion": "3.4.1",
+      "severity": "moderate",
+      "severityRank": 2,
+      "summary": "Potential XSS vulnerability in jQuery",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-jpcq-cgw6-v4j6",
+      "status": "warning"
+    },
+    {
+      "vulnId": "GHSA-3rq8-h3gj-r5c6",
+      "packageName": "Microsoft.Owin.Security.Cookies",
+      "packageVersion": "4.0.1",
+      "severity": "high",
+      "severityRank": 3,
+      "summary": " .NET Denial of Service Vulnerability",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-3rq8-h3gj-r5c6",
+      "status": "failure"
+    },
+    {
+      "vulnId": "GHSA-3rq8-h3gj-r5c6",
+      "packageName": "Microsoft.Owin",
+      "packageVersion": "4.0.1",
+      "severity": "high",
+      "severityRank": 3,
+      "summary": " .NET Denial of Service Vulnerability",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-3rq8-h3gj-r5c6",
+      "status": "failure"
+    },
+    {
+      "vulnId": "GHSA-hxrm-9w7p-39cc",
+      "packageName": "Microsoft.Owin",
+      "packageVersion": "4.0.1",
+      "severity": "high",
+      "severityRank": 3,
+      "summary": "Cookie parsing failure",
+      "url": "https://api.osv.dev/v1/vulns/GHSA-hxrm-9w7p-39cc",
+      "status": "failure"
+    }
+  ]
+}

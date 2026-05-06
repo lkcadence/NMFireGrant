@@ -1,0 +1,395 @@
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="NMSFMFireGrantWF.SiteMaster" %>
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head runat="server">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%: Page.Title %></title>
+
+    <asp:PlaceHolder runat="server">
+        <%: Scripts.Render("~/bundles/modernizr") %>
+    </asp:PlaceHolder>
+    <webopt:bundlereference runat="server" path="~/Content/css" />
+    <link href="~/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server">
+    </asp:ContentPlaceHolder>
+</head>
+<body>
+    <form runat="server">
+        <asp:ScriptManager runat="server" EnablePartialRendering="true">
+            <Scripts>
+                <%--To learn more about bundling scripts in ScriptManager see https://go.microsoft.com/fwlink/?LinkID=301884 --%>
+                <%--Framework Scripts--%>
+                <asp:ScriptReference Name="MsAjaxBundle" />
+                <asp:ScriptReference Name="jquery" />
+                <asp:ScriptReference Name="bootstrap" />
+                <asp:ScriptReference Name="WebForms.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebForms.js" />
+                <asp:ScriptReference Name="WebUIValidation.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebUIValidation.js" />
+                <asp:ScriptReference Name="MenuStandards.js" Assembly="System.Web" Path="~/Scripts/WebForms/MenuStandards.js" />
+                <asp:ScriptReference Name="GridView.js" Assembly="System.Web" Path="~/Scripts/WebForms/GridView.js" />
+                <asp:ScriptReference Name="DetailsView.js" Assembly="System.Web" Path="~/Scripts/WebForms/DetailsView.js" />
+                <asp:ScriptReference Name="TreeView.js" Assembly="System.Web" Path="~/Scripts/WebForms/TreeView.js" />
+                <asp:ScriptReference Name="WebParts.js" Assembly="System.Web" Path="~/Scripts/WebForms/WebParts.js" />
+                <asp:ScriptReference Name="Focus.js" Assembly="System.Web" Path="~/Scripts/WebForms/Focus.js" />
+                <asp:ScriptReference Name="WebFormsBundle" />
+                <%--Site Scripts--%>
+            </Scripts>
+        </asp:ScriptManager>
+
+        <div class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div id="skiptocontent"><a id="skipEO" class="skip-main" href="#main">Skip to main content</a></div>
+                <div class="navbar-header">
+                    <a href="../Default" class="elements" style="margin-right:20px;">
+                        <img src="../Content/images/NM-State-Fire-Marshal-Logo.jpg" style="height:50px;"  />
+                    </a>
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li style="font-size:18px; color:white; margin-top:10px">NMSFM Fire Grant Council - Fire Grant Application</li>
+                    </ul>
+                    <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <AnonymousTemplate>
+                            <ul class="nav navbar-nav navbar-right">
+                                <%--<li><a runat="server" href="~/Account/Register">Register</a></li>--%>
+                                <li><a runat="server" href="~/Account/Login">Log in</a></li>
+                            </ul>
+                        </AnonymousTemplate>
+                        <LoggedInTemplate>
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a runat="server" href="~/Account/Manage" title="Manage your account">Hello, <%: Context.User.Identity.GetUserName()  %> !</a></li>
+                                <li>
+                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                </li>
+                            </ul>
+                        </LoggedInTemplate>
+                    </asp:LoginView>
+                </div>
+            </div>
+        </div>
+        <asp:LoginView id="LoginView1" runat="server">
+            <AnonymousTemplate>
+                <nav id="subnav" class="navbar navbar-default" role="navigation">
+                    <div class="container">
+                        <ul class="nav navbar-nav">
+                            
+                        </ul>
+                        <div style="float:right; padding:2px 2px 2px 2px; vertical-align:central; text-align:center">
+                            <a data-toggle="collapse" href="#pageHelp" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img src="/Content/images/Help%20Icon.png" height="45" alt="Page Help" />
+                            </a>
+                        </div>
+                    </div>
+                </nav>
+            </AnonymousTemplate>
+            <LoggedInTemplate>
+                
+            </LoggedInTemplate>
+            <RoleGroups>
+                <asp:RoleGroup Roles="Internal">
+                    <ContentTemplate>
+                        <nav id="subnav" class="navbar navbar-default" role="navigation">
+                            <div class="container">
+                                <ul class="nav navbar-nav">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" href="/Admin/Home">Current Apps <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navPriorApps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Prior Apps <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navPriorApps">
+                                            <li><a class="dropdown-item" href="/Admin/Prior/1">Past Apps</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ViewLegacyApps">Legacy Apps</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="/Admin/AdminReport">Admin Report</a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Admin <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navAdmin">
+                                            <li><a class="dropdown-item" href="/Account/ManageUsers">Manage Users</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ManageSettings">Manage Settings</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ManageCategories">Manage Categories</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ManageFDIDs">Manage FD ID's</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ManageHelpText">Manage Help Text</a></li>
+                                            <li><a class="dropdown-item" href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
+                                        </ul>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Support <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navSupport">
+                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div style="float:right; padding:2px 2px 2px 2px; vertical-align:central; text-align:center">
+                                    <a data-toggle="collapse" href="#pageHelp" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <img src="/Content/images/Help%20Icon.png" height="45" alt="Page Help" />
+                                    </a>
+                                </div>
+                            </div>
+                        </nav>
+                    </ContentTemplate>
+                </asp:RoleGroup>
+                <asp:RoleGroup Roles="External">
+                    <ContentTemplate>
+                        <nav id="subnav" class="navbar navbar-default" role="navigation">
+                            <div class="container">
+                                <ul class="nav navbar-nav">
+                                    <li class="nav-item active">
+                                        <a class="nav-link" href="/User/Home">Current App(s) <span class="sr-only">(current)</span></a>
+                                    </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navPriorApps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Prior Apps <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navPriorApps">
+                                            <li><a class="dropdown-item" href="/User/Prior/1">Past Apps</a></li>
+                                            <li><a class="dropdown-item" href="/User/ViewLegacyApps">Legacy Apps</a></li>
+                                        </ul>
+                                    </li>
+                                    <%--<li class="nav-item">
+                                        <a class="nav-link" href="#">Current App Status</a>
+                                    </li>--%>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Support <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navSupport">
+                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div style="float:right; padding:2px 2px 2px 2px; vertical-align:central; text-align:center">
+                                    <a data-toggle="collapse" href="#pageHelp" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                        <img src="/Content/images/Help%20Icon.png" height="45" alt="Page Help" />
+                                    </a>
+                                </div>
+                            </div>
+                        </nav>
+                    </ContentTemplate>
+                </asp:RoleGroup>
+                <asp:RoleGroup Roles="Manager">
+                    <ContentTemplate>
+                        <nav id="subnav" class="navbar navbar-default" role="navigation">
+                            <div class="container">
+                                <ul class="nav navbar-nav">
+                                    <li class="nav-item dropdown">
+                                            <a class="nav-link dropdown-toggle" href="#" id="navAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Application Admin <span class="caret"></span>
+                                            </a>
+                                            <ul class="dropdown-menu" aria-labelledby="navAdmin">
+                                                <li><a class="dropdown-item" href="/Account/ManageUsers">Manage Users</a></li>
+                                            </ul>
+                                        </li>
+                                    <li class="nav-item dropdown">
+                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            Support <span class="caret"></span>
+                                        </a>
+                                        <ul class="dropdown-menu" aria-labelledby="navSupport">
+                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                                <div style="float:right; padding:2px 2px 2px 2px; vertical-align:central; text-align:center">
+                                    <a data-toggle="collapse" href="#pageHelp" role="button" aria-expanded="false" aria-controls="collapseExample" tooltip="Page Help">
+                                        <img src="/Content/images/Help%20Icon.png" height="45" alt="Page Help" />
+                                    </a>
+                                </div>
+                            </div>
+                        </nav>
+                    </ContentTemplate>
+                </asp:RoleGroup>
+            </RoleGroups>
+        </asp:LoginView>
+        <div id="main" class="container body-content">
+            <div class="row collapse" id="pageHelp">
+                <div class="card card-body">
+                    <div class="col-md-1">
+                        <img src="/Content/images/Help%20Icon.png" height="25" />
+                    </div>
+                    <div class="col-md-9" id="dvPageHelp" runat="server">
+                        No help text for this page...
+                    </div>
+                </div>
+                <asp:LinkButton ID="lnkSearchHelp" runat="server" Visible="false" PostBackUrl="~/Admin/SearchHelp">Search All Help</asp:LinkButton>
+            </div>
+            <div id="dvEmailSuccess" runat="server"></div>
+            <asp:ContentPlaceHolder ID="MainContent" runat="server">
+            </asp:ContentPlaceHolder>
+            <hr />
+            <!-- Technical Assistance Modal -->
+            <div class="modal fade" id="techAssistModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblTechHeader" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" id="modalHeaderTA">
+                            <h4 class="modal-title" id="lblTechHeader">Submit Technical Assistance</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <asp:Label ID="lblTAError" runat="server"></asp:Label>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTAFromName" runat="server" AssociatedControlID="txtTAFromName">Your Name *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtTAFromName" runat="server" Width="75%" aria-required="true"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTAFromEmail" runat="server" AssociatedControlID="txtTAFromEmail">Your Email *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtTAFromEmail" runat="server" TextMode="Email" Width="75%" aria-required="true"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblTADetails" runat="server" AssociatedControlID="txtTADetails">Description *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtTADetails" runat="server" Rows="5" TextMode="MultiLine" Width="75%" aria-required="true"></asp:TextBox>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnClose" type="button" class="btn btn-primary" onclick="clearTA()" data-dismiss="modal">Close</button>
+                            <button id="btnSendTA" class="btn btn-primary" runat="server" onserverclick="btnSendTA_ServerClick">Send Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Fire Services Support Modal -->
+            <div class="modal fade" id="FSModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblFSHeader" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header" id="modalHeaderFS">
+                            <h4 class="modal-title" id="lblFSHeader">Submit Fire Services Support</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row">
+                                <asp:Label ID="lblFSError" runat="server"></asp:Label>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFSFromName" runat="server" AssociatedControlID="txtFSFromName">Your Name *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtFSFromName" runat="server" Width="75%" aria-required="true"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFSFromEmail" runat="server" AssociatedControlID="txtFSFromEmail">Your Email *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtFSFromEmail" runat="server" TextMode="Email" Width="75%" aria-required="true"></asp:TextBox>
+                                </div>
+                            </div>
+                            <div class="row formRow">
+                                <div class="col-md-3">
+                                    <asp:Label ID="lblFSDetails" runat="server" AssociatedControlID="txtFSDetails">Description *</asp:Label>
+                                </div>
+                                <div class="col-md-9">
+                                    <asp:TextBox ID="txtFSDetails" runat="server" Rows="5" TextMode="MultiLine" Width="75%" aria-required="true"></asp:TextBox>                                
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button id="btnFSClose" type="button" class="btn btn-primary" onclick="clearFS()" data-dismiss="modal">Close</button>
+                            <button id="bntSendFS" class="btn btn-primary" runat="server" onserverclick="bntSendFS_ServerClick">Send Email</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <footer>
+                <div class="row" style="width:97%;margin-left:2em">
+                <div class="col-lg-4">
+                    <span style="padding-left: 1em;">&copy; <%: DateTime.Now.Year.ToString() %> New Mexico State Fire Marshal</span>
+                </div>
+                <div class="col-lg-4" style="text-align:center" id="timeoutWarning">
+                    <script>
+                        setTimeout(function () {
+                            setInterval(function () {
+                                var time = $('#timer').text();
+                                $('#alert').html("Time Left To Save: " + time);
+                            }, 1000 * 540 * 1);
+                        }, 1000);
+
+                        setInterval(function () {
+                            $(".countdown").each(function () {
+                                var seconds = $(this).data('seconds');
+                                if (seconds > 0) {
+                                    second = seconds - 1;
+                                    $(this).data('seconds', second)
+
+                                    var date = new Date(null);
+                                    date.setSeconds(second);
+                                    $(this).html(date.toISOString().substr(11, 8))
+                                }
+                                else {
+                                    $(this).html("Reload")
+                                }
+                            });
+                        }, 1000);
+
+                        function clearTA() {
+                            $('#lblTAError').html('');
+                            $('#txtTAFromName').val('');
+                            $('#txtTAFromEmail').val('');
+                            $('#lblTADetails').val('');
+                            //$('#btnClose').click();
+                        }
+
+                        function showTAModal() {
+                            $('#techAssistModal').modal('show');
+                        }
+
+                        function showFSModal() {
+                            $('#FSModal').modal('show');
+                        }
+
+                        function clearFS() {
+                            $('#lblFSError').html('');
+                            $('#txtFSFromName').val('');
+                            $('#txtFSFromEmail').val('');
+                            $('#lblFSDetails').val('');
+                        }
+
+                    </script>
+                    Session Time Remaining: <span id="timer" data-seconds="3600" class="countdown">01:00:00</span>
+                    <div id="alert" role="alert" aria-live="assertive" style="position:absolute; width:0; height:0; clip: rect(0,0,0,0);"></div>
+                </div>
+                <div class="col-lg-4" style="text-align:right">
+                    <span style="padding-right: .5em;">version <span id="spVersion" runat="server">1.0.0</span> -- <span id="spVersionDate" runat="server"></span></span>
+                </div>
+            </div>
+            </footer>
+        </div>
+    </form>
+</body>
+</html>

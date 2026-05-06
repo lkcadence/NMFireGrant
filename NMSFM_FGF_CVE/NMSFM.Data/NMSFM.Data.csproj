@@ -1,0 +1,553 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.props" Condition="Exists('..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.props')" />
+  <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.props" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" />
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4015EC3A-6A60-4EF9-8DCA-A025D3CE7990}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>NMSFM.Data</RootNamespace>
+    <AssemblyName>NMSFM.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="FoolproofValidation, Version=0.9.5851.39121, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Foolproof.0.9.4518\lib\net45\FoolproofValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="Humanizer, Version=2.7.0.0, Culture=neutral, PublicKeyToken=979442b78dfc278e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Humanizer.Core.2.7.9\lib\netstandard2.0\Humanizer.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Audit Tables\Audit.cs" />
+    <Compile Include="Audit Tables\AuditField.cs" />
+    <Compile Include="Audit Tables\AuditSession.cs" />
+    <Compile Include="Codepal Tables\FGApplications.cs" />
+    <Compile Include="Codepal Tables\FGApplicationSettings.cs" />
+    <Compile Include="Codepal Tables\FG_App_AidDistricts.cs" />
+    <Compile Include="Codepal Tables\FG_App_Apparatus.cs" />
+    <Compile Include="Codepal Tables\FG_App_ApparatusEquipment.cs" />
+    <Compile Include="Codepal Tables\FG_App_ApplicationEquipment.cs" />
+    <Compile Include="Codepal Tables\FG_App_Communication.cs" />
+    <Compile Include="Codepal Tables\FG_App_CommunicationEquipment.cs" />
+    <Compile Include="Codepal Tables\FG_App_DocsSigs.cs" />
+    <Compile Include="Codepal Tables\FG_App_Documents.cs" />
+    <Compile Include="Codepal Tables\FG_App_EquipmentNeeds.cs" />
+    <Compile Include="Codepal Tables\FG_App_FundingJustification.cs" />
+    <Compile Include="Codepal Tables\FG_App_Help.cs" />
+    <Compile Include="Codepal Tables\FG_App_PPE.cs" />
+    <Compile Include="Codepal Tables\FG_App_ProjectBudget.cs" />
+    <Compile Include="Codepal Tables\FG_App_ResponseHistory.cs" />
+    <Compile Include="Codepal Tables\FG_App_BudgetInfo.cs" />
+    <Compile Include="Codepal Tables\FG_App_CommunityInfo.cs" />
+    <Compile Include="Codepal Tables\FG_App_GeneralInfo.cs" />
+    <Compile Include="Codepal Tables\FG_App_Review.cs" />
+    <Compile Include="Codepal Tables\FG_App_Scores.cs" />
+    <Compile Include="Codepal Tables\FG_App_Signatures.cs" />
+    <Compile Include="Codepal Tables\FG_App_StandardPPE.cs" />
+    <Compile Include="Codepal Tables\FG_App_StandardSCBA.cs" />
+    <Compile Include="Codepal Tables\FG_App_Training.cs" />
+    <Compile Include="Codepal Tables\FG_App_TrainingOpportunities.cs" />
+    <Compile Include="Codepal Tables\FG_App_WaterAvailability.cs" />
+    <Compile Include="Codepal Tables\FG_App_WaterSources.cs" />
+    <Compile Include="Codepal Tables\FG_Categories.cs" />
+    <Compile Include="Codepal Tables\FG_FDIDs.cs" />
+    <Compile Include="Codepal Tables\FG_Priorities.cs" />
+    <Compile Include="Codepal Tables\FYApplication.cs" />
+    <Compile Include="Codepal Tables\FYAppData.cs" />
+    <Compile Include="Codepal Tables\FYAppStation.cs" />
+    <Compile Include="Codepal Tables\FYInvoices.cs" />
+    <Compile Include="Codepal Tables\FYTotals.cs" />
+    <Compile Include="Codepal Tables\FYTotalDistCalc.cs" />
+    <Compile Include="Codepal Tables\FYTotalDist.cs" />
+    <Compile Include="Codepal Tables\FYAllowableDist.cs" />
+    <Compile Include="Codepal Tables\FYStatuteDist.cs" />
+    <Compile Include="Codepal Tables\FG_App_HazardsThreats.cs" />
+    <Compile Include="Codepal Tables\FG_App_HazardThreatEvents.cs" />
+    <Compile Include="Codepal Tables\zzHelp.cs" />
+    <Compile Include="Codepal Tables\zzPartyWebAccess.cs" />
+    <Compile Include="Codepal Views\cv_CPTKHotlist.cs" />
+    <Compile Include="Codepal Views\nm_FGApplication.cs" />
+    <Compile Include="Codepal Views\nm_FGApplicationReport.cs" />
+    <Compile Include="Codepal Views\nm_FYDistributionInvoice.cs" />
+    <Compile Include="Codepal Views\nm_FYDetailedApplication.cs" />
+    <Compile Include="Codepal Views\nm_FYTotalDistributionCalc.cs" />
+    <Compile Include="Codepal Views\nm_FYTotalDistribution.cs" />
+    <Compile Include="DataModels\AuditWebModel.cs" />
+    <Compile Include="Interfaces\IAuditWebModel.cs" />
+    <Compile Include="Interfaces\ICodepalWebModel.cs" />
+    <Compile Include="Codepal Tables\ActivityCheckList.cs" />
+    <Compile Include="Codepal Tables\ActivityInventoryItem.cs" />
+    <Compile Include="Codepal Tables\ActivityPermit.cs" />
+    <Compile Include="Codepal Tables\ActivitySetting.cs" />
+    <Compile Include="Codepal Tables\ActivityType.cs" />
+    <Compile Include="Codepal Tables\ActivityTypeCaus.cs" />
+    <Compile Include="Codepal Tables\ActivityTypeGrid.cs" />
+    <Compile Include="Codepal Tables\ActivityTypeItemType.cs" />
+    <Compile Include="Codepal Tables\Address.cs" />
+    <Compile Include="Codepal Tables\AddressMap.cs" />
+    <Compile Include="Codepal Tables\AddressParty.cs" />
+    <Compile Include="Codepal Tables\AddressSetting.cs" />
+    <Compile Include="Codepal Tables\AddressType.cs" />
+    <Compile Include="Codepal Tables\Agency.cs" />
+    <Compile Include="Codepal Tables\AgencyActivityType.cs" />
+    <Compile Include="Codepal Tables\Agreement.cs" />
+    <Compile Include="Codepal Tables\AgreementType.cs" />
+    <Compile Include="Codepal Tables\ApprovalStep.cs" />
+    <Compile Include="Codepal Tables\ArchiveDB.cs" />
+    <Compile Include="Codepal Tables\Assignment.cs" />
+    <Compile Include="Codepal Tables\AssociatedActivity.cs" />
+    <Compile Include="Codepal Tables\CalcType.cs" />
+    <Compile Include="Codepal Tables\CategoryType.cs" />
+    <Compile Include="Codepal Tables\Certification.cs" />
+    <Compile Include="Codepal Tables\CertificationType.cs" />
+    <Compile Include="Codepal Tables\CheckItem.cs" />
+    <Compile Include="Codepal Tables\CheckItemCalc.cs" />
+    <Compile Include="Codepal Tables\CheckItemCalcVal.cs" />
+    <Compile Include="Codepal Tables\CheckItemType.cs" />
+    <Compile Include="Codepal Tables\CheckItemValue.cs" />
+    <Compile Include="Codepal Tables\CheckItemValueInspectionDetail.cs" />
+    <Compile Include="Codepal Tables\CheckItemViolationType.cs" />
+    <Compile Include="Codepal Tables\CheckList.cs" />
+    <Compile Include="Codepal Tables\CheckListActivityType.cs" />
+    <Compile Include="Codepal Tables\ChecklistIcon.cs" />
+    <Compile Include="Codepal Tables\CheckListType.cs" />
+    <Compile Include="Codepal Tables\CheckListValue.cs" />
+    <Compile Include="DataModels\CodepalWebModel.cs" />
+    <Compile Include="Codepal Tables\CodeVersion.cs" />
+    <Compile Include="Codepal Tables\CodeVersionAgency.cs" />
+    <Compile Include="Codepal Tables\Comment.cs" />
+    <Compile Include="Codepal Tables\Complaint.cs" />
+    <Compile Include="Codepal Tables\ComplaintActivity.cs" />
+    <Compile Include="Codepal Tables\ComplaintParty.cs" />
+    <Compile Include="Codepal Tables\ComplaintPermit.cs" />
+    <Compile Include="Codepal Tables\ComplaintStatu.cs" />
+    <Compile Include="Codepal Tables\ComplaintType.cs" />
+    <Compile Include="Codepal Tables\Country.cs" />
+    <Compile Include="Codepal Tables\County.cs" />
+    <Compile Include="Codepal Tables\DefaultFee.cs" />
+    <Compile Include="Codepal Tables\Fee.cs" />
+    <Compile Include="Codepal Tables\FeePayment.cs" />
+    <Compile Include="Codepal Tables\FeeSchedule.cs" />
+    <Compile Include="Codepal Tables\FeeSetting.cs" />
+    <Compile Include="Codepal Tables\FeesPT.cs" />
+    <Compile Include="Codepal Tables\FeeType.cs" />
+    <Compile Include="Codepal Tables\FeeTypeCon.cs" />
+    <Compile Include="Codepal Tables\FeeTypePen.cs" />
+    <Compile Include="Codepal Tables\FeeTypePT.cs" />
+    <Compile Include="Codepal Tables\FeeTypeRR.cs" />
+    <Compile Include="Codepal Tables\File.cs" />
+    <Compile Include="Codepal Tables\Group.cs" />
+    <Compile Include="Codepal Tables\Inspection.cs" />
+    <Compile Include="Codepal Tables\InspectionCaus.cs" />
+    <Compile Include="Codepal Tables\InspectionDetail.cs" />
+    <Compile Include="Codepal Tables\InspectionType.cs" />
+    <Compile Include="Codepal Tables\Inspector.cs" />
+    <Compile Include="Codepal Tables\InspectorGroup.cs" />
+    <Compile Include="Codepal Tables\InventoryItem.cs" />
+    <Compile Include="Codepal Tables\InventoryItemType.cs" />
+    <Compile Include="Codepal Tables\InvNarrative.cs" />
+    <Compile Include="Codepal Tables\InvNarrativeText.cs" />
+    <Compile Include="Codepal Tables\Invoice.cs" />
+    <Compile Include="Codepal Tables\InvoicePayment.cs" />
+    <Compile Include="Codepal Tables\InvoiceSetting.cs" />
+    <Compile Include="Codepal Tables\InvoiceType.cs" />
+    <Compile Include="Codepal Tables\Item.cs" />
+    <Compile Include="Codepal Tables\ItemInspectionStatu.cs" />
+    <Compile Include="Codepal Tables\ItemLocDesc.cs" />
+    <Compile Include="Codepal Tables\ItemSetting.cs" />
+    <Compile Include="Codepal Tables\ItemsStatu.cs" />
+    <Compile Include="Codepal Tables\ItemType.cs" />
+    <Compile Include="Codepal Tables\License.cs" />
+    <Compile Include="Codepal Tables\LicenseDevice.cs" />
+    <Compile Include="Codepal Tables\ListViewSave.cs" />
+    <Compile Include="Codepal Tables\Location.cs" />
+    <Compile Include="Codepal Tables\LocationBas.cs" />
+    <Compile Include="Codepal Tables\LocationSetting.cs" />
+    <Compile Include="Codepal Tables\LocationType.cs" />
+    <Compile Include="Codepal Tables\Memorandum.cs" />
+    <Compile Include="Codepal Tables\Mileage.cs" />
+    <Compile Include="Codepal Tables\Module.cs" />
+    <Compile Include="Codepal Tables\ModuleTypeReport.cs" />
+    <Compile Include="Codepal Tables\Note.cs" />
+    <Compile Include="Codepal Tables\NumberSchema.cs" />
+    <Compile Include="Codepal Tables\OccupancyType.cs" />
+    <Compile Include="Codepal Tables\Party.cs" />
+    <Compile Include="Codepal Tables\PartyPriceLevel.cs" />
+    <Compile Include="Codepal Tables\PartyRole.cs" />
+    <Compile Include="Codepal Tables\Permit.cs" />
+    <Compile Include="Codepal Tables\PermitCertificateType.cs" />
+    <Compile Include="Codepal Tables\PermitSetting.cs" />
+    <Compile Include="Codepal Tables\PermitStatu.cs" />
+    <Compile Include="Codepal Tables\PermitSub.cs" />
+    <Compile Include="Codepal Tables\PermitType.cs" />
+    <Compile Include="Codepal Tables\PermitTypeActList.cs" />
+    <Compile Include="Codepal Tables\Phone.cs" />
+    <Compile Include="Codepal Tables\PhoneType.cs" />
+    <Compile Include="Codepal Tables\Project.cs" />
+    <Compile Include="Codepal Tables\ProjectActivity.cs" />
+    <Compile Include="Codepal Tables\ProjectAddress.cs" />
+    <Compile Include="Codepal Tables\ProjectInspector.cs" />
+    <Compile Include="Codepal Tables\ProjectPermit.cs" />
+    <Compile Include="Codepal Tables\ProjectRequest.cs" />
+    <Compile Include="Codepal Tables\ProjectSetting.cs" />
+    <Compile Include="Codepal Tables\ProjectStatu.cs" />
+    <Compile Include="Codepal Tables\ProjectType.cs" />
+    <Compile Include="Codepal Tables\ProjectTypesDefault.cs" />
+    <Compile Include="Interfaces\IUserWebModel.cs" />
+    <Compile Include="User Tables\News.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Codepal Tables\PropertyUseType.cs" />
+    <Compile Include="Codepal Tables\Region.cs" />
+    <Compile Include="Codepal Tables\Report.cs" />
+    <Compile Include="Codepal Tables\ReportDataDefinition.cs" />
+    <Compile Include="Codepal Tables\ReportDefinition.cs" />
+    <Compile Include="Codepal Tables\ReportGroup.cs" />
+    <Compile Include="Codepal Tables\ReportSQL.cs" />
+    <Compile Include="Codepal Tables\ReportUserGroup.cs" />
+    <Compile Include="Codepal Tables\ReportWizardDefinition.cs" />
+    <Compile Include="Codepal Tables\RequestSetting.cs" />
+    <Compile Include="Codepal Tables\Resolution.cs" />
+    <Compile Include="Codepal Tables\RoleType.cs" />
+    <Compile Include="Codepal Tables\Route.cs" />
+    <Compile Include="Codepal Tables\RoutingSlip.cs" />
+    <Compile Include="Codepal Tables\SearchDisplay.cs" />
+    <Compile Include="Codepal Tables\ServiceHistory.cs" />
+    <Compile Include="Codepal Tables\ServiceType.cs" />
+    <Compile Include="Codepal Tables\ServiceTypeActivityType.cs" />
+    <Compile Include="Codepal Tables\ServiceTypeItemType.cs" />
+    <Compile Include="Codepal Tables\Setting.cs" />
+    <Compile Include="Codepal Tables\Severity.cs" />
+    <Compile Include="Codepal Tables\SeverityActivityType.cs" />
+    <Compile Include="Codepal Tables\Signature.cs" />
+    <Compile Include="Codepal Tables\SignatureType.cs" />
+    <Compile Include="Codepal Tables\SignOffItem.cs" />
+    <Compile Include="Codepal Tables\SignOffObjectUser.cs" />
+    <Compile Include="Codepal Tables\SignOffType.cs" />
+    <Compile Include="Codepal Tables\SignOffUser.cs" />
+    <Compile Include="Codepal Tables\SignOffUserPosting.cs" />
+    <Compile Include="Codepal Tables\SignOffValue.cs" />
+    <Compile Include="Codepal Tables\State.cs" />
+    <Compile Include="Codepal Tables\SyncSetting.cs" />
+    <Compile Include="Codepal Tables\SystemItem.cs" />
+    <Compile Include="Codepal Tables\SystemTemplate.cs" />
+    <Compile Include="Codepal Tables\Term.cs" />
+    <Compile Include="Codepal Tables\UDFCategoriesIcon.cs" />
+    <Compile Include="Codepal Tables\UserDefCategory.cs" />
+    <Compile Include="Codepal Tables\UserDefCategoryType.cs" />
+    <Compile Include="Codepal Tables\UserDefField.cs" />
+    <Compile Include="Codepal Tables\UserDefGlobalField.cs" />
+    <Compile Include="Codepal Tables\UserDefType.cs" />
+    <Compile Include="Codepal Tables\UserDefValue.cs" />
+    <Compile Include="Codepal Tables\Version.cs" />
+    <Compile Include="Codepal Tables\ViolationSearchCriteriaType.cs" />
+    <Compile Include="Codepal Tables\ViolationType.cs" />
+    <Compile Include="Codepal Views\v_Activities.cs" />
+    <Compile Include="Codepal Views\v_Activities2.cs" />
+    <Compile Include="Codepal Views\v_Activities3.cs" />
+    <Compile Include="Codepal Views\v_ActivitiesRW.cs" />
+    <Compile Include="Codepal Views\v_ActivitiesTwo.cs" />
+    <Compile Include="Codepal Views\v_ActivitiesUDF.cs" />
+    <Compile Include="Codepal Views\v_Activity.cs" />
+    <Compile Include="Codepal Views\v_ActivityChecklists.cs" />
+    <Compile Include="Codepal Views\v_ActivityComplaints.cs" />
+    <Compile Include="Codepal Views\v_ActivityPermits.cs" />
+    <Compile Include="Codepal Views\v_AddLatLon.cs" />
+    <Compile Include="Codepal Views\v_Addresses.cs" />
+    <Compile Include="Codepal Views\v_Addresses2.cs" />
+    <Compile Include="Codepal Views\v_AddressesReport.cs" />
+    <Compile Include="Codepal Views\v_AddressesReportNA.cs" />
+    <Compile Include="Codepal Views\v_AddressParties.cs" />
+    <Compile Include="Codepal Views\v_AddressPartyandRole.cs" />
+    <Compile Include="Codepal Views\v_Agency.cs" />
+    <Compile Include="Codepal Views\v_Agreements.cs" />
+    <Compile Include="Codepal Views\v_Alerts.cs" />
+    <Compile Include="Codepal Views\v_AlertsNR.cs" />
+    <Compile Include="Codepal Views\v_Assignments.cs" />
+    <Compile Include="Codepal Views\v_AssocActivities.cs" />
+    <Compile Include="Codepal Views\v_AssocActivities2.cs" />
+    <Compile Include="Codepal Views\v_Certifications.cs" />
+    <Compile Include="Codepal Views\v_CheckItemCalcValues.cs" />
+    <Compile Include="Codepal Views\v_CheckItemCalcValuesFirePump.cs" />
+    <Compile Include="Codepal Views\v_CheckItemCalcValuesFirePumpDiesel.cs" />
+    <Compile Include="Codepal Views\v_CheckItemValues.cs" />
+    <Compile Include="Codepal Views\v_CheckItemViolationTypes.cs" />
+    <Compile Include="Codepal Views\v_CLInspDet.cs" />
+    <Compile Include="Codepal Views\v_ComplaintActivities.cs" />
+    <Compile Include="Codepal Views\v_ComplaintParties.cs" />
+    <Compile Include="Codepal Views\v_ComplaintPermits.cs" />
+    <Compile Include="Codepal Views\v_Complaints.cs" />
+    <Compile Include="Codepal Views\v_Complaints1.cs" />
+    <Compile Include="Codepal Views\v_Complaints_old.cs" />
+    <Compile Include="Codepal Views\v_FailedSubCheckItems.cs" />
+    <Compile Include="Codepal Views\v_FeeBalanceSummary.cs" />
+    <Compile Include="Codepal Views\v_FeePayments.cs" />
+    <Compile Include="Codepal Views\v_Fees.cs" />
+    <Compile Include="Codepal Views\v_FeesPermits.cs" />
+    <Compile Include="Codepal Views\v_FeesRecalc.cs" />
+    <Compile Include="Codepal Views\v_FeesReport.cs" />
+    <Compile Include="Codepal Views\v_Files.cs" />
+    <Compile Include="Codepal Views\v_InspectionDetails.cs" />
+    <Compile Include="Codepal Views\v_InspectionDetailsReports.cs" />
+    <Compile Include="Codepal Views\v_InspectionDetailsUDF.cs" />
+    <Compile Include="Codepal Views\v_InventoryItems.cs" />
+    <Compile Include="Codepal Views\v_InvNarratives.cs" />
+    <Compile Include="Codepal Views\v_InvoicePayments.cs" />
+    <Compile Include="Codepal Views\v_Invoices.cs" />
+    <Compile Include="Codepal Views\v_InvoiceSummary.cs" />
+    <Compile Include="Codepal Views\v_ItemGrid.cs" />
+    <Compile Include="Codepal Views\v_ItemGridAct.cs" />
+    <Compile Include="Codepal Views\v_ItemInspectionStatus.cs" />
+    <Compile Include="Codepal Views\v_ItemList.cs" />
+    <Compile Include="Codepal Views\v_ItemList2.cs" />
+    <Compile Include="Codepal Views\v_Items.cs" />
+    <Compile Include="Codepal Views\v_LastActivityAtAddress.cs" />
+    <Compile Include="Codepal Views\v_LocationItemCount.cs" />
+    <Compile Include="Codepal Views\v_Locations.cs" />
+    <Compile Include="Codepal Views\v_LocationsCount.cs" />
+    <Compile Include="Codepal Views\v_Mileage.cs" />
+    <Compile Include="Codepal Views\v_ModuleAliases.cs" />
+    <Compile Include="Codepal Views\v_OSInspectionDetailsReports.cs" />
+    <Compile Include="Codepal Views\v_OutstandingChecklists.cs" />
+    <Compile Include="Codepal Views\v_Parties.cs" />
+    <Compile Include="Codepal Views\v_PartyAddresses.cs" />
+    <Compile Include="Codepal Views\v_PaymentSum.cs" />
+    <Compile Include="Codepal Views\v_PermitActivities.cs" />
+    <Compile Include="Codepal Views\v_PermitAlerts.cs" />
+    <Compile Include="Codepal Views\v_Permits.cs" />
+    <Compile Include="Codepal Views\v_PermitsReport.cs" />
+    <Compile Include="Codepal Views\v_PhoneList.cs" />
+    <Compile Include="Codepal Views\v_Preplans.cs" />
+    <Compile Include="Codepal Views\v_ProjectActivitySearch.cs" />
+    <Compile Include="Codepal Views\v_ProjectAddressSearch.cs" />
+    <Compile Include="Codepal Views\v_ProjectAlerts.cs" />
+    <Compile Include="Codepal Views\v_ProjectInspectorSearch.cs" />
+    <Compile Include="Codepal Views\v_ProjectPermitSearch.cs" />
+    <Compile Include="Codepal Views\v_ProjectReport.cs" />
+    <Compile Include="Codepal Views\v_ProjectRequestSearch.cs" />
+    <Compile Include="Codepal Views\v_Projects.cs" />
+    <Compile Include="Codepal Views\v_ROInspectionDetailsReports.cs" />
+    <Compile Include="Codepal Views\v_SearchActivities.cs" />
+    <Compile Include="Codepal Views\v_SearchActivities2.cs" />
+    <Compile Include="Codepal Views\v_SearchAddresses.cs" />
+    <Compile Include="Codepal Views\v_SearchChecklist.cs" />
+    <Compile Include="Codepal Views\v_SearchComplaintUDFs.cs" />
+    <Compile Include="Codepal Views\v_SearchInspectionDetails.cs" />
+    <Compile Include="Codepal Views\v_SearchInvoices.cs" />
+    <Compile Include="Codepal Views\v_SearchItems.cs" />
+    <Compile Include="Codepal Views\v_SearchItems2.cs" />
+    <Compile Include="Codepal Views\v_SearchItemsByParty.cs" />
+    <Compile Include="Codepal Views\v_SearchPartiesBC.cs" />
+    <Compile Include="Codepal Views\v_SearchPermits.cs" />
+    <Compile Include="Codepal Views\v_SearchProjects.cs" />
+    <Compile Include="Codepal Views\v_ServiceHistory.cs" />
+    <Compile Include="Codepal Views\v_Signature.cs" />
+    <Compile Include="Codepal Views\v_SignOffCompletes.cs" />
+    <Compile Include="Codepal Views\v_SignOffItems.cs" />
+    <Compile Include="Codepal Views\v_SnapshotFeesReport.cs" />
+    <Compile Include="Codepal Views\v_SubCheckItemValues.cs" />
+    <Compile Include="Codepal Views\v_SubInspection.cs" />
+    <Compile Include="Codepal Views\v_SubInspectionList.cs" />
+    <Compile Include="Codepal Views\v_SubInspectionsReport.cs" />
+    <Compile Include="Codepal Views\v_UserDefValues.cs" />
+    <Compile Include="Codepal Views\v_ViolationSearch.cs" />
+    <Compile Include="Codepal Tables\Zip.cs" />
+    <Compile Include="User Tables\User.cs" />
+    <Compile Include="DataModels\UserWebModel.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+    <None Include="Scripts\esm\popper-utils.js.map" />
+    <None Include="Scripts\esm\popper-utils.min.js.map" />
+    <None Include="Scripts\esm\popper.js.map" />
+    <None Include="Scripts\esm\popper.min.js.map" />
+    <None Include="Scripts\index.js.flow" />
+    <None Include="Scripts\popper-utils.js.map" />
+    <None Include="Scripts\popper-utils.min.js.map" />
+    <None Include="Scripts\popper.js.map" />
+    <None Include="Scripts\popper.min.js.map" />
+    <None Include="Scripts\README.md" />
+    <None Include="Scripts\umd\popper-utils.js.map" />
+    <None Include="Scripts\umd\popper-utils.min.js.map" />
+    <None Include="Scripts\umd\popper.js.flow" />
+    <None Include="Scripts\umd\popper.js.map" />
+    <None Include="Scripts\umd\popper.min.js.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.js" />
+    <Content Include="Client Scripts\mvcfoolproof.unobtrusive.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofJQueryValidation.min.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.js" />
+    <Content Include="Client Scripts\MvcFoolproofValidation.min.js" />
+    <Content Include="Scripts\esm\popper-utils.js" />
+    <Content Include="Scripts\esm\popper-utils.min.js" />
+    <Content Include="Scripts\esm\popper.js" />
+    <Content Include="Scripts\esm\popper.min.js" />
+    <Content Include="Scripts\popper-utils.js" />
+    <Content Include="Scripts\popper-utils.min.js" />
+    <Content Include="Scripts\popper.js" />
+    <Content Include="Scripts\popper.min.js" />
+    <Content Include="Scripts\src\index.js" />
+    <Content Include="Scripts\src\methods\defaults.js" />
+    <Content Include="Scripts\src\methods\destroy.js" />
+    <Content Include="Scripts\src\methods\disableEventListeners.js" />
+    <Content Include="Scripts\src\methods\enableEventListeners.js" />
+    <Content Include="Scripts\src\methods\placements.js" />
+    <Content Include="Scripts\src\methods\update.js" />
+    <Content Include="Scripts\src\modifiers\applyStyle.js" />
+    <Content Include="Scripts\src\modifiers\arrow.js" />
+    <Content Include="Scripts\src\modifiers\computeStyle.js" />
+    <Content Include="Scripts\src\modifiers\flip.js" />
+    <Content Include="Scripts\src\modifiers\hide.js" />
+    <Content Include="Scripts\src\modifiers\index.js" />
+    <Content Include="Scripts\src\modifiers\inner.js" />
+    <Content Include="Scripts\src\modifiers\keepTogether.js" />
+    <Content Include="Scripts\src\modifiers\offset.js" />
+    <Content Include="Scripts\src\modifiers\preventOverflow.js" />
+    <Content Include="Scripts\src\modifiers\shift.js" />
+    <Content Include="Scripts\src\utils\clockwise.js" />
+    <Content Include="Scripts\src\utils\computeAutoPlacement.js" />
+    <Content Include="Scripts\src\utils\debounce.js" />
+    <Content Include="Scripts\src\utils\find.js" />
+    <Content Include="Scripts\src\utils\findCommonOffsetParent.js" />
+    <Content Include="Scripts\src\utils\findIndex.js" />
+    <Content Include="Scripts\src\utils\getBordersSize.js" />
+    <Content Include="Scripts\src\utils\getBoundaries.js" />
+    <Content Include="Scripts\src\utils\getBoundingClientRect.js" />
+    <Content Include="Scripts\src\utils\getClientRect.js" />
+    <Content Include="Scripts\src\utils\getFixedPositionOffsetParent.js" />
+    <Content Include="Scripts\src\utils\getOffsetParent.js" />
+    <Content Include="Scripts\src\utils\getOffsetRect.js" />
+    <Content Include="Scripts\src\utils\getOffsetRectRelativeToArbitraryNode.js" />
+    <Content Include="Scripts\src\utils\getOppositePlacement.js" />
+    <Content Include="Scripts\src\utils\getOppositeVariation.js" />
+    <Content Include="Scripts\src\utils\getOuterSizes.js" />
+    <Content Include="Scripts\src\utils\getParentNode.js" />
+    <Content Include="Scripts\src\utils\getPopperOffsets.js" />
+    <Content Include="Scripts\src\utils\getReferenceNode.js" />
+    <Content Include="Scripts\src\utils\getReferenceOffsets.js" />
+    <Content Include="Scripts\src\utils\getRoot.js" />
+    <Content Include="Scripts\src\utils\getRoundedOffsets.js" />
+    <Content Include="Scripts\src\utils\getScroll.js" />
+    <Content Include="Scripts\src\utils\getScrollParent.js" />
+    <Content Include="Scripts\src\utils\getStyleComputedProperty.js" />
+    <Content Include="Scripts\src\utils\getSupportedPropertyName.js" />
+    <Content Include="Scripts\src\utils\getViewportOffsetRectRelativeToArtbitraryNode.js" />
+    <Content Include="Scripts\src\utils\getWindow.js" />
+    <Content Include="Scripts\src\utils\getWindowSizes.js" />
+    <Content Include="Scripts\src\utils\includeScroll.js" />
+    <Content Include="Scripts\src\utils\index.js" />
+    <Content Include="Scripts\src\utils\isBrowser.js" />
+    <Content Include="Scripts\src\utils\isFixed.js" />
+    <Content Include="Scripts\src\utils\isFunction.js" />
+    <Content Include="Scripts\src\utils\isIE.js" />
+    <Content Include="Scripts\src\utils\isModifierEnabled.js" />
+    <Content Include="Scripts\src\utils\isModifierRequired.js" />
+    <Content Include="Scripts\src\utils\isNumeric.js" />
+    <Content Include="Scripts\src\utils\isOffsetContainer.js" />
+    <Content Include="Scripts\src\utils\removeEventListeners.js" />
+    <Content Include="Scripts\src\utils\runModifiers.js" />
+    <Content Include="Scripts\src\utils\setAttributes.js" />
+    <Content Include="Scripts\src\utils\setStyles.js" />
+    <Content Include="Scripts\src\utils\setupEventListeners.js" />
+    <Content Include="Scripts\umd\popper-utils.js" />
+    <Content Include="Scripts\umd\popper-utils.min.js" />
+    <Content Include="Scripts\umd\popper.js" />
+    <Content Include="Scripts\umd\popper.min.js" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <TypeScriptCompile Include="Scripts\index.d.ts" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\EntityFramework.6.4.0\build\EntityFramework.targets'))" />
+    <Error Condition="!Exists('..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.props')" Text="$([System.String]::Format('$(ErrorText)', '..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.props'))" />
+    <Error Condition="!Exists('..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.targets'))" />
+  </Target>
+  <Import Project="..\packages\EntityFramework.6.4.0\build\EntityFramework.targets" Condition="Exists('..\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" />
+  <Import Project="..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.targets" Condition="Exists('..\NMSFMFireGrantWF\packages\EntityFramework.6.4.0\build\EntityFramework.targets')" />
+</Project>

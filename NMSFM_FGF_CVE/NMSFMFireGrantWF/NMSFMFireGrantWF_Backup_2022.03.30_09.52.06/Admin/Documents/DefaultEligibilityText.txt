@@ -1,0 +1,355 @@
+<table style="margin-left:23px;font-size:16px; width:95%; padding:5px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" cellspacing="0" cellpadding="0">
+    <tbody>
+        <tr>
+            <td style="line-height:150%; padding-top:15px; text-align:justify;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">The New Mexico Fire Protection Grant Council has made the following changes to the FY22 grant process</span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:15px; text-align:justify;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Two types of Grant Applications</strong></span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:15px; text-align:justify;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top">
+            <ol>
+                <li><strong>Individual Department Grant</strong></li>
+                <li style="padding-top:10px;"><strong>County-Wide Project Grant</strong></li>
+            </ol>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Eligibility</strong></span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:15px; text-align:justify;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top">
+            <ol>
+                <li style="padding-top:10px;">
+                All fire departments currently certified and funded by the New Mexico State Fire Marshal&rsquo;s Office are eligible
+                to apply for an <strong>Individual Department Grant.</strong></li>
+                <li style="padding-top:10px;">County Administrative Offices having administrative responsibility for more than one district/department may apply for a
+                <strong>County-wide Project Grant</strong> as long as <strong>each district within the County</strong> is compliant with the requirements
+                of the grant application, (i.e., NFIRS, Pump Tests, etc.).  The county-wide project must benefit all the departments
+                within the County.  Note:  A County Administrative Office applying for a grant does not prevent departments within the
+                County from applying for an <strong>Individual Department Grant.</strong></li>
+                <li style="padding-top:10px;">Grant applications must not be contingent on another grant award.</li>
+                <li style="padding-top:10px;">Joint applications will not be considered. </li>
+                <li style="padding-top:10px;">Only one grant application per jurisdiction may be submitted. </li>
+                <li style="padding-top:10px;">Any fire department that is awarded a grant and consequently loses its qualification to participate in the Fire Protection Funding process shall return the apparatus and/or equipment to the State Fire Marshal for redistribution as per 59A-53 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.  </li>
+            </ol>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Maximum Award</strong></span></td>
+        </tr>
+        <tr>
+            <td>
+            <ol>
+                <li style="padding-top:10px;">The maximum amount awarded to a single applicant (either an Individual Department Grant or a County-wide Project Grant) will not exceed <strong>$200,000</strong> for the following projects:<br />
+                <ul style="list-style-type:disc;padding-top:5px;">
+                    <li style="padding-top:5px;">Facility construction </li>
+                    <li style="padding-top:5px;">Major facility improvements </li>
+                    <li style="padding-top:5px;">Land acquisition </li>
+                    <li style="padding-top:5px;">Single large infrastructure project  </li>
+                    <li style="padding-top:5px;">Structural Apparatus</li>
+                </ul>
+                </li>
+                <li style="padding-top:10px;">The maximum amount awarded to a single applicant (either an Individual Department Grant or a County-wide Project Grant) will not exceed <strong>$100,000</strong> for all other critical needs, but only one single project will be awarded. </li>
+            </ol>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Minimum matching funds </strong></span></td>
+        </tr>
+        <tr>
+            <td>
+            <ul style="list-style-type:disc;padding-top:5px;">
+                <li style="padding-top:5px;">Grant requests of $10,000 or less require no matching commitment;  </li>
+                <li style="padding-top:5px;">Grant requests of $10,001 to $50,000 require a 5% commitment;  </li>
+                <li style="padding-top:5px;">Grant requests of $50,001 to $100,000 require a 10% commitment; </li>
+                <li style="padding-top:5px;">Grant requests of $100,001 to $200,000 require a 20% commitment.   </li>
+            </ul>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Costs exceeding the grant amount shall be the responsibility of the local government.</strong></span>State fire funds may be used for this purpose with approval from the New Mexico State Fire Marshal&rsquo;s Office. </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:15px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>Signatures/Commitment of Funds </strong></span></td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:10px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top">
+            The Fire Chief and the County or Municipality&rsquo;s Fiscal Agent (CFO or designee) shall sign the application indicating a commitment to comply with the procurement and reporting requirements of the award. In addition, the Fiscal Agent shall sign the Fiscal Agent&rsquo;s Commitment Statement indicating a commitment of these funds for the awarded project and a commitment of the matching funds.
+            <span style="text-decoration: underline;">Applications submitted without all signatures will not be considered.</span></td>
+        </tr>
+        <tr>
+            <td style="font-weight:bold; padding-top:15px;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">MINIMUM REQUIREMENTS</span></td>
+        </tr>
+        <tr>
+            <td style="font-weight:bold; padding-top:15px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">NFIRS Reporting</span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:5px; text-align:justify;" valign="top">All applicants <strong>shall be</strong> in compliance with the reporting requirements of the New Mexico State Fire Marshal's Office
+            utilizing the National Fire Incident Reporting System (NFIRS) as per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC. Applicants with delinquent NFIRS reports for the period of <strong>July 2018</strong> to <strong>June 2019</strong> at the time the
+            application period closes <span style="text-decoration: underline;">will not be considered</span>.
+            </td>
+        </tr>
+        <tr>
+            <td style="font-weight:bold; padding-top:15px;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">Pump Testing</span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:5px; text-align:justify;" valign="top">
+            All rated fire pumps shall undergo annual pump tests to ensure proper function and firefighter safety; therefore, the applicants must provide evidence that apparatus pump tests are conducted on each apparatus with rated fire pumps by documenting results in a Pump Test Data Log and verified in an Affidavit signed by the Fire Chief and notarized.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px; line-height:150%; text-align:justify;" valign="top">
+            &bull;	All annual pump tests shall be in accordance with NFPA 1901 and the Insurance Service Office (ISO) requirements.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px; line-height:150%; text-align:justify;" valign="top">
+            &bull;	<strong>A Pump Test Data Log</strong> must be completed as part of the application.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px; line-height:150%; text-align:justify;" valign="top">
+            &bull;	<strong>A notarized Affidavit</strong> signed by the Fire Chief must be uploaded with the application.  The Affidavit is to verify that three years of pump test records exist for each apparatus with a rated fire pump, are on file with the department and are available for SFMO inspection upon request.  A .pdf file of the Affidavit is available on the Grant website and must be uploaded with the application.  Note:  Notary signature and seal must be clear and legible.
+            <span style="text-decoration: underline;"><strong>Falsified affidavits may result in forfeiture of funds and future grant consideration.</strong></span></td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:15px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;"><strong>CRITICAL NEEDS &ndash;</strong></span> Departments may apply for <strong>only one project</strong> in only one critical needs category listed below:
+            </td>
+        </tr>
+        <tr>
+            <td>
+            <ul style="list-style-type:disc;padding-top:5px;">
+                <li style="padding-top:5px;">Fire apparatus/equipment </li>
+                <li style="padding-top:5px;">PPE (structural, wildland, SCBA) </li>
+                <li style="padding-top:5px;">Communications </li>
+                <li style="padding-top:5px;">Facility Construction/Improvement </li>
+                <li style="padding-top:5px;">Training</li>
+                <li style="padding-top:5px;">Water</li>
+                <li style="padding-top:5px;">Need that will clearly will have significant impact on ISO Public Protection Classification</li>
+            </ul>
+            </td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:5px; text-align:justify;" valign="top"><strong><span style="text-decoration: underline;">ADDITIONAL INFORMATION</span></strong></td>
+        </tr>
+        <tr>
+            <td>
+            <ol>
+                <li style="padding-top:10px;font-size:18px;">
+                Awards may be subject to audit and could result in forfeiture of funds and future grant consideration if non-compliance is determined.
+                </li>
+                <li style="padding-top:10px;font-size:18px;">
+                All the information contained in the application is carefully reviewed and considered. In addition to general information and data provided, thorough and clear narrative responses are critical to helping reviewers understand the needs of the department relative to the request.
+                </li>
+                <li style="padding-top:10px;font-size:18px;">
+                Apparatus purchased with grant funds must meet the current NFPA standards and will be inspected for acceptance.
+                </li>
+                <li style="padding-top:10px;font-size:18px;">
+                Awards are contingent upon approval of specifications by the State Fire Marshal&rsquo;s Office.
+                </li>
+                <li style="padding-top:10px;font-size:18px;">
+                For apparatus applications, the department must have the capability to immediately house apparatus properly.  NFPA listed equipment may be included with the purchase of apparatus.
+                </li>
+                <li style="padding-top:10px;font-size:18px;"><strong>Preliminary project specifications, (i.e., scope of work, concept drawings) must be submitted with the application.  Applications submitted without preliminary project specifications <span style="text-decoration: underline;"> will not be considered.</span></strong><strong style="color:red;">Applicants are encouraged to contact the SFMO for guidance on what is required by NFPA or ISO prior to submitting.</strong></li>
+                <li style="padding-top:10px;font-size:18px;">
+                A Completion Checklist is provided to assist with ensuring that each application requirement has been addressed.
+                </li>
+            </ol>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-weight:bold;" valign="top"><span style="text-decoration: underline;"><br />
+            SELECTION CRITERIA
+            </span></td>
+        </tr>
+        <tr>
+            <td style="line-height:150%; padding-top:5px; text-align:justify;" valign="top">
+            Applications will be placed in consideration categories meeting specific criteria as follows:<br />
+            <br />
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-weight:bold;" valign="top">
+            Category A
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            2) Pump Test compliant (in accordance with NFPA 1901 and ISO requirements).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            3) Request is for a Critical Need (clearly explained in the application).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            4) Never received a NM Fire Protection Grant
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            5) ISO Class 10, 9, 8, 7
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:5px; font-weight:bold;" valign="top">
+            Category B
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            2) Pump Test compliant (in accordance with NFPA 1901 and ISO requirements).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            3) Request is for a Critical Need (clearly explained in the application)
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            4) Never received a NM Fire Protection Grant
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            5) ISO Class 6, 5, 4, 3, 2, 1
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:5px; font-weight:bold;" valign="top">
+            Category C
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            2) Pump Test compliant (in accordance with NFPA 1901 and ISO requirements).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            3) Request is for a Critical Need (clearly explained in the application)
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            4) Previous NM Fire Protection Grant recipient
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            5) ISO Class 10, 9, 8, 7
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:5px; font-weight:bold;" valign="top">
+            Category D
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            2) Pump Test compliant (in accordance with NFPA 1901 and ISO requirements).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            3) Request is for a Critical Need (clearly explained in the application)
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            4) Previous NM Fire Protection Grant recipient
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            5) ISO Class 6, 5, 4, 3, 2, 1
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:5px; font-weight:bold;" valign="top">
+            Category E
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            2) Pump Test compliant (in accordance with NFPA 1901 and ISO requirements).
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            3) Request is not a Critical need
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:5px; font-weight:bold;" valign="top">
+            Category F
+            </td>
+        </tr>
+        <tr>
+            <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
+            &bull; Non-compliant (will not be considered for a grant)
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px; font-weight:bold;" valign="top"><span style="text-decoration: underline;"><br />
+            CRITICAL NEEDS
+            </span></td>
+        </tr>
+        <tr>
+            <td>
+            <ul style="list-style-type:disc;padding-top:5px;">
+                <li style="padding-top:5px;">Fire apparatus/equipment </li>
+                <li style="padding-top:5px;">PPE (structural, wildland, SCBA) </li>
+                <li style="padding-top:5px;">Communications</li>
+                <li style="padding-top:5px;">Facility Construction/Improvement </li>
+                <li style="padding-top:5px;">Training</li>
+                <li style="padding-top:5px;">Water</li>
+                <li style="padding-top:5px;">Need that will clearly will have significant impact on ISO Public Protection Classification</li>
+            </ul>
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;" valign="top">
+            Applications may be completed on the website at http://www.nmprc.state.nm.us/state-firemarshal/firegrant-council/index.html .
+            </td>
+        </tr>
+        <tr>
+            <td style="font-size:16px;padding-top:15px;" valign="top">
+            For additional information, please contact Randy Varela, Deputy Fire Marshal Fire Service Support Bureau at 505-709-8150 or visit the New Mexico State Fire Marshal&rsquo;s Office web page http://www.nmprc.state.nm.us/state-firemarshal/fire-grant-council/index.html .
+            </td>
+        </tr>
+        <tr>
+            <td style="height:125px;"><br />
+            </td>
+        </tr>
+    </tbody>
+</table>

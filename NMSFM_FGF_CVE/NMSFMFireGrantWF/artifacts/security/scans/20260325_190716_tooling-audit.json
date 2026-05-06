@@ -1,0 +1,20 @@
+{
+  "generatedAtUtc": "2026-03-25T19:07:17.2760867Z",
+  "threshold": "high",
+  "suppressedIds": [
+    "CVE-2025-3600",
+    "CVE-2026-2878"
+  ],
+  "environment": {
+    "dotnet": "10.0.200-preview.0.26103.119",
+    "msbuild": "unavailable"
+  },
+  "counts": {
+    "all": 0,
+    "suppressed": 2,
+    "warnings": 0,
+    "failures": 0
+  },
+  "result": "pass",
+  "findings": null
+}

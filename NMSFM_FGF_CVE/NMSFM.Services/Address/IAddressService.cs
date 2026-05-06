@@ -1,0 +1,89 @@
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
+using NMSFM.Data;
+using System;
+using System.Web.Mvc;
+using NMSFM.Services.Models;
+using NMSFM.ViewModels;
+
+
+namespace NMSFM.Services.Address
+{
+	public interface IAddressService
+	{
+		Task<IEnumerable<v_Addresses2>> GetAddressesAsync(bool showInactive);
+		Task<IEnumerable<string>> GetSuffixListAsync();
+		Task<IEnumerable<Region>> GetRegionListAsync();
+		Task<IEnumerable<v_AddressParties>> GetPartyNameListAsync();
+		Task<IEnumerable<AddressType>> GetAddressTypeListAsync();
+		Task<IEnumerable<State>> GetStateListAsync();
+		Task<IEnumerable<Zip>> GetZipListAsync();
+		Task<IEnumerable<Country>> GetCountryListAsync();
+		Task<IEnumerable<County>> GetCountyListAsync();
+		Task<IEnumerable<string>> GetStreetAddressListAsync();
+		Task<IEnumerable<string>> GetCityListAsync();
+		Task<IEnumerable<OccupancyType>> GetOccupancyTypeListAsync();
+		Task<IEnumerable<PropertyUseType>> GetPropertyUseTypeListAsync();
+		Task<IEnumerable<string>> GetDirectionListAsync();
+		Task<zzPartyWebAccess> GetPartyWebAccessByInfoAsync(zzPartyWebAccess user);
+		Task<Inspector> GetInspectorByInfoAsync(zzPartyWebAccess user);
+		Task<v_Addresses2> GetAddressByIdAsync(Guid id);
+		Task<IEnumerable<v_AddressParties>> GetAddressPartiesByAddressIdAsync(Guid addressId, Guid? partyId);
+		Task<IEnumerable<v_Items>> GetAddressItemsByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_Permits>> GetPermitsByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_Activities>> GetActivitiesByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_Complaints>> GetComplaintsByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_LocationItemCount>> GetLocationsByAddressIdAsync(Guid id);
+		Task<IEnumerable<LocationBas>> GetLocationBasesByAddressIdAsync(Guid id);
+		Task<IEnumerable<Data.Note>> GetNotesByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_Projects>> GetProjectsByAddressIdAsync(Guid id);
+		Task<IEnumerable<AddressMap>> GetAddressMapByAddressIdAsync(Guid id);
+		Task<IEnumerable<v_Addresses2>> GetRelatedAddressesByAddressIdAsync(Guid id);
+		Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByAddressIdAsync(Guid id, Guid agency);
+		Task<List<SearchAddress>> PerformSearchAsync(string addressTypeSearch, string searchType, string beginRange, string endRange, string direction, string streetAddress, string subStreetAddress, string suffix, bool hideInactive, string code, string city, string state, string zip, string region, string county, string occupancy, string property, string party);
+		Task SaveLegalDescriptionAsync(Guid addressId, string LegalDesc);
+		Task SaveAddressAsync(v_Addresses2 model);
+		Task CreateAddressAsync(v_Addresses2 model);
+		Task SaveUserDefinedValuesAsync(List<UserDefValue> list);
+		Task<v_Parties> GetPartyWebAccessByIdAsync(Guid partyWebId);
+		Task<Inspector> GetInspectorByIdAsync(Guid InspectorId);        
+		Task<List<Inspector>> GetInspectorListAsync();
+		Task<List<v_Parties>> GetPartyWebAccessListAsync();
+		Task<List<v_AddressParties>> GetPartyWebAccessListAsync2();
+		Task<zzHelp> GetHelpByInfoAsync(string id, Guid agency);
+		Task<string> GetUserEmailAsync(Guid id);
+		Task<v_Activities> GetActivityByIdAsync(Guid id);
+		Task<IEnumerable<ActivityType>> GetActivityCategoryListAsync(Guid? agencyId);
+		Task<IEnumerable<InspectionType>> GetActivityTypeListAsync(Guid categoryId);
+		Task<IEnumerable<InspectionCaus>> GetInspectionCauseTypeListAsync(Guid categoryId);
+		Task<List<v_Items>> GetItemListAsync(Guid addressId);
+		Task<IEnumerable<Group>> GetGroupListAsync(Guid? id);
+		Task<IEnumerable<RoleType>> GetRoleTypeListAsync(Guid? partyId);
+		Task<IEnumerable<v_InventoryItems>> GetInventoryItemListAsync(Guid id);
+		Task<IEnumerable<ItemInspectionStatu>> GetItemInspectionStatusListAsync();
+		Task<Guid> GetPartyRoleTypeIdAsync(Guid partyId, Guid addressId);
+		Task<ActivitySetting> GetActivitySettingAsync(Guid activityTypeId);
+		Task<string> GetActivityProjectNumberAsync(Guid activityId);
+		Task<List<v_InspectionDetails>> GetInspectionDetailsByIdAsync(Guid inspectionId);
+		Task<List<v_Fees>> GetFeesByIdAsync(Guid inspectionId);
+		Task<List<v_Activities>> GetChildInspectionsByIdAsync(Guid inspectionId);
+		Task<List<v_Permits>> GetPermitsByActivityId(Guid inspectionId);
+		Task<List<v_Activities>> GetAssociatedActivitiesById(Guid inspectionId);
+		Task<List<v_Complaints>> GetRequestsByIdAsync(Guid inspectionId);
+		Task<List<CheckItemModel>> GetCheckListsByIdAsync(Guid inspectionId);
+		Task<SelectListItem> SaveResolutionAsync(Guid checkItemId, string text);
+		Task<IEnumerable<v_Activities>> GetActivitiesByInspectorIdAsync(Guid id);
+		Task<List<CheckItemModel>> GetCheckListsByTypeIdAsync(Guid? activityTypeId, Guid activityId);		
+		Task<IEnumerable<v_Activities>> GetActivitiesByAHJIdAsync(Guid id);
+		Task<bool> SaveActivityAsync(v_Activities model, List<CheckItemModel> checkItems);
+		Task<bool> CreateActivityAsync(v_Activities model, List<CheckItemModel> checkItems);		
+		Task<bool> SaveActivityCLAsync(List<CheckItemModel> checkItems, Guid inspectionId);
+		Task<v_Permits> GetPermitByIdAsync(Guid id);
+		Task<v_Projects> GetProjectByIdAsync(Guid id);
+		Task<bool> AddRelatedAddress(Guid id, Guid relId);
+		Task<AddressSetting> GetAddressSettingAsync(Guid AddressTypeId);
+		Task<IEnumerable<v_Addresses2>> GetHydrantAddresses(Guid addressId);
+		Task<IEnumerable<cv_CPTKHotlist>> GetHotlist();
+		Task<bool> UpdateAddressInactive(Guid addressId, string value);
+	}
+}
