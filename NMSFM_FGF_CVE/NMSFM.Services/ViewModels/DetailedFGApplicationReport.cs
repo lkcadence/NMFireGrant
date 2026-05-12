@@ -28,7 +28,7 @@ namespace NMSFM.ViewModels
 		//General Information
 		public int? IndividualDept { get; set; }
 		public string strIndividualDept { get; set; }
-		public string NFIRSID { get; set; }
+		public string NERISID { get; set; }
 		public string DepartmentName { get; set; }
 		public string FireChiefName { get; set; }
 		public string Phone { get; set; }
@@ -80,8 +80,8 @@ namespace NMSFM.ViewModels
 		public int? AidAgreements { get; set; }
 		public string strAidAgreements { get; set; }
 		//Response History
-		public int? NFIRSCurrent { get; set; }
-		public string strNFIRSCurrent { get; set; }
+		public int? NERISCurrent { get; set; }
+		public string strNERISCurrent { get; set; }
 		public int? ResponseStructure { get; set; }
 		public int? ResponseVehicle { get; set; }
 		public int? ResponseVegitation { get; set; }
@@ -150,8 +150,8 @@ namespace NMSFM.ViewModels
 		public decimal? AmountRequested { get; set; }
 		public decimal? StipendAmount { get; set; }
 		//Application Review
-		public int? NFIRSCompliant { get; set; }
-		public string strNFIRSCompliant { get; set; }
+		public int? NERISCompliant { get; set; }
+		public string strNERISCompliant { get; set; }
 		public int? PumpTestCompliant { get; set; }
 		public string strPumpTestCompliant { get; set; }
 		//Application Scores

@@ -12,7 +12,7 @@ namespace NMSFM.ViewModels
     {
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
-        public int NFIRSCompliant { get; set; }
+        public int NERISCompliant { get; set; }
         public int PumpTestCompliant { get; set; }
         public int HoseTestCompliant { get; set; }
         public int AckComSigs { get; set; }

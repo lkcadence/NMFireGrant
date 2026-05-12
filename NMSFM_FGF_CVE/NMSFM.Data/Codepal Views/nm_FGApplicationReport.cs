@@ -23,7 +23,7 @@
 		public decimal? GrantedAmount { get; set; }
 		//General Information
 		public int? IndividualDept { get; set; }
-		public string NFIRSID { get; set; }
+		public string NERISID { get; set; }
 		public string DepartmentName { get; set; }
 		public string FireChiefName { get; set; }
 		public string Phone { get; set; }
@@ -69,7 +69,7 @@
 		public int? ResidentPopulation { get; set; }
 		public int? AidAgreements { get; set; }
 		//Response History
-		public int? NFIRSCurrent { get; set; }
+		public int? NERISCurrent { get; set; }
 		public int? ResponseStructure { get; set; }
 		public int? ResponseVehicle { get; set; }
 		public int? ResponseVegitation { get; set; }
@@ -129,7 +129,7 @@
 		public decimal? AmountRequested { get; set; }
 		public decimal? StipendAmount { get; set; }
 		//Application Review
-		public int? NFIRSCompliant { get; set; }
+		public int? NERISCompliant { get; set; }
 		public int? PumpTestCompliant { get; set; }
 		//Application Scores
 		public int? TrainingPoints { get; set; }

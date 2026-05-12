@@ -772,7 +772,7 @@ namespace NMSFM.Services.FireGrant
 					}
 
 					generalInfo.IndividualDept = model.IndividualDept;
-					generalInfo.NFIRSID = model.NFIRSID;
+					generalInfo.NERISID = model.NERISID;
 					generalInfo.DepartmentName = model.DepartmentName;
 					generalInfo.FireChiefName = model.FireChiefName;
 					generalInfo.Phone = model.Phone;
@@ -1240,7 +1240,7 @@ namespace NMSFM.Services.FireGrant
 						responseHistory.ApplicationId = model.ApplicationId;
 					}
 
-					responseHistory.NFIRSCurrent = model.NFIRSCurrent;
+					responseHistory.NERISCurrent = model.NERISCurrent;
 					responseHistory.ResponseStructure = model.ResponseStructure;
 					responseHistory.ResponseVehicle = model.ResponseVehicle;
 					responseHistory.ResponseVegitation = model.ResponseVegitation;
@@ -3757,7 +3757,7 @@ namespace NMSFM.Services.FireGrant
 				{
 					result.Id = results.Id;
 					result.ApplicationId = results.ApplicationId;
-					result.NFIRSCompliant = results.NFIRSCompliant;
+					result.NERISCompliant = results.NFIRSCompliant;
 					result.PumpTestCompliant = results.PumpTestCompliant;
 					result.HoseTestCompliant = results.HoseTestCompliant;
 					result.AckComSigs = results.AckComSigs;
@@ -3818,7 +3818,7 @@ namespace NMSFM.Services.FireGrant
 
 					if (fromStatus)
                     {
-						review.NFIRSCompliant = model.NFIRSCompliant;
+						review.NFIRSCompliant = model.NERISCompliant;
 						review.PumpTestCompliant = model.PumpTestCompliant;
 						review.HoseTestCompliant = model.HoseTestCompliant;
 						review.AckComSigs = model.AckComSigs;
