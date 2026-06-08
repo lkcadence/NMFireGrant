@@ -318,7 +318,7 @@ accountService = new AccountService(userWebModel, logger);
                         detailedapp.NumberOfHomes = (appreport.NumberOfHomes != null) ? Convert.ToInt32(appreport.NumberOfHomes) : 0;
                         detailedapp.NumberOfComm = (appreport.NumberOfComm != null) ? Convert.ToInt32(appreport.NumberOfComm) : 0;
                         detailedapp.ResidentPopulation = (appreport.ResidentPopulation != null) ? Convert.ToInt32(appreport.ResidentPopulation) : 0;
-                        detailedapp.AidAgreements = (appreport.AidAgreements != null) ? Convert.ToInt32(appreport.NERISCurrent) : 0;
+                        detailedapp.AidAgreements = (appreport.AidAgreements != null) ? Convert.ToInt32(appreport.AidAgreements) : 0;
                         switch (detailedapp.AidAgreements)
                         {
                             case 1:

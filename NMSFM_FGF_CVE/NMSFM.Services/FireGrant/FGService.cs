@@ -96,37 +96,109 @@ namespace NMSFM.Services.FireGrant
 
 			return result;
 		}
-		public async Task<FG_FDIDs> GetFG_FDID(int fdid)
+		// Legacy (pre-NERIS 20-char): int-based lookup; no alphanumeric support.
+		//public async Task<FG_FDIDs> GetFG_FDID(int fdid)
+		//{
+		//	FG_FDIDs result = null;
+		//	try
+		//	{
+		//		result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FDID == fdid.ToString());
+		//	}
+		//	catch (Exception ex)
+		//    {
+		//        _ = ex;
+		//		logger.Error("Unexpected exception caught while retrieving the Fire Department ID.", ex);
+		//	}
+		//
+		//	return result;
+		//}
+
+		public async Task<FG_FDIDs> GetFDIDByIdAsync(string nerisId)
 		{
 			FG_FDIDs result = null;
+			if (string.IsNullOrWhiteSpace(nerisId))
+			{
+				return null;
+			}
+
+			string normalizedId = nerisId.Trim().ToUpperInvariant();
+
 			try
 			{
-				result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FDID == fdid.ToString());
+				result = await cwmContext.FG_FDIDs
+					.FirstOrDefaultAsync(a => a.FDID == normalizedId);
+
+				// Legacy fallback: 4-digit numeric NFIRS IDs stored as 5-digit with leading zero.
+				if (result == null
+					&& normalizedId.Length == 4
+					&& normalizedId.All(char.IsDigit))
+				{
+					result = await cwmContext.FG_FDIDs
+						.FirstOrDefaultAsync(a => a.FDID == "0" + normalizedId);
+				}
 			}
 			catch (Exception ex)
-            {
-                _ = ex;
-				logger.Error("Unexpected exception caught while retrieving the Fire Department ID.", ex);
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while retrieving the Fire Grant FDID by id.",
+					ex);
 			}
 
 			return result;
 		}
 
-		private async Task<FG_FDIDs> GetFGFDIDByDepartment(string department)
+		/// <summary>
+		/// Returns the active FG_FDIDs row whose FireDepartment matches the given name.
+		/// Comparison is trim + case-insensitive. Returns null if not found or inactive.
+		/// </summary>
+		public async Task<FG_FDIDs> GetFDIDByDepartmentNameAsync(string departmentName)
 		{
-			FG_FDIDs result = null;
-			try
+			if (string.IsNullOrWhiteSpace(departmentName))
 			{
-				result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FireDepartment == department);
-			}
-			catch (Exception ex)
-            {
-                _ = ex;
-				logger.Error("Unexpected exception caught while retrieving the Fire Department ID.", ex);
+				return null;
 			}
 
-			return result;
+			string normalized = departmentName.Trim();
+
+			try
+			{
+				List<FG_FDIDs> activeRows = await cwmContext.FG_FDIDs
+					.Where(a => !a.Inactive)
+					.ToListAsync();
+
+				return activeRows.FirstOrDefault(a =>
+					a.FireDepartment != null
+					&& a.FireDepartment.Trim()
+						.Equals(normalized, StringComparison.OrdinalIgnoreCase));
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while retrieving the Fire Grant FDID by department name.",
+					ex);
+			}
+
+			return null;
 		}
+
+		// Legacy: exact-match private helper; superseded by GetFDIDByDepartmentNameAsync.
+		//private async Task<FG_FDIDs> GetFGFDIDByDepartment(string department)
+		//{
+		//	FG_FDIDs result = null;
+		//	try
+		//	{
+		//		result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FireDepartment == department);
+		//	}
+		//	catch (Exception ex)
+		//    {
+		//        _ = ex;
+		//		logger.Error("Unexpected exception caught while retrieving the Fire Department ID.", ex);
+		//	}
+		//
+		//	return result;
+		//}
 
 		public async Task<bool> SaveFDIDAsync(FG_FDIDs model)
 		{
@@ -235,23 +307,57 @@ namespace NMSFM.Services.FireGrant
 			}
 		}
 
-		public async Task<FG_FDIDs> IsFDIDValid(int fdid)
+		public async Task<bool> DeleteFDIDAsync(string fdid)
 		{
-			FG_FDIDs result = null;
-			string strFDID = fdid.ToString();
-			if (strFDID.Length == 4) { strFDID = "0" + strFDID; }
 			try
 			{
-				result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FDID == strFDID);
+				if (string.IsNullOrWhiteSpace(fdid))
+				{
+					return false;
+				}
+
+				var record = await cwmContext.FG_FDIDs.SingleOrDefaultAsync(a => a.FDID == fdid);
+				if (record == null)
+				{
+					return false;
+				}
+
+				cwmContext.FG_FDIDs.Remove(record);
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+					return true;
+				}
+
+				logger.Error("Unable to delete FDID '" + fdid + "', DbContext was not available.");
+				return false;
 			}
 			catch (Exception ex)
             {
                 _ = ex;
-				logger.Error("Unexpected exception caught while retrieving the Fire Grant FDIDs.", ex);
+				logger.Error("Unable to delete FDID '" + fdid + "'.", ex);
+				return false;
 			}
-
-			return result;
 		}
+
+		// Legacy (pre-NERIS 20-char): int-based validation with 4-digit zero-padding.
+		//public async Task<FG_FDIDs> IsFDIDValid(int fdid)
+		//{
+		//	FG_FDIDs result = null;
+		//	string strFDID = fdid.ToString();
+		//	if (strFDID.Length == 4) { strFDID = "0" + strFDID; }
+		//	try
+		//	{
+		//		result = await cwmContext.FG_FDIDs.FirstOrDefaultAsync(a => a.FDID == strFDID);
+		//	}
+		//	catch (Exception ex)
+		//    {
+		//        _ = ex;
+		//		logger.Error("Unexpected exception caught while retrieving the Fire Grant FDIDs.", ex);
+		//	}
+		//
+		//	return result;
+		//}
 
 		public async Task<FG_Categories> GetFGCategory(int categoryId)
 		{
@@ -616,7 +722,7 @@ namespace NMSFM.Services.FireGrant
 			string defaultPageContent = "";
 			defaultPageContent += "<h2>Welcome to the Online New Mexico Fire Protection Grant Application</h2>";
 			defaultPageContent += "<p>This web-app is in response to feedback from many New Mexico departments for a more user - friendly process.Your continued patience and understanding is appreciated as we work to improve the process and serve you better.</p>";
-			defaultPageContent += "<p>To begin, enter your department’s five digit NFIRS FDID number in both the NFIRS FDID number field and the Password field. Upon logon, in the General Information page, you will be prompted to provide an email address and may change the password. Please note: Only one application per department will be accepted; therefore only one email address and password per department will be recognized.</p>";
+			defaultPageContent += "<p>To begin, enter your department’s five digit NERIS ID number in both the NERIS ID number field and the Password field. Upon logon, in the General Information page, you will be prompted to provide an email address and may change the password. Please note: Only one application per department will be accepted; therefore only one email address and password per department will be recognized.</p>";
 			defaultPageContent += "<p style='text-decoration:underline'>Please read the eligibility requirements on the Welcome Page carefully before completing the application.</p>";
 			defaultPageContent += "<p>To assist in tracking completion of the application, the status is shown in then gray shaded area to the right of the application. A green checkmark <img src='Content/images/tick.png' /> tick indicates the section has been opened and started. Due to the varied responses, however, It does not necessarily indicate that the section is complete. A red cross <img src='Content/images/cross.png' /> indicates that there is required information that has not been completed. A circle <img src='Content/images/round.png' /> with an empty in the center indicates the section has not yet been started.</p>";
 			defaultPageContent += "<p>Should you have technical questions or experience problems navigating through the application, click on the Technical Support link located in the gray shaded banner at the top of each page, describe the problem, and click SEND. Your question will be answered within 2 business days.</p>";

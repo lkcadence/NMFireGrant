@@ -42,6 +42,41 @@ namespace NMSFMFireGrantWF.Admin
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvError;
 
         /// <summary>
+        /// lblSearchNerisId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblSearchNerisId;
+
+        /// <summary>
+        /// txtSearchNerisId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtSearchNerisId;
+
+        /// <summary>
+        /// lblSearchFireDepartment control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblSearchFireDepartment;
+
+        /// <summary>
+        /// txtSearchFireDepartment control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtSearchFireDepartment;
+
+        /// <summary>
+        /// chkHideInactive control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.CheckBox chkHideInactive;
+
+        /// <summary>
+        /// btnApplyFilters control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnApplyFilters;
+
+        /// <summary>
+        /// btnClearFilters control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnClearFilters;
+
+        /// <summary>
         /// rgFDIDs control.
         /// </summary>
         /// <remarks>

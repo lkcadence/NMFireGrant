@@ -635,4 +635,15 @@ if ($exitCode -ne 0) {
   }
   exit $exitCode
 }
+
+# dotnet msbuild fallback skips CopyRoslynCompilerFilesToOutputDirectory for this web project.
+$webBin = Join-Path $SolutionPath 'NMSFMFireGrantWF\bin'
+$roslynSrc = Join-Path $SolutionPath 'packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\tools\RoslynLatest'
+$roslynDest = Join-Path $webBin 'roslyn'
+if ((Test-Path $roslynSrc) -and (Test-Path $webBin) -and -not (Test-Path (Join-Path $roslynDest 'csc.exe'))) {
+  Write-Host 'Copying Roslyn compiler tools to bin\roslyn...' -ForegroundColor Cyan
+  New-Item -ItemType Directory -Path $roslynDest -Force | Out-Null
+  Copy-Item -Path (Join-Path $roslynSrc '*') -Destination $roslynDest -Recurse -Force
+}
+
 Write-Host "Build succeeded." -ForegroundColor Green

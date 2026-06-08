@@ -152,6 +152,31 @@ namespace NMSFM.ViewModels
 		//Application Review
 		public int? NFIRSCompliant { get; set; }
 		public string strNFIRSCompliant { get; set; }
+		public string NERISID
+		{
+			get { return NFIRSID; }
+			set { NFIRSID = value; }
+		}
+		public int? NERISCurrent
+		{
+			get { return NFIRSCurrent; }
+			set { NFIRSCurrent = value; }
+		}
+		public string strNERISCurrent
+		{
+			get { return strNFIRSCurrent; }
+			set { strNFIRSCurrent = value; }
+		}
+		public int? NERISCompliant
+		{
+			get { return NFIRSCompliant; }
+			set { NFIRSCompliant = value; }
+		}
+		public string strNERISCompliant
+		{
+			get { return strNFIRSCompliant; }
+			set { strNFIRSCompliant = value; }
+		}
 		public int? PumpTestCompliant { get; set; }
 		public string strPumpTestCompliant { get; set; }
 		//Application Scores

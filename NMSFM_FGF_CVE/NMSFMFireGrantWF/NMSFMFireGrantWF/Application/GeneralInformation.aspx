@@ -22,7 +22,7 @@
                 <asp:Label ID="lblFDID" runat="server" AssociatedControlID="txtFDID" Text="Fire Department ID Number (using NERIS Identifier) *"></asp:Label>
             </div>
             <div class="col-md-8">
-                <asp:TextBox ID="txtFDID" runat="server" class="form-control" aria-required="true"></asp:TextBox>
+                <asp:TextBox ID="txtFDID" runat="server" class="form-control" MaxLength="20" aria-required="true"></asp:TextBox>
             </div>
         </div>
         <div class="row formRow">

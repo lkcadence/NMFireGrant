@@ -8,7 +8,7 @@
         <div class="row" id="dvError" runat="server"></div>
         <div class="row formRow">
             <div class="col-md-6">
-                <asp:Label ID="lblOperatingBudget" runat="server" Text="What is your fire departments operating budget, including personnel costs, for your current fiscal year (in dollars)? *" AssociatedControlID="txtOperatingBudget"></asp:Label>
+                <asp:Label ID="lblOperatingBudget" runat="server" Text="What is your fire departments operating budget for your current fiscal year (in dollars)? *" AssociatedControlID="txtOperatingBudget"></asp:Label>
             </div>
             <div class="col-md-6">
                 <telerik:RadNumericTextBox ID="txtOperatingBudget" runat="server" CssClass="form-control" NumberFormat-DecimalDigits="2" NumberFormat-GroupSeparator="," EmptyMessage="$0.00" Type="Currency" aria-required="true"></telerik:RadNumericTextBox>

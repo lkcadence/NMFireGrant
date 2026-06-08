@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fire Grant FY Rollover — Conversation Export</title>
+  <style>
+    body {
+      font-family: Calibri, 'Segoe UI', Arial, sans-serif;
+      font-size: 11pt;
+      line-height: 1.45;
+      max-width: 7.5in;
+      margin: 0.75in auto;
+      color: #222;
+    }
+    h1 { font-size: 18pt; color: #1F4E79; margin-bottom: 6pt; }
+    h2 { font-size: 13pt; color: #2E75B6; margin-top: 22pt; border-bottom: 1px solid #BDD7EE; padding-bottom: 4pt; }
+    h3 { font-size: 11.5pt; color: #404040; margin-top: 14pt; }
+    .meta { font-size: 10pt; color: #555; margin-bottom: 20pt; }
+    .legend span { padding: 3px 10px; margin-right: 12px; }
+    .user {
+      background-color: #FFF2CC;
+      padding: 14px 16px;
+      margin: 14px 0;
+      border-left: 5px solid #BF9000;
+    }
+    .assistant {
+      background-color: #DEEBF7;
+      padding: 14px 16px;
+      margin: 14px 0;
+      border-left: 5px solid #2E75B6;
+    }
+    .speaker {
+      font-weight: bold;
+      font-size: 9.5pt;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .user .speaker { color: #7F6000; }
+    .assistant .speaker { color: #1F4E79; }
+    ul, ol { margin: 8px 0 8px 20px; }
+    li { margin-bottom: 4px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 10.5pt; }
+    th, td { border: 1px solid #999; padding: 6px 8px; text-align: left; vertical-align: top; }
+    th { background-color: #F2F2F2; font-weight: bold; }
+    code { font-family: Consolas, 'Courier New', monospace; font-size: 9.5pt; background: #f4f4f4; padding: 1px 4px; }
+    pre {
+      font-family: Consolas, 'Courier New', monospace;
+      font-size: 9pt;
+      background: #f4f4f4;
+      padding: 10px 12px;
+      border: 1px solid #ddd;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+    p { margin: 8px 0; }
+    strong { font-weight: bold; }
+    em { font-style: italic; }
+  </style>
+</head>
+<body>
+
+<h1>Fire Grant App — FY Rollover Discussion</h1>
+<p class="meta">
+  <strong>Project:</strong> NMSFM Fire Grant App (CVE Fixes)<br>
+  <strong>Repository:</strong> Fire Grant App - CVE Fixes<br>
+  <strong>Exported:</strong> May 28, 2026<br>
+  <strong>Purpose:</strong> Share technical discussion on fiscal-year data, apparatus/personnel rollover, and recommended solutions.
+</p>
+<p class="legend">
+  <strong>Legend:</strong>
+  <span style="background:#FFF2CC;border:1px solid #BF9000;">Team questions / comments (gold highlight)</span>
+  <span style="background:#DEEBF7;border:1px solid #2E75B6;">Assistant responses (blue highlight)</span>
+</p>
+
+<!-- ==================== EXCHANGE 1 ==================== -->
+<h2>1. Creating FY2026 from FY2025 using the repo</h2>
+
+<div class="user">
+  <div class="speaker">Team question</div>
+  <p>In the database there is no data for FY2026. We know why this is true and the reason has no bearing on the resolution. Is it possible to create a new Fiscal Year for 2026 from the data that is available for FY2025 — and to do this using the repo we have?</p>
+</div>
+
+<div class="assistant">
+  <div class="speaker">Assistant response</div>
+  <p><strong>Short answer:</strong> You can stand up <em>some</em> FY2026 data using this repo, but there is <strong>no single “clone FY2025 → FY2026”</strong> workflow. What gets created, and whether it comes from FY2025, depends on which tables you mean.</p>
+
+  <h3>What this repo actually supports</h3>
+  <p>The codebase treats “fiscal year” in <strong>two separate areas</strong>:</p>
+  <table>
+    <tr><th>Area</th><th>Main tables</th><th>How a new year gets created</th></tr>
+    <tr><td><strong>Fire Grant (this web app)</strong></td><td>FGApplicationSettings, FGApplications, FG_App_*</td><td>Lazy create for <strong>settings</strong> only; <strong>applications</strong> are new per department</td></tr>
+    <tr><td><strong>Fire Protection Fund / FY distribution</strong></td><td>FYAllowableDist, FYStatuteDist, FYTotalDist, FYTotalDistCalc, FYApplication, etc.</td><td>Lazy create when FPFService / FYDistService methods run for that year</td></tr>
+  </table>
+  <p>There are <strong>no SQL rollover scripts</strong> and <strong>no admin “Copy fiscal year”</strong> button in the repo.</p>
+
+  <h3>1. Fire Grant program settings (FGApplicationSettings) — partial</h3>
+  <p>When anything calls <code>GetFireGrantAppSettings(2026)</code> and no row exists, the app <strong>creates FY2026 with hardcoded defaults</strong>, not from FY2025. Defaults include StartDate 7/1/year, EndDate 9/30/year, MaxGrantAmount 400000, and template legal/instruction text (see FGService.CreateNewFireGrantSettings).</p>
+  <p><strong>Using the repo (no code changes):</strong></p>
+  <ol>
+    <li>Log in as a web admin.</li>
+    <li>Open <strong>Admin → Manage Settings</strong>.</li>
+    <li>Pick <strong>2026</strong> in the fiscal year dropdown (list goes through DateTime.Now.Year + 1).</li>
+  </ol>
+  <p>That triggers LoadSettings → GetFireGrantAppSettings(2026) → auto-insert if missing.</p>
+  <p><strong>Limitation:</strong> Instructions, dates, max grant, eligibility PDF, and customized page content from FY2025 are <strong>not</strong> copied. Re-enter in Manage Settings or copy at the database level.</p>
+
+  <h3>2. Fire Grant applications (FGApplications + FG_App_*) — not bulk-cloned</h3>
+  <p>New applications are created empty via CreateNewApplication (one per department/FY). There is <strong>no</strong> service that duplicates FY2025 applications into FY2026.</p>
+  <p>The app <strong>does</strong> read prior-year data at <strong>runtime</strong> when a user fills out the current year (e.g. General Information pulls last year’s app for prefill). FY2025 rows help user prefill but do <strong>not</strong> populate FY2026 until each department starts a FY2026 application.</p>
+
+  <h3>3. FPF / distribution FY tables — copies some fields from prior year</h3>
+  <p>FPFService / FYDistService implement year rollover <strong>only when</strong> getters run for the target year (e.g. GetAllowableDistAsync(2026), GetStatuteDistsAsync(2026)):</p>
+  <ul>
+    <li><strong>FYStatuteDist:</strong> copies ISOClass, MSBaseAmount, SSBaseAmount from year 2025.</li>
+    <li><strong>FYAllowableDist:</strong> new row for 2026; uses prior year’s FYStatuteDistribution (requires FY2025 row).</li>
+    <li><strong>FYTotalDistCalc:</strong> copies structure from 2025 but recalculates station counts; amounts may reset.</li>
+    <li><strong>FYTotalDist:</strong> creates one row per active department—not a full copy of FY2025 amounts.</li>
+  </ul>
+  <p>The Fire Grant web project uses FPFService mainly for department/address lists, not for running FY seeding in normal admin flows.</p>
+
+  <h3>Practical answer</h3>
+  <table>
+    <tr><th>Goal</th><th>Possible with this repo alone?</th></tr>
+    <tr><td>FY2026 exists in dropdowns</td><td>Yes</td></tr>
+    <tr><td>FY2026 program settings row</td><td>Yes (defaults, not FY2025 copy)</td></tr>
+    <tr><td>FY2026 settings matching FY2025</td><td><strong>No</strong> built-in; manual admin or DB copy</td></tr>
+    <tr><td>FY2026 department applications pre-created from FY2025</td><td><strong>No</strong></td></tr>
+    <tr><td>FY2026 FPF/distribution from FY2025</td><td><strong>Partially</strong> via service layer if APIs invoked</td></tr>
+  </table>
+
+  <h3>Recommended path</h3>
+  <ol>
+    <li>Confirm FY2025 is complete for whatever you need as source.</li>
+    <li><strong>Fire Grant:</strong> Admin → Manage Settings → 2026 → adjust content.</li>
+    <li><strong>Applications:</strong> Departments create FY2026 apps through normal flow unless you use custom DB/script.</li>
+    <li><strong>Distribution (if needed):</strong> Invoke FPFService getters for 2026 or DBA process.</li>
+  </ol>
+</div>
+
+<!-- ==================== EXCHANGE 2 ==================== -->
+<h2>2. Department apparatus &amp; personnel before applications (FY2027)</h2>
+
+<div class="user">
+  <div class="speaker">Team question</div>
+  <p>We want everything that is associated to any department <strong>before</strong> the application is created. For instance all of the apparatus associated to a department from FY2025 to be available in FY2026. We don't care if there are any applications in FY2026. We only care if the apparatus and personnel associated to a department are available when creating FY2027. Does that make sense? And, are personnel and apparatus all that is needed to start FY2027?</p>
+</div>
+
+<div class="assistant">
+  <div class="speaker">Assistant response</div>
+  <p><strong>Yes, your goal makes sense.</strong> You want department-associated operational data (especially apparatus) to carry forward without maintaining a full FY2026 grant year. The app is built around per-year applications, but several screens read from prior applications at runtime instead of a department master inventory.</p>
+
+  <h3>How apparatus and “personnel” are stored</h3>
+  <p>Neither is a <strong>department + fiscal year</strong> master list. Both live on a <strong>Fire Grant application</strong> (FGApplications), keyed by ApplicationId:</p>
+  <table>
+    <tr><th>What you mean</th><th>Where it lives</th></tr>
+    <tr><td><strong>Apparatus</strong></td><td>FG_App_Apparatus + FG_App_ApparatusEquipment → ApplicationId</td></tr>
+    <tr><td><strong>Personnel</strong> (in this app)</td><td>No separate roster table. Counts and chief/contact on <strong>FG_App_GeneralInfo</strong> (NumberOfFirefighters, FFI_Firefighters, FFII_Firefighters, etc.) — per ApplicationId</td></tr>
+    <tr><td><strong>Department identity</strong></td><td>Codepal Addresses, FG_FDIDs, parties — <strong>not</strong> fiscal-year-specific</td></tr>
+  </table>
+  <p>You do <strong>not</strong> need FY2026 rows to “hold” apparatus or personnel for FY2027. You need <strong>FY2025 (or earlier) applications with that data saved</strong>, plus a <strong>FY2027 application shell</strong> when a department starts the new cycle.</p>
+
+  <h3>Apparatus — mostly matches what you want</h3>
+  <p>When someone opens Apparatus for a <strong>new</strong> FY2027 application with no FY2027 apparatus saved yet, the UI calls <code>GetPriorFGApplicationApparatusAsync</code>, which loads from the <strong>most recent other application</strong> for that department (highest FiscalYear first).</p>
+  <p>If there is <strong>no FY2026 application</strong>, FY2025 is used and the grid shows “Information Loaded from Previous Application.”</p>
+  <p><strong>Caveats:</strong></p>
+  <ul>
+    <li>A <strong>FY2027 FGApplications row must exist</strong> (Instructions → Accept).</li>
+    <li>Data is <strong>UI prefill</strong> until the user saves Apparatus.</li>
+    <li>If a <strong>FY2026 application exists</strong> but has <strong>no</strong> apparatus data, the code still picks that app first and <strong>does not</strong> walk back to FY2025.</li>
+  </ul>
+
+  <h3>Personnel (firefighter counts) — different rule; FY2026 gap hurts</h3>
+  <p>On <strong>General Information</strong>, prefill uses <strong>exactly prior fiscal year</strong> (Session FiscalYear − 1), not “most recent application.”</p>
+  <p>For <strong>FY2027</strong>, that is <strong>FiscalYear == 2026 only</strong>. If there is no FY2026 application, <strong>firefighter counts are not prefilled from FY2025</strong>.</p>
+  <p><strong>Apparatus and personnel do not behave the same</strong> in this codebase.</p>
+
+  <h3>Is apparatus + personnel all you need to start FY2027?</h3>
+  <p><strong>No</strong> — for the grant cycle to work end-to-end. Minimum for department + apparatus + headcount-style personnel:</p>
+  <table>
+    <tr><th>Required</th><th>Notes</th></tr>
+    <tr><td>FGApplicationSettings for FY2027</td><td>Auto-created with defaults when first accessed</td></tr>
+    <tr><td>Per department: FGApplications for FY2027</td><td>Created when department accepts instructions</td></tr>
+    <tr><td>FY2025 application with saved apparatus</td><td>FG_App_ApparatusEquipment on that ApplicationId</td></tr>
+    <tr><td>FY2025 application with saved general info</td><td>Only helps FY2027 personnel prefill if logic is fixed or stub FY2026 exists — <strong>skipping FY2026 blocks prefill as written</strong></td></tr>
+    <tr><td>Department master data</td><td>Address, FDID, web users — not FY-specific</td></tr>
+    <tr><td>Global reference data</td><td>FG_Categories, FG_Priorities — not per FY</td></tr>
+  </table>
+  <p>Other sections (Training, Budget, PPE, documents, etc.) do not use the same “load from prior year” pattern. <strong>FYAppStation</strong> (FPF module) is year-keyed separately—not Fire Grant apparatus.</p>
+
+  <h3>Direct answers</h3>
+  <ul>
+    <li><strong>Does your goal make sense?</strong> Yes.</li>
+    <li><strong>FY2025 apparatus for FY2027 with no FY2026 apps?</strong> Yes for apparatus, if FY2025 data is saved and no empty FY2026 app blocks rollover.</li>
+    <li><strong>FY2025 personnel for FY2027 with no FY2026 apps?</strong> <strong>Not</strong> with current General Information logic.</li>
+    <li><strong>Are apparatus and personnel all that is needed?</strong> <strong>No.</strong> You need FY2027 settings, FY2027 application per department, and FY2025 saved data as source; personnel across a skipped year needs a code or data fix.</li>
+  </ul>
+</div>
+
+<!-- ==================== EXCHANGE 3 ==================== -->
+<h2>3. Simplest workable / programmable solution</h2>
+
+<div class="user">
+  <div class="speaker">Team question</div>
+  <p>I need a workable, programmable or scripted or other, solution to this issue. The simplest possible, if there is such a thing.</p>
+</div>
+
+<div class="assistant">
+  <div class="speaker">Assistant response</div>
+  <p>Here is the <strong>simplest workable path</strong>, ordered from least moving parts to most complete.</p>
+
+  <h3>Recommended: one hook when the FY2027 application is created</h3>
+  <p><strong>Idea:</strong> When a department accepts instructions and <code>CreateNewApplication</code> runs, immediately copy <strong>apparatus + general info (personnel counts)</strong> from the <strong>latest prior application that has data</strong> (e.g. FY2025), not from “FY − 1” only.</p>
+  <p><strong>Why simplest overall:</strong></p>
+  <ul>
+    <li>One place in code (FGApplicationService.CreateNewApplication, after SaveChangesAsync).</li>
+    <li>Same rule apparatus already uses (OrderByDescending FiscalYear).</li>
+    <li>Data is <strong>in the database</strong> before anyone opens a page.</li>
+    <li>Skipping FY2026 is fine; FY2025 remains the source.</li>
+  </ul>
+
+  <h3>What to copy (minimum)</h3>
+  <table>
+    <tr><th>Source (e.g. FY2025)</th><th>Target (new FY2027 app)</th></tr>
+    <tr><td>FG_App_GeneralInfo</td><td>New Id, new ApplicationId</td></tr>
+    <tr><td>FG_App_Apparatus</td><td>New Id, new ApplicationId</td></tr>
+    <tr><td>FG_App_ApparatusEquipment</td><td>New ApparatusId per row, new ApplicationId</td></tr>
+  </table>
+  <p><strong>Rules:</strong> Only copy if target has no row yet; walk prior years newest-first until data found; do not copy signatures, scores, review, submitted status, or granted amounts.</p>
+  <p><strong>Also once per environment:</strong> Ensure FGApplicationSettings exists for FY2027 (Admin → Manage Settings or GetFireGrantAppSettings(2027)).</p>
+  <p><strong>Effort:</strong> ~one service method + call from CreateNewApplication.</p>
+
+  <h3>Alternative: one-time SQL script (no app deploy)</h3>
+  <p>INSERT…SELECT with NEWID() per department from FY2025 → FY2027. Pros: no C# release. Cons: exact table names, backup required, re-run care, future creates won’t auto-copy.</p>
+
+  <h3>What not to rely on</h3>
+  <table>
+    <tr><th>Approach</th><th>Why insufficient</th></tr>
+    <tr><td>UI-only prefill</td><td>General Info only FY−1; apparatus doesn’t persist until Save</td></tr>
+    <tr><td>Only fix General Information display</td><td>Display only; no DB copy until Save</td></tr>
+    <tr><td>Bulk empty FY2026 applications</td><td>Blocks apparatus (newest empty app picked first)</td></tr>
+    <tr><td>Copy entire FY2025 applications</td><td>Wrong status/signatures for new cycle</td></tr>
+  </table>
+
+  <h3>FY2027 checklist (minimal)</h3>
+  <ol>
+    <li>FGApplicationSettings for 2027 exists.</li>
+    <li>Each department gets FY2027 FGApplications (Instructions or script).</li>
+    <li>Baseline copy runs (hook or SQL) → general info + apparatus on that ApplicationId.</li>
+    <li>Departments verify and update for the new year.</li>
+  </ol>
+  <p><strong>Bottom line:</strong> Simplest <strong>durable</strong> fix = post-create copy in CreateNewApplication. Simplest <strong>no-deploy</strong> fix = one-time SQL for those three tables.</p>
+</div>
+
+<!-- ==================== EXCHANGE 4 ==================== -->
+<h2>4. Export conversation to Word</h2>
+
+<div class="user">
+  <div class="speaker">Team question</div>
+  <p>Can you copy this entire chat into a readable Word document? My questions and comments in a highlighted color and your responses in a different highlight. I need to let my coworker on this project see our conversation.</p>
+</div>
+
+<div class="assistant">
+  <div class="speaker">Assistant response</div>
+  <p>In Ask mode, a file could not be saved to disk. In Agent mode, this export was created:</p>
+  <ul>
+    <li><strong>Fire-Grant-FY-Rollover-Conversation.html</strong> — open in Microsoft Word for best color preservation; Save As .docx.</li>
+    <li><strong>Fire-Grant-FY-Rollover-Conversation.docx</strong> — Word document generated from the same content.</li>
+  </ul>
+  <p><strong>Colors:</strong> Team questions = gold (#FFF2CC). Assistant responses = blue (#DEEBF7).</p>
+</div>
+
+</body>
+</html>

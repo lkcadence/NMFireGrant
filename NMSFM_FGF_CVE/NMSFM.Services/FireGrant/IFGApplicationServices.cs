@@ -24,6 +24,7 @@ namespace NMSFM.Services.FireGrant
         Task<bool> CreateNewApplication(FGApplications model);
         Task<bool> UpdateApplication(FGApplications model);
         Task<FG_App_GeneralInfo> GetFGApplicationGeneralInfoAsync(Guid applicationId);
+        Task<FGApplications> GetNearestPriorApplicationWithGeneralInfoAsync(Guid addressId, Guid currentApplicationId);
         FG_App_GeneralInfo GetFGApplicationGeneralInfo(Guid applicationId);
         Task<bool> SaveGeneralInformationAsync(FG_App_GeneralInfo model);
         Task<FG_App_BudgetInfo> GetFGApplicationBudgetInfoAsync(Guid applicationId);

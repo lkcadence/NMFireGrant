@@ -12,10 +12,15 @@ namespace NMSFM.Services.FireGrant
         Task<List<FG_Categories>> GetFGCategories();
         Task<FG_Categories> GetFGCategory(int categoryId);
         Task<List<FG_FDIDs>> GetFG_FDIDs();
-        Task<FG_FDIDs> GetFG_FDID(int fdid);
+        // Legacy (pre-NERIS 20-char): int-based lookup; no alphanumeric support.
+        // Task<FG_FDIDs> GetFG_FDID(int fdid);
         Task<bool> SaveFDIDAsync(FG_FDIDs model);
         Task<bool> UpdateFDIDAsync(FG_FDIDs model);
-        Task<FG_FDIDs> IsFDIDValid(int fdid);
+        Task<bool> DeleteFDIDAsync(string fdid);
+        // Legacy (pre-NERIS 20-char): int-based validation with 4-digit zero-padding.
+        // Task<FG_FDIDs> IsFDIDValid(int fdid);
+        Task<FG_FDIDs> GetFDIDByIdAsync(string nerisId);
+        Task<FG_FDIDs> GetFDIDByDepartmentNameAsync(string departmentName);
         Task<bool> SaveCategoryAsync(DetailedFGCategory model);
         Task<bool> UpdateCategoryAsync(DetailedFGCategory model);
         Task<List<FG_Priorities>> GetFGPriorities(int categoryId);

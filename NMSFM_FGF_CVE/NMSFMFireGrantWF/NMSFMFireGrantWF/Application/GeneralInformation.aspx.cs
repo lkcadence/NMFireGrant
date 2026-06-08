@@ -121,7 +121,7 @@ namespace NMSFMFireGrantWF.Application
                         if (genInfo != null && genInfo.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                         {
                             await LoadDepartment();
-                            LoadGeneralInfoData(genInfo);
+                            await LoadGeneralInfoData(genInfo);
                             if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                             {
                                 dvError.InnerHtml = Session["SaveMessage"].ToString();
@@ -229,20 +229,25 @@ namespace NMSFMFireGrantWF.Application
                     txtCity.Text = department.City;
                     txtState.Text = department.State;
                     txtZip.Text = department.Zip;
-                    LoadDepartmentUDFs(deptId);
+                    await LoadDepartmentUDFs(deptId);
 
-                    int fYear = Convert.ToInt16(Session["FiscalYear"].ToString()) - 1;
-                    Int16 sYear = Convert.ToInt16(fYear);
-                    nm_FGApplication lastYearApp = new nm_FGApplication();
                     Guid addId = new Guid(department.AddressId.ToString());
-                    lastYearApp = fgAppService.GetFGApplication(addId, sYear);
-                    if (lastYearApp != null && lastYearApp.ApplicationId.ToString() != "00000000-0000-0000-0000-000000000000")
+                    FGApplications priorApp = null;
+                    if (Session["ApplicationId"] != null
+                        && Session["ApplicationId"].ToString() != string.Empty)
+                    {
+                        Guid currentAppId = new Guid(Session["ApplicationId"].ToString());
+                        priorApp = await fgAppService.GetNearestPriorApplicationWithGeneralInfoAsync(
+                            addId, currentAppId);
+                    }
+                    if (priorApp != null)
                     {
                         FG_App_GeneralInfo genInfo = new FG_App_GeneralInfo();
-                        genInfo = await fgAppService.GetFGApplicationGeneralInfoAsync(new Guid(lastYearApp.ApplicationId.ToString()));
+                        genInfo = await fgAppService.GetFGApplicationGeneralInfoAsync(priorApp.ApplicationId);
                         if (genInfo != null && genInfo.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                         {
-                            txtFDID.Text = genInfo.NERISID.ToString();
+                            // Legacy walk-back: copied prior-year NFIRSID into txtFDID here.
+                            // txtFDID.Text = genInfo.NERISID.ToString();
                             if (genInfo.FireChiefName != "") { txtFireCheif.Text = genInfo.FireChiefName; }
                             if (genInfo.Phone != "") { txtPhone.Text = genInfo.Phone; }
                             if (genInfo.EmailAddress != "") { txtEmail.Text = genInfo.EmailAddress; }
@@ -285,8 +290,15 @@ namespace NMSFMFireGrantWF.Application
                             {
                                 rbFDMemberNo.Checked = true;
                             }
-                            dvError.InnerHtml = "<div class='alert alert-info'>Some data has been loaded from previous application. Please verify all data is current.</div>";
+                            dvError.InnerHtml = "<div class='alert alert-info'>Some data has been loaded from prior fiscal year application (FY" + priorApp.FiscalYear + "). Please verify all data is current.</div>";
                         }
+                    }
+
+                    bool masterListIdFound = await ApplyMasterListNerisIdOverrideAsync(department.AddressCode);
+                    if (masterListIdFound && priorApp != null)
+                    {
+                        dvError.InnerHtml = "<div class='alert alert-info'>Some data has been loaded from prior fiscal year application (FY"
+                            + priorApp.FiscalYear + "). NERIS ID loaded from master list. Please verify all data is current.</div>";
                     }
                 }
                 return true;
@@ -299,7 +311,25 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
-        private void LoadGeneralInfoData(FG_App_GeneralInfo model)
+        private async Task<bool> ApplyMasterListNerisIdOverrideAsync(string departmentAddressCode)
+        {
+            FG_FDIDs master = await fgService.GetFDIDByDepartmentNameAsync(departmentAddressCode);
+            if (master != null && !string.IsNullOrWhiteSpace(master.FDID))
+            {
+                txtFDID.Text = master.FDID.Trim().ToUpperInvariant();
+                return true;
+            }
+
+            string warning = "<div class='alert alert-warning'>No NERIS ID found in the master list for this department. Contact an administrator.</div>";
+            if (!dvError.InnerHtml.Contains("alert-danger"))
+            {
+                dvError.InnerHtml += warning;
+            }
+
+            return false;
+        }
+
+        private async Task LoadGeneralInfoData(FG_App_GeneralInfo model)
         {
             try
             {
@@ -323,7 +353,14 @@ namespace NMSFMFireGrantWF.Application
                         rbCountyDeptsNo.Checked = true;
                     }
                 }
-                if (model.NERISID != "") { txtFDID.Text = model.NERISID; }
+                if (!string.IsNullOrWhiteSpace(model.NERISID))
+                {
+                    txtFDID.Text = model.NERISID;
+                }
+                else
+                {
+                    await ApplyMasterListNerisIdOverrideAsync(txtDepartment.Text);
+                }
                 if (model.DepartmentName != "") { txtDepartment.Text = model.DepartmentName; }
                 if (model.FireChiefName != "") { txtFireCheif.Text = model.FireChiefName; }
                 if (model.Phone != "") { txtPhone.Text = model.Phone; }
@@ -370,7 +407,7 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
-        private async void LoadDepartmentUDFs(Guid departmentId)
+        private async Task LoadDepartmentUDFs(Guid departmentId)
         {
             Guid mainGuid = new Guid("7ad61001-cac8-4f3c-ae4e-32d28393f891");
             Guid adminGuid = new Guid("8baa0b86-f1e5-4d84-b4f9-a8219f4b11b8");

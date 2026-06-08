@@ -60,7 +60,7 @@
                             <telerik:RadComboBoxItem Text="Approved By" Value="ApprovedByName" Checked="true" />
                             <telerik:RadComboBoxItem Text="Date Submitted" Value="DateSubmitted" Checked="true" />
                             <telerik:RadComboBoxItem Text="Submitted By" Value="SubmittedByName" Checked="true" />
-                            <telerik:RadComboBoxItem Text="NERISID" Value="NERISID" Checked="true" />
+                            <telerik:RadComboBoxItem Text="NERIS ID" Value="NERISID" Checked="true" />
                             <telerik:RadComboBoxItem Text="Training Points" Value="TrainingPoints" Checked="true" />
                             <telerik:RadComboBoxItem Text="Financial Need Grade" Value="FinancialNeedGrade" Checked="true" />
                             <telerik:RadComboBoxItem Text="Problem Grade" Value="ProblemGrade" Checked="true" />
@@ -328,7 +328,7 @@
                                         </telerik:RadScriptBlock>
                                     </FilterTemplate>
                                 </telerik:GridBoundColumn>
-                                <telerik:GridBoundColumn DataField="NERISID" FilterControlAltText="Filter NERISID column" HeaderText="NERISID" UniqueName="NERISID" ColumnGroupName="GeneralInformation">
+                                <telerik:GridBoundColumn DataField="NERISID" FilterControlAltText="Filter NERIS ID column" HeaderText="NERIS ID" UniqueName="NERISID" ColumnGroupName="GeneralInformation">
                                 </telerik:GridBoundColumn>
                                 <telerik:GridBoundColumn DataField="DepartmentName" FilterControlAltText="Filter Department Name column" HeaderText="Department" UniqueName="DepartmentName" ColumnGroupName="GeneralInformation">
                                 </telerik:GridBoundColumn>

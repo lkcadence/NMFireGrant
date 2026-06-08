@@ -25,5 +25,12 @@ namespace NMSFM.Data
         public bool IsValid { get; set; }
         [DefaultValue(false)]
         public string InvalidText { get; set; }
+
+        [NotMapped]
+        public int NERISCompliant
+        {
+            get { return NFIRSCompliant; }
+            set { NFIRSCompliant = value; }
+        }
     }
 }

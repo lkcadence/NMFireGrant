@@ -32,6 +32,10 @@ private IAccountService accountService;
 
         protected void Page_Init(object sender, EventArgs e)
         {
+            btnApplyFilters.Click += btnApplyFilters_Click;
+            btnClearFilters.Click += btnClearFilters_Click;
+            rgFDIDs.SortCommand += rgFDIDs_SortCommand;
+
             var userWebModel = new UserWebModel();
             logger = new Logging();
 accountService = new AccountService(userWebModel, logger);
@@ -68,12 +72,11 @@ accountService = new AccountService(userWebModel, logger);
                 dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
             }
         }
+
         protected async void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
-                //InitTestPriorities();
-                //ToDo Load Category (or add new category)
                 try
                 {
                     HtmlGenericControl helpdiv = new HtmlGenericControl();
@@ -84,8 +87,14 @@ accountService = new AccountService(userWebModel, logger);
                         helpdiv.InnerHtml = help.HelpText;
                     }
 
+                    SetDefaultFdidSort();
+                    await LoadFDIDsAsync();
 
-                    LoadFDIDs();
+                    if (Session["SaveMessage"] != null)
+                    {
+                        dvError.InnerHtml = Session["SaveMessage"].ToString();
+                        Session["SaveMessage"] = "";
+                    }
                 }
                 catch (Exception ex)
             {
@@ -95,144 +104,233 @@ accountService = new AccountService(userWebModel, logger);
             }
         }
 
-        private async void LoadFDIDs()
+        private async System.Threading.Tasks.Task LoadFDIDsAsync()
         {
-            try
-            {
-                List<FG_FDIDs> fdids = new List<FG_FDIDs>();
-                fdids = await fgService.GetFG_FDIDs();
-                fdids.OrderBy(a => a.FDID);
-                if (fdids != null)
-                {
-                    rgFDIDs.DataSource = fdids;
-                    rgFDIDs.DataBind();
-                    ViewState["dtFDIDs"] = fdids;
-                }
+            List<FG_FDIDs> fdids = await fgService.GetFG_FDIDs();
+            ViewState["dtFDIDsAll"] = fdids ?? new List<FG_FDIDs>();
+            BindFDIDGrid();
+        }
 
-            }
-            catch (Exception ex)
+        private void SetDefaultFdidSort()
+        {
+            rgFDIDs.MasterTableView.SortExpressions.Clear();
+            rgFDIDs.MasterTableView.SortExpressions.AddSortExpression(
+                new GridSortExpression
+                {
+                    FieldName = "FDID",
+                    SortOrder = GridSortOrder.Ascending
+                });
+        }
+
+        private void BindFDIDGrid()
+        {
+            List<FG_FDIDs> display = GetFilteredSortedList();
+            rgFDIDs.DataSource = display;
+            rgFDIDs.DataBind();
+        }
+
+        private List<FG_FDIDs> GetFilteredSortedList()
+        {
+            List<FG_FDIDs> all = ViewState["dtFDIDsAll"] as List<FG_FDIDs>
+                ?? new List<FG_FDIDs>();
+
+            IEnumerable<FG_FDIDs> query = all;
+
+            if (chkHideInactive.Checked)
             {
-                _ = ex;
-                throw ex;
+                query = query.Where(x => !x.Inactive);
             }
+
+            string nerisSearch = txtSearchNerisId.Text.Trim().ToUpperInvariant();
+            if (nerisSearch != "")
+            {
+                query = query.Where(x =>
+                    (x.FDID ?? "").ToUpperInvariant().Contains(nerisSearch));
+            }
+
+            string deptSearch = txtSearchFireDepartment.Text.Trim();
+            if (deptSearch != "")
+            {
+                query = query.Where(x =>
+                    (x.FireDepartment ?? "").IndexOf(
+                        deptSearch, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+
+            return ApplySort(query).ToList();
+        }
+
+        private IEnumerable<FG_FDIDs> ApplySort(IEnumerable<FG_FDIDs> query)
+        {
+            GridSortExpression sort = rgFDIDs.MasterTableView.SortExpressions
+                .Cast<GridSortExpression>()
+                .FirstOrDefault();
+
+            if (sort == null || string.IsNullOrEmpty(sort.FieldName))
+            {
+                return query.OrderBy(a => a.FDID);
+            }
+
+            bool desc = sort.SortOrder == GridSortOrder.Descending;
+            switch (sort.FieldName)
+            {
+                case "FireDepartment":
+                    return desc
+                        ? query.OrderByDescending(a => a.FireDepartment)
+                        : query.OrderBy(a => a.FireDepartment);
+                default:
+                    return desc
+                        ? query.OrderByDescending(a => a.FDID)
+                        : query.OrderBy(a => a.FDID);
+            }
+        }
+
+        protected void btnApplyFilters_Click(object sender, EventArgs e)
+        {
+            rgFDIDs.CurrentPageIndex = 0;
+            BindFDIDGrid();
+        }
+
+        protected void btnClearFilters_Click(object sender, EventArgs e)
+        {
+            txtSearchNerisId.Text = "";
+            txtSearchFireDepartment.Text = "";
+            chkHideInactive.Checked = true;
+            rgFDIDs.CurrentPageIndex = 0;
+            SetDefaultFdidSort();
+            BindFDIDGrid();
+        }
+
+        protected void chkHideInactive_CheckedChanged(object sender, EventArgs e)
+        {
+            rgFDIDs.CurrentPageIndex = 0;
+            BindFDIDGrid();
+        }
+
+        protected void rgFDIDs_SortCommand(object sender, GridSortCommandEventArgs e)
+        {
+            BindFDIDGrid();
         }
 
         protected void rgFDIDs_NeedDataSource(object sender, Telerik.Web.UI.GridNeedDataSourceEventArgs e)
         {
-            List<FG_FDIDs> fdids = (List<FG_FDIDs>)ViewState["dtFDIDs"];
-            rgFDIDs.DataSource = fdids;
+            rgFDIDs.DataSource = GetFilteredSortedList();
         }
 
         protected void rgFDIDs_PageIndexChanged(object sender, Telerik.Web.UI.GridPageChangedEventArgs e)
         {
-            List<FG_FDIDs> fdids = (List<FG_FDIDs>)ViewState["dtFDIDs"];
-            rgFDIDs.DataSource = fdids;
-            rgFDIDs.DataBind();
+            BindFDIDGrid();
         }
 
-        protected void rgFDIDs_ItemDataBound(object sender, Telerik.Web.UI.GridItemEventArgs e)
+        protected void rgFDIDs_ItemDataBound(object sender, GridItemEventArgs e)
+        {
+            if (!(e.Item is GridDataItem dataItem))
+            {
+                return;
+            }
+
+            FG_FDIDs row = e.Item.DataItem as FG_FDIDs;
+            HyperLink editLink = dataItem.FindControl("editLink") as HyperLink;
+            if (editLink == null && dataItem["Edit"].Controls.Count > 0)
+            {
+                editLink = dataItem["Edit"].Controls[0] as HyperLink;
+            }
+            if (row == null || editLink == null)
+            {
+                return;
+            }
+
+            string dept = row.FireDepartment ?? string.Empty;
+            editLink.Text = "View/Edit " + row.FDID;
+            editLink.NavigateUrl = "javascript:void(0);";
+            editLink.Attributes["data-fdid"] = row.FDID ?? string.Empty;
+            // Escape only characters that break a double-quoted attribute; do not
+            // HtmlAttributeEncode apostrophes (&#39;) or postback fails validation.
+            editLink.Attributes["data-dept"] = dept
+                .Replace("&", "&amp;")
+                .Replace("\"", "&quot;");
+            editLink.Attributes["data-inactive"] = row.Inactive.ToString().ToLowerInvariant();
+            editLink.Attributes["onclick"] = "return fdidOpenForEdit(this);";
+        }
+
+        protected async void btnSaveFDID_Click(object sender, EventArgs e)
         {
             try
             {
-
-                if (e.Item is GridDataItem)
-                {
-                    GridDataItem dataItem = e.Item as GridDataItem;
-                    string name = "";
-                    name = dataItem["FDID"].Text;
-                    LinkButton lb = dataItem.FindControl("btnEdit") as LinkButton;
-                    lb.Text = "View/Edit " + name;
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-                dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
-            }
-        }
-
-        protected void rgFDIDs_ItemCommand(object sender, Telerik.Web.UI.GridCommandEventArgs e)
-        {
-            try
-            {
-                dvError.InnerHtml = "";
-                if (e.Item is GridDataItem)
-                {
-                    GridDataItem dataItem = e.Item as GridDataItem;
-                    string name = "";
-                    name = dataItem["FireDepartment"].Text;
-                    bool inactive = false;
-                    if (dataItem["Inactive"].Text == "True")
-                    {
-                        inactive = true;
-                    }
-                    //string number = dataItem["Number"].Text;
-                    if (e.CommandName == "View")
-                    {
-                        System.Web.UI.ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openFDIDModal();", true);
-                        string pId = e.CommandArgument.ToString();
-                        hfFDID.Value = pId;
-                        txtFDID.Text = pId;
-                        txtFDID.ReadOnly = true;
-                        txtDepartmentName.Text = name;
-                        chkFDIDInactive.Checked = inactive;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-                dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
-            }
-        }
-
-        protected async void btnSaveFDID_ServerClick(object sender, EventArgs e)
-        {
-            try
-            {
-                dvError.InnerHtml = "";
-                List<FG_FDIDs> fdidlist = (List<FG_FDIDs>)ViewState["dtFDIDs"];
-                if (txtFDID.Text == "")
+                List<FG_FDIDs> fdidlist = ViewState["dtFDIDsAll"] as List<FG_FDIDs>;
+                string nerisId = txtFDID.Text.Trim().ToUpperInvariant();
+                string departmentName = txtDepartmentName.Text.Trim();
+                if (nerisId == "")
                 {
                     throw new Exception("NERIS ID cannot be blank");
                 }
-                if (txtDepartmentName.Text == "")
+                if (departmentName == "")
                 {
                     throw new Exception("Department Name cannot be blank");
                 }
-                FG_FDIDs newFDID = new FG_FDIDs();
+
+                FG_FDIDs fdidModel = new FG_FDIDs
+                {
+                    FDID = nerisId,
+                    FireDepartment = departmentName,
+                    Inactive = chkFDIDInactive.Checked
+                };
+
                 if (hfFDID.Value == "")
                 {
-                    foreach (FG_FDIDs fdid in fdidlist)
+                    if (fdidlist != null && fdidlist.Any(a => a.FDID == nerisId))
                     {
-                        if (fdid.FDID == txtFDID.Text)
-                        {
-                            throw new Exception("NERIS ID exists in the list");
-                        }
+                        throw new Exception("NERIS ID exists in the list");
                     }
-                    newFDID.FDID = txtFDID.Text;
-                    newFDID.FireDepartment = txtDepartmentName.Text;
-                    newFDID.Inactive = chkFDIDInactive.Checked;
-                    bool isadded = await fgService.SaveFDIDAsync(newFDID);
+
+                    if (!await fgService.SaveFDIDAsync(fdidModel))
+                    {
+                        throw new Exception("Unable to save NERIS ID.");
+                    }
                 }
                 else
                 {
+                    string originalFdid = hfFDID.Value.Trim().ToUpperInvariant();
+                    if (originalFdid != nerisId)
+                    {
+                        if (fdidlist != null && fdidlist.Any(a => a.FDID == nerisId))
+                        {
+                            throw new Exception("NERIS ID exists in the list");
+                        }
 
-                    newFDID.FDID = hfFDID.Value;
-                    newFDID.FireDepartment = txtDepartmentName.Text;
-                    newFDID.Inactive = chkFDIDInactive.Checked;
-                    bool isadded = await fgService.UpdateFDIDAsync(newFDID);
+                        if (!await fgService.SaveFDIDAsync(fdidModel))
+                        {
+                            throw new Exception("Unable to save NERIS ID.");
+                        }
+
+                        if (!await fgService.DeleteFDIDAsync(originalFdid))
+                        {
+                            throw new Exception("Unable to replace the existing NERIS ID.");
+                        }
+                    }
+                    else
+                    {
+                        fdidModel.FDID = originalFdid;
+                        if (!await fgService.UpdateFDIDAsync(fdidModel))
+                        {
+                            throw new Exception("Unable to save NERIS ID.");
+                        }
+                    }
                 }
 
-                fdidlist = await fgService.GetFG_FDIDs();
-                //priorities = priorities.OrderBy(a => a.PriorityId);
-                rgFDIDs.DataSource = fdidlist;
-                rgFDIDs.Rebind();
+                Session["SaveMessage"] = "<div class='alert alert-success'>NERIS ID saved successfully.</div>";
+                Response.Redirect("~/Admin/ManageFDIDs", false);
+                Context.ApplicationInstance.CompleteRequest();
             }
             catch (Exception ex)
             {
                 _ = ex;
                 dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
+                ScriptManager.RegisterStartupScript(
+                    this,
+                    GetType(),
+                    "ReopenFDIDModal",
+                    "openFDIDModal();",
+                    true);
             }
         }
 
@@ -242,8 +340,3 @@ accountService = new AccountService(userWebModel, logger);
         }
     }
 }
-
-
-
-
-

@@ -71,8 +71,11 @@
                         <asp:Label id="lblFDID" runat="server" Text="NERIS ID # *" AssociatedControlID="txtFDID"></asp:Label>
                     </div>
                     <div class="col-md-4">
+                        <%-- Legacy (pre-NERIS 20-char): numeric-only RadNumericTextBox, MaxLength="5"
                         <telerik:RadNumericTextBox ID="txtFDID" runat="server" CssClass="form-control" NumberFormat-DecimalDigits="0" NumberFormat-GroupSeparator="" Type="Number" MaxLength="5" aria-required="true" ClientIDMode="Static" CausesValidation="true"></telerik:RadNumericTextBox>
-                        
+                        --%>
+                        <asp:TextBox ID="txtFDID" runat="server" CssClass="form-control" MaxLength="20" aria-required="true" ClientIDMode="Static" CausesValidation="true"></asp:TextBox>
+
                     </div>
                     <div class="col-md-4">
                         <asp:RequiredFieldValidator ID="rfFDID" runat="server" ControlToValidate="txtFDID" ForeColor="Red" ErrorMessage="NERIS ID # is Required"></asp:RequiredFieldValidator>
@@ -224,5 +227,26 @@
         //            masterTable.get_dataItems().length;
         //    }
         //}
+
+        function registerNormalizeNerisId(value) {
+            return (value || '').trim().toUpperCase();
+        }
+
+        function registerApplyNerisIdNormalization() {
+            var field = document.getElementById('txtFDID');
+            if (!field) {
+                return;
+            }
+            field.value = registerNormalizeNerisId(field.value);
+        }
+
+        (function () {
+            var field = document.getElementById('txtFDID');
+            if (!field) {
+                return;
+            }
+            field.addEventListener('input', registerApplyNerisIdNormalization);
+            field.addEventListener('blur', registerApplyNerisIdNormalization);
+        })();
     </script>
 </asp:Content>

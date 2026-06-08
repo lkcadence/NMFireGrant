@@ -311,7 +311,10 @@ accountService = new AccountService(userWebModel, logger);
                     }
                     else
                     {
-                        var fdid = await fgService.IsFDIDValid(Convert.ToInt32(txtFDID.Text));
+                        // Legacy (pre-NERIS 20-char): numeric-only validation via IsFDIDValid(int).
+                        // var fdid = await fgService.IsFDIDValid(Convert.ToInt32(txtFDID.Text));
+                        string nerisId = txtFDID.Text.Trim().ToUpperInvariant();
+                        var fdid = await fgService.GetFDIDByIdAsync(nerisId);
                         if (fdid == null)
                         {
                             error = "You must enter a valid NERIS ID";

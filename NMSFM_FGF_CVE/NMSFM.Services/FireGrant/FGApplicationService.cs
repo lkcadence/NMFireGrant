@@ -975,6 +975,80 @@ namespace NMSFM.Services.FireGrant
 			return result;
 		}
 
+		private async Task<FGApplications> FindNearestPriorApplicationWithDataAsync(
+			Guid addressId,
+			Guid currentApplicationId,
+			Func<Guid, Task<bool>> sectionHasDataAsync)
+		{
+			try
+			{
+				FGApplications currentApp = await cwmContext.FGApplications
+					.SingleOrDefaultAsync(a => a.ApplicationId == currentApplicationId);
+				if (currentApp == null)
+				{
+					return null;
+				}
+
+				List<FGApplications> priorApps = await cwmContext.FGApplications
+					.Where(a => a.AddressId == addressId && a.FiscalYear < currentApp.FiscalYear)
+					.OrderByDescending(a => a.FiscalYear)
+					.ToListAsync();
+
+				foreach (FGApplications candidate in priorApps)
+				{
+					if (await sectionHasDataAsync(candidate.ApplicationId))
+					{
+						return candidate;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				throw ex;
+			}
+
+			return null;
+		}
+
+		private async Task<bool> HasGeneralInfoDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_GeneralInfos.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		private async Task<bool> HasApparatusDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_Apparatuses.AnyAsync(a => a.ApplicationId == applicationId)
+				|| await cwmContext.FG_App_ApparatusEquipment.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		private async Task<bool> HasCommunityInfoDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_CommunityInfos.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		private async Task<bool> HasWaterAvailabilityDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_WaterAvailabilities.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		private async Task<bool> HasCommunicationDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_Communications.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		private async Task<bool> HasHazardsThreatsDataAsync(Guid applicationId)
+		{
+			return await cwmContext.FG_App_HazardsThreats.AnyAsync(a => a.ApplicationId == applicationId);
+		}
+
+		public async Task<FGApplications> GetNearestPriorApplicationWithGeneralInfoAsync(
+			Guid addressId, Guid currentApplicationId)
+		{
+			return await FindNearestPriorApplicationWithDataAsync(
+				addressId, currentApplicationId, HasGeneralInfoDataAsync);
+		}
+
 		//Added 12/26/23
 		public async Task<DetailedFGAppCommunityInfo> GetFGApplicationPriorYearCommunityInfoAsync(Guid addressId, Guid applicationId)
 		{
@@ -983,10 +1057,11 @@ namespace NMSFM.Services.FireGrant
 			DetailedFGAppCommunityInfo result = new DetailedFGAppCommunityInfo();
 			try
 			{
-				List<FGApplications> apps = await cwmContext.FGApplications.Where(a => a.AddressId == addressId && a.ApplicationId != applicationId).OrderByDescending(a => a.FiscalYear).ToListAsync();
-				if (apps.Count > 0)
+				FGApplications priorApp = await FindNearestPriorApplicationWithDataAsync(
+					addressId, applicationId, HasCommunityInfoDataAsync);
+				if (priorApp != null)
                 {
-					Guid appId = apps[0].ApplicationId;
+					Guid appId = priorApp.ApplicationId;
 					results = await cwmContext.FG_App_CommunityInfos.SingleOrDefaultAsync(a => a.ApplicationId == appId);
 					if (results != null)
 					{
@@ -1338,10 +1413,11 @@ namespace NMSFM.Services.FireGrant
 			DetailedFGWaterAvailability result = new DetailedFGWaterAvailability();
 			try
 			{
-				List<FGApplications> apps = await cwmContext.FGApplications.Where(a => a.AddressId == addressId && a.ApplicationId != applicationId).OrderByDescending(a => a.FiscalYear).ToListAsync();
-				if (apps.Count > 0)
+				FGApplications priorApp = await FindNearestPriorApplicationWithDataAsync(
+					addressId, applicationId, HasWaterAvailabilityDataAsync);
+				if (priorApp != null)
 				{
-					Guid appId = apps[0].ApplicationId;
+					Guid appId = priorApp.ApplicationId;
 					results = await cwmContext.FG_App_WaterAvailabilities.SingleOrDefaultAsync(a => a.ApplicationId == appId);
 					if (results != null)
 					{
@@ -1838,10 +1914,11 @@ namespace NMSFM.Services.FireGrant
 			DetailedFGApparatus result = new DetailedFGApparatus();
 			try
 			{
-				List<FGApplications> apps = await cwmContext.FGApplications.Where(a => a.AddressId == addressId && a.ApplicationId != applicationId).OrderByDescending(a => a.FiscalYear).ToListAsync();
-				if (apps.Count > 0)
+				FGApplications priorApp = await FindNearestPriorApplicationWithDataAsync(
+					addressId, applicationId, HasApparatusDataAsync);
+				if (priorApp != null)
                 {
-					Guid appId = apps[0].ApplicationId;
+					Guid appId = priorApp.ApplicationId;
 					results = await cwmContext.FG_App_Apparatuses.SingleOrDefaultAsync(a => a.ApplicationId == appId);
 					if (results != null)
 					{
@@ -2108,10 +2185,11 @@ namespace NMSFM.Services.FireGrant
 			DetailedFGCommunication result = new DetailedFGCommunication();
 			try
 			{
-				List<FGApplications> apps = await cwmContext.FGApplications.Where(a => a.AddressId == addressId && a.ApplicationId != applicationId).OrderByDescending(a => a.FiscalYear).ToListAsync();
-				if (apps.Count > 0)
+				FGApplications priorApp = await FindNearestPriorApplicationWithDataAsync(
+					addressId, applicationId, HasCommunicationDataAsync);
+				if (priorApp != null)
 				{
-					Guid appId = apps[0].ApplicationId;
+					Guid appId = priorApp.ApplicationId;
 					results = await cwmContext.FG_App_Communications.SingleOrDefaultAsync(a => a.ApplicationId == appId);
 					if (results != null)
 					{
@@ -2375,10 +2453,11 @@ namespace NMSFM.Services.FireGrant
 			DetailedFGAppHazardsThreats result = new DetailedFGAppHazardsThreats();
 			try
 			{
-				List<FGApplications> apps = await cwmContext.FGApplications.Where(a => a.AddressId == addressId && a.ApplicationId != applicationId).OrderByDescending(a => a.FiscalYear).ToListAsync();
-				if (apps.Count > 0)
+				FGApplications priorApp = await FindNearestPriorApplicationWithDataAsync(
+					addressId, applicationId, HasHazardsThreatsDataAsync);
+				if (priorApp != null)
 				{
-					Guid appId = apps[0].ApplicationId;
+					Guid appId = priorApp.ApplicationId;
 					results = await cwmContext.FG_App_HazardsThreats.SingleOrDefaultAsync(a => a.ApplicationId == appId);
 					if (results != null)
 					{

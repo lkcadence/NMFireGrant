@@ -156,7 +156,9 @@ namespace NMSFMFireGrantWF.Account
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Telerik.Web.UI.RadNumericTextBox txtFDID;
+        // Legacy (pre-NERIS 20-char): RadNumericTextBox for numeric-only 5-digit FDID.
+        // protected global::Telerik.Web.UI.RadNumericTextBox txtFDID;
+        protected global::System.Web.UI.WebControls.TextBox txtFDID;
 
         /// <summary>
         /// rfFDID control.
