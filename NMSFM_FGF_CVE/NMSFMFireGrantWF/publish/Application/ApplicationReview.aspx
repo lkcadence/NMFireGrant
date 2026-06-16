@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Fire Grant Application: Application Review" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="ApplicationReview.aspx.cs" Inherits="NMSFMFireGrantWF.Application.ApplicationReview" Async="true" %>
+<%@ Page Title="Fire Grant Application: Application Review" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="ApplicationReview.aspx.cs" Inherits="NMSFMFireGrantWF.Application.ApplicationReview" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
@@ -74,12 +74,12 @@
         </div>
         <div class="row formRow">
             <div class="col-md-3">
-                <asp:Label ID="lblNFIRS" runat="server" Text="NFIRS Compliant? *" AssociatedControlID="fldNFIRS"></asp:Label>
+                <asp:Label ID="lblNERIS" runat="server" Text="NERIS Compliant? *" AssociatedControlID="fldNERIS"></asp:Label>
             </div>
             <div class="col-md-3">
-                <fieldset id="fldNFIRS" runat="server" aria-required="true">
-                    <asp:RadioButton ID="rbNFIRSYes" runat="server" Text="Yes" GroupName="NFIRS" ClientIDMode="Static" />&nbsp;
-                    <asp:RadioButton ID="rbNFIRSNo" runat="server" Text="No" GroupName="NFIRS" ClientIDMode="Static" />
+                <fieldset id="fldNERIS" runat="server" aria-required="true">
+                    <asp:RadioButton ID="rbNERISYes" runat="server" Text="Yes" GroupName="NERIS" ClientIDMode="Static" />&nbsp;
+                    <asp:RadioButton ID="rbNERISNo" runat="server" Text="No" GroupName="NERIS" ClientIDMode="Static" />
                 </fieldset>
             </div>
         </div>

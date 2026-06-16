@@ -25,7 +25,7 @@
                 to apply for an <strong>Individual Department Grant.</strong></li>
                 <li style="padding-top:10px;">County Administrative Offices having administrative responsibility for more than one district/department may apply for a
                 <strong>County-wide Project Grant</strong> as long as <strong>each district within the County</strong> is compliant with the requirements
-                of the grant application, (i.e., NFIRS, Pump Tests, etc.).  The county-wide project must benefit all the departments
+                of the grant application, (i.e., NERIS, Pump Tests, etc.).  The county-wide project must benefit all the departments
                 within the County.  Note:  A County Administrative Office applying for a grant does not prevent departments within the
                 County from applying for an <strong>Individual Department Grant.</strong></li>
                 <li style="padding-top:10px;">Grant applications must not be contingent on another grant award.</li>
@@ -82,11 +82,11 @@
             <td style="font-weight:bold; padding-top:15px;font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">MINIMUM REQUIREMENTS</span></td>
         </tr>
         <tr>
-            <td style="font-weight:bold; padding-top:15px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">NFIRS Reporting</span></td>
+            <td style="font-weight:bold; padding-top:15px; font-family:Arial, Helvetica, sans-serif !important; font-size:16px !important;" valign="top"><span style="text-decoration: underline;">NERIS Reporting</span></td>
         </tr>
         <tr>
             <td style="line-height:150%; padding-top:5px; text-align:justify;" valign="top">All applicants <strong>shall be</strong> in compliance with the reporting requirements of the New Mexico State Fire Marshal's Office
-            utilizing the National Fire Incident Reporting System (NFIRS) as per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC. Applicants with delinquent NFIRS reports for the period of <strong>July 2018</strong> to <strong>June 2019</strong> at the time the
+            utilizing the National Fire Incident Reporting System (NERIS) as per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC. Applicants with delinquent NERIS reports for the period of <strong>July 2018</strong> to <strong>June 2019</strong> at the time the
             application period closes <span style="text-decoration: underline;">will not be considered</span>.
             </td>
         </tr>
@@ -176,7 +176,7 @@
         </tr>
         <tr>
             <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
-            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
+            1) NERIS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
             </td>
         </tr>
         <tr>
@@ -206,7 +206,7 @@
         </tr>
         <tr>
             <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
-            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
+            1) NERIS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC).
             </td>
         </tr>
         <tr>
@@ -236,7 +236,7 @@
         </tr>
         <tr>
             <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
-            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
+            1) NERIS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
             </td>
         </tr>
         <tr>
@@ -266,7 +266,7 @@
         </tr>
         <tr>
             <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
-            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
+            1) NERIS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC.
             </td>
         </tr>
         <tr>
@@ -296,7 +296,7 @@
         </tr>
         <tr>
             <td style="padding-left:20px;padding-top:5px; line-height:150%; text-align:justify;" valign="top">
-            1) NFIRS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC
+            1) NERIS Compliant (per 59A-52 NMSA 1978 and Title 10 Chapter 25 Part 10 of the NMAC
             </td>
         </tr>
         <tr>

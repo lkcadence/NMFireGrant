@@ -98,41 +98,41 @@
                         <nav id="subnav" class="navbar navbar-default" role="navigation">
                             <div class="container">
                                 <ul class="nav navbar-nav">
-                                    <li class="nav-item active">
-                                        <a class="nav-link" href="/Admin/Home">Current Apps <span class="sr-only">(current)</span></a>
+                                    <li class="active">
+                                        <a href="/Admin/Home">Current Apps <span class="sr-only">(current)</span></a>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navPriorApps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navPriorApps" role="button" aria-haspopup="true" aria-expanded="false">
                                             Prior Apps <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navPriorApps">
-                                            <li><a class="dropdown-item" href="/Admin/Prior/1">Past Apps</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ViewLegacyApps">Legacy Apps</a></li>
+                                            <li><a href="/Admin/Prior/1">Past Apps</a></li>
+                                            <li><a href="/Admin/ViewLegacyApps">Legacy Apps</a></li>
                                         </ul>
                                     </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="/Admin/AdminReport">Admin Report</a>
+                                    <li>
+                                        <a href="/Admin/AdminReport">Admin Report</a>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navAdmin" role="button" aria-haspopup="true" aria-expanded="false">
                                             Admin <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navAdmin">
-                                            <li><a class="dropdown-item" href="/Account/ManageUsers">Manage Users</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ManageSettings">Manage Settings</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ManageCategories">Manage Categories</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ManageFDIDs">Manage FD ID's</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ManageHelpText">Manage Help Text</a></li>
-                                            <li><a class="dropdown-item" href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
+                                            <li><a href="/Account/ManageUsers">Manage Users</a></li>
+                                            <li><a href="/Admin/ManageSettings">Manage Settings</a></li>
+                                            <li><a href="/Admin/ManageCategories">Manage Categories</a></li>
+                                            <li><a href="/Admin/ManageFDIDs">Manage FD ID's</a></li>
+                                            <li><a href="/Admin/ManageHelpText">Manage Help Text</a></li>
+                                            <li><a href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
                                         </ul>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navSupport" role="button" aria-haspopup="true" aria-expanded="false">
                                             Support <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navSupport">
-                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -150,28 +150,28 @@
                         <nav id="subnav" class="navbar navbar-default" role="navigation">
                             <div class="container">
                                 <ul class="nav navbar-nav">
-                                    <li class="nav-item active">
-                                        <a class="nav-link" href="/User/Home">Current App(s) <span class="sr-only">(current)</span></a>
+                                    <li class="active">
+                                        <a href="/User/Home">Current App(s) <span class="sr-only">(current)</span></a>
                                     </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navPriorApps" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navPriorApps" role="button" aria-haspopup="true" aria-expanded="false">
                                             Prior Apps <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navPriorApps">
-                                            <li><a class="dropdown-item" href="/User/Prior/1">Past Apps</a></li>
-                                            <li><a class="dropdown-item" href="/User/ViewLegacyApps">Legacy Apps</a></li>
+                                            <li><a href="/User/Prior/1">Past Apps</a></li>
+                                            <li><a href="/User/ViewLegacyApps">Legacy Apps</a></li>
                                         </ul>
                                     </li>
-                                    <%--<li class="nav-item">
-                                        <a class="nav-link" href="#">Current App Status</a>
+                                    <%--<li>
+                                        <a href="#">Current App Status</a>
                                     </li>--%>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navSupportExternal" role="button" aria-haspopup="true" aria-expanded="false">
                                             Support <span class="caret"></span>
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navSupport">
-                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                        <ul class="dropdown-menu" aria-labelledby="navSupportExternal">
+                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -189,21 +189,21 @@
                         <nav id="subnav" class="navbar navbar-default" role="navigation">
                             <div class="container">
                                 <ul class="nav navbar-nav">
-                                    <li class="nav-item dropdown">
-                                            <a class="nav-link dropdown-toggle" href="#" id="navAdmin" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                            <a href="#" class="dropdown-toggle" id="navAdminManager" role="button" aria-haspopup="true" aria-expanded="false">
                                                 Application Admin <span class="caret"></span>
                                             </a>
-                                            <ul class="dropdown-menu" aria-labelledby="navAdmin">
-                                                <li><a class="dropdown-item" href="/Account/ManageUsers">Manage Users</a></li>
+                                            <ul class="dropdown-menu" aria-labelledby="navAdminManager">
+                                                <li><a href="/Account/ManageUsers">Manage Users</a></li>
                                             </ul>
                                         </li>
-                                    <li class="nav-item dropdown">
-                                        <a class="nav-link dropdown-toggle" href="#" id="navSupport" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <li class="dropdown">
+                                        <a href="#" class="dropdown-toggle" id="navSupportManager" role="button" aria-haspopup="true" aria-expanded="false">
                                             Support <span class="caret"></span>
                                         </a>
-                                        <ul class="dropdown-menu" aria-labelledby="navSupport">
-                                            <li><a class="dropdown-item" href="#" onclick="clearTA" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a class="dropdown-item" href="#" onclick="clearFS" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                        <ul class="dropdown-menu" aria-labelledby="navSupportManager">
+                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -329,7 +329,7 @@
             <footer>
                 <div class="row" style="width:97%;margin-left:2em">
                 <div class="col-lg-4">
-                    <span style="padding-left: 1em;">&copy; <%: DateTime.Now.Year.ToString() %> Sybatech, Inc.</span>
+                    <span style="padding-left: 1em;">&copy; <%: DateTime.Now.Year.ToString() %> New Mexico State Fire Marshal</span>
                 </div>
                 <div class="col-lg-4" style="text-align:center" id="timeoutWarning">
                     <script>
@@ -361,8 +361,7 @@
                             $('#lblTAError').html('');
                             $('#txtTAFromName').val('');
                             $('#txtTAFromEmail').val('');
-                            $('#lblTADetails').val('');
-                            //$('#btnClose').click();
+                            $('#txtTADetails').val('');
                         }
 
                         function showTAModal() {
@@ -377,7 +376,7 @@
                             $('#lblFSError').html('');
                             $('#txtFSFromName').val('');
                             $('#txtFSFromEmail').val('');
-                            $('#lblFSDetails').val('');
+                            $('#txtFSDetails').val('');
                         }
 
                     </script>
@@ -390,6 +389,46 @@
             </div>
             </footer>
         </div>
+        <script>
+            (function () {
+                if (window._subnavDropdownInit) {
+                    return;
+                }
+                window._subnavDropdownInit = true;
+
+                function closeSubnavDropdowns() {
+                    var openItems = document.querySelectorAll('#subnav li.dropdown.open');
+                    for (var i = 0; i < openItems.length; i++) {
+                        openItems[i].classList.remove('open');
+                    }
+                }
+
+                document.addEventListener('click', function (e) {
+                    var toggle = e.target.closest
+                        ? e.target.closest('#subnav .dropdown-toggle')
+                        : null;
+                    if (toggle) {
+                        e.preventDefault();
+                        var li = toggle.parentNode;
+                        while (li && li.tagName !== 'LI') {
+                            li = li.parentNode;
+                        }
+                        if (!li) {
+                            return;
+                        }
+                        var willOpen = !li.classList.contains('open');
+                        closeSubnavDropdowns();
+                        if (willOpen) {
+                            li.classList.add('open');
+                        }
+                        return;
+                    }
+                    if (!e.target.closest || !e.target.closest('#subnav li.dropdown')) {
+                        closeSubnavDropdowns();
+                    }
+                });
+            })();
+        </script>
     </form>
 </body>
 </html>

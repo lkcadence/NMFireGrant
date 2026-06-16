@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GrantAwarded.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.GrantAwarded" Async="true" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="GrantAwarded.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.GrantAwarded" Async="true" %>
 
 <!DOCTYPE html>
 
@@ -374,7 +374,7 @@
                             </tr>
                             <tr style="min-height:75px">
                                 <th scope="row" style="text-align:left;font-weight:normal">
-                                    SFMO Check of NFIRS Compliance
+                                    SFMO Check of NERIS Compliance
                                 </th>
                                 <td>
                                 

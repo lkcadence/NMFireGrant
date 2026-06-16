@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Fire Grant Application: General Information" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="GeneralInformation.aspx.cs" Inherits="NMSFMFireGrantWF.Application.GeneralInformation" Async="true" %>
+<%@ Page Title="Fire Grant Application: General Information" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="GeneralInformation.aspx.cs" Inherits="NMSFMFireGrantWF.Application.GeneralInformation" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
@@ -19,10 +19,10 @@
         </div>
         <div class="row formRow">
             <div class="col-md-4">
-                <asp:Label ID="lblFDID" runat="server" AssociatedControlID="txtFDID" Text="Fire Department ID Number (using NFIRS Identifier) *"></asp:Label>
+                <asp:Label ID="lblFDID" runat="server" AssociatedControlID="txtFDID" Text="Fire Department ID Number (using NERIS Identifier) *"></asp:Label>
             </div>
             <div class="col-md-8">
-                <asp:TextBox ID="txtFDID" runat="server" class="form-control" aria-required="true"></asp:TextBox>
+                <asp:TextBox ID="txtFDID" runat="server" class="form-control" MaxLength="20" aria-required="true"></asp:TextBox>
             </div>
         </div>
         <div class="row formRow">
@@ -111,7 +111,7 @@
         </div>
         <div class="row formRow" id="dvCountyDepts">
             <div class="col-md-4">
-                <asp:Label ID="lblCountyDepts" runat="server" Text="Are all of the County departments NFIRS and Pump Test complient? *" AssociatedControlID="fsCountyDepts"></asp:Label>
+                <asp:Label ID="lblCountyDepts" runat="server" Text="Are all of the County departments NERIS and Pump Test complient? *" AssociatedControlID="fsCountyDepts"></asp:Label>
             </div>
             <div class="col-md-8">
                 <fieldset id="fsCountyDepts" runat="server" aria-required="true">

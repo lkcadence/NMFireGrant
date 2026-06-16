@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DenialLetter.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.DenialLetter" Async="true" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="DenialLetter.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.DenialLetter" Async="true" %>
 
 <!DOCTYPE html>
 
@@ -160,7 +160,7 @@
                 ISO fire protection classification, and to apply for grant assistance in the future.
             </div>
             <div class="row" style="margin-bottom: 1em">
-                We continue to emphasize the importance of meeting the NFIRS reporting and pump testing requirements. 
+                We continue to emphasize the importance of meeting the NERIS reporting and pump testing requirements. 
             </div>
             <div class="row" style="margin-bottom: 1em">
                 If further information is required, please contact  Randy Varela, State Fire Marshal at (505)709-8150. 

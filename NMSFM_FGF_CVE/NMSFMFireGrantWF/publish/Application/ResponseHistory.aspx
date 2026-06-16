@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Fire Grant Application: Response History (Last Year)" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="ResponseHistory.aspx.cs" Inherits="NMSFMFireGrantWF.Application.ResponseHistory" Async="true" %>
+<%@ Page Title="Fire Grant Application: Response History (Last Year)" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="ResponseHistory.aspx.cs" Inherits="NMSFMFireGrantWF.Application.ResponseHistory" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
@@ -8,12 +8,12 @@
         <div class="row" id="dvError" runat="server"></div>
         <div class="row formRow" id="dvHoseTests">
             <div class="col-md-4">
-                <asp:Label ID="lblNFIRSCurrent" runat="server" Text="Are you NFIRS Current? *" AssociatedControlID="fldNFIRSCurrent"></asp:Label>
+                <asp:Label ID="lblNERISCurrent" runat="server" Text="Are you NERIS Current? *" AssociatedControlID="fldNERISCurrent"></asp:Label>
             </div>
             <div class="col-md-3">
-                <fieldset id="fldNFIRSCurrent" runat="server" aria-required="true">
-                    <asp:RadioButton ID="rbNFIRSCurrentYes" runat="server" Text="Yes" GroupName="NFIRSCurrent" ClientIDMode="Static" />&nbsp;
-                    <asp:RadioButton ID="rbNFIRSCurrentNo" runat="server" Text="No" GroupName="NFIRSCurrent" ClientIDMode="Static" />
+                <fieldset id="fldNERISCurrent" runat="server" aria-required="true">
+                    <asp:RadioButton ID="rbNERISCurrentYes" runat="server" Text="Yes" GroupName="NERISCurrent" ClientIDMode="Static" />&nbsp;
+                    <asp:RadioButton ID="rbNERISCurrentNo" runat="server" Text="No" GroupName="NERISCurrent" ClientIDMode="Static" />
                 </fieldset>
             </div>
         </div>

@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Fire Grant: Admin Report" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminReport.aspx.cs" Inherits="NMSFMFireGrantWF.Admin.AdminReport" Async="true" %>
+<%@ Page Title="Fire Grant: Admin Report" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminReport.aspx.cs" Inherits="NMSFMFireGrantWF.Admin.AdminReport" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
@@ -60,7 +60,7 @@
                             <telerik:RadComboBoxItem Text="Approved By" Value="ApprovedByName" Checked="true" />
                             <telerik:RadComboBoxItem Text="Date Submitted" Value="DateSubmitted" Checked="true" />
                             <telerik:RadComboBoxItem Text="Submitted By" Value="SubmittedByName" Checked="true" />
-                            <telerik:RadComboBoxItem Text="NFIRSID" Value="NFIRSID" Checked="true" />
+                            <telerik:RadComboBoxItem Text="NERIS ID" Value="NERISID" Checked="true" />
                             <telerik:RadComboBoxItem Text="Training Points" Value="TrainingPoints" Checked="true" />
                             <telerik:RadComboBoxItem Text="Financial Need Grade" Value="FinancialNeedGrade" Checked="true" />
                             <telerik:RadComboBoxItem Text="Problem Grade" Value="ProblemGrade" Checked="true" />
@@ -72,7 +72,7 @@
                             <telerik:RadComboBoxItem Text="Priority Categories" Value="PriorityCategories" Checked="true" />
                             <telerik:RadComboBoxItem Text="ISORating" Value="ISORating" Checked="true" />
                             <telerik:RadComboBoxItem Text="Person Complete App" Value="PersonCompleteApp" Checked="true" />
-                            <telerik:RadComboBoxItem Text="NFIRS Compliant" Value="NFIRSCompliant" Checked="true" />
+                            <telerik:RadComboBoxItem Text="NERIS Compliant" Value="NERISCompliant" Checked="true" />
                             <telerik:RadComboBoxItem Text="Pump Test Compliant" Value="PumpTestCompliant" Checked="true" />   
                             <telerik:RadComboBoxItem runat="server" IsSeparator="True" Text="General Information" Enabled="false"/>
                             <telerik:RadComboBoxItem Text="Individual Dept" Value="IndividualDept" />
@@ -115,7 +115,7 @@
                             <telerik:RadComboBoxItem Text="Resident Pop" Value="ResidentPopulation" />
                             <telerik:RadComboBoxItem Text="Aid Agreements" Value="AidAgreements" />
                             <telerik:RadComboBoxItem runat="server" IsSeparator="True" Text="Response History" Enabled="false"/>
-                            <telerik:RadComboBoxItem Text="NFIRS Current" Value="NFIRSCurrent" />
+                            <telerik:RadComboBoxItem Text="NERIS Current" Value="NERISCurrent" />
                             <telerik:RadComboBoxItem Text="Response Structure" Value="ResponseStructure" />
                             <telerik:RadComboBoxItem Text="Response Vehicle" Value="ResponseVehicle" />
                             <telerik:RadComboBoxItem Text="Response Vegitation" Value="ResponseVegitation" />
@@ -328,7 +328,7 @@
                                         </telerik:RadScriptBlock>
                                     </FilterTemplate>
                                 </telerik:GridBoundColumn>
-                                <telerik:GridBoundColumn DataField="NFIRSID" FilterControlAltText="Filter NFIRSID column" HeaderText="NFIRSID" UniqueName="NFIRSID" ColumnGroupName="GeneralInformation">
+                                <telerik:GridBoundColumn DataField="NERISID" FilterControlAltText="Filter NERIS ID column" HeaderText="NERIS ID" UniqueName="NERISID" ColumnGroupName="GeneralInformation">
                                 </telerik:GridBoundColumn>
                                 <telerik:GridBoundColumn DataField="DepartmentName" FilterControlAltText="Filter Department Name column" HeaderText="Department" UniqueName="DepartmentName" ColumnGroupName="GeneralInformation">
                                 </telerik:GridBoundColumn>
@@ -527,10 +527,10 @@
                                     </FilterTemplate>
                                 </telerik:GridBoundColumn>
                                 <%--Response History--%>
-                                <telerik:GridBoundColumn DataField="strNFIRSCurrent" FilterControlAltText="Filter NFIRS Current column" HeaderText="NFIRS Current" UniqueName="NFIRSCurrent" ColumnGroupName="ResponseHistory" Visible="false">
+                                <telerik:GridBoundColumn DataField="strNERISCurrent" FilterControlAltText="Filter NERIS Current column" HeaderText="NERIS Current" UniqueName="NERISCurrent" ColumnGroupName="ResponseHistory" Visible="false">
                                     <FilterTemplate>
-                                        <telerik:RadComboBox RenderMode="Lightweight" ID="rcbNFIRSCurrent" Width="150px" AppendDataBoundItems="true" SelectedValue='<%# ((GridItem)Container).OwnerTableView.GetColumn("NFIRSCurrent").CurrentFilterValue %>'
-                                            runat="server" OnClientSelectedIndexChanged="NFIRSCurrentChanged">
+                                        <telerik:RadComboBox RenderMode="Lightweight" ID="rcbNERISCurrent" Width="150px" AppendDataBoundItems="true" SelectedValue='<%# ((GridItem)Container).OwnerTableView.GetColumn("NERISCurrent").CurrentFilterValue %>'
+                                            runat="server" OnClientSelectedIndexChanged="NERISCurrentChanged">
                                             <Items>
                                                 <telerik:RadComboBoxItem Text="All" />
                                                 <telerik:RadComboBoxItem Text="Yes" Value="Yes" />
@@ -539,9 +539,9 @@
                                         </telerik:RadComboBox>
                                         <telerik:RadScriptBlock ID="RadScriptBlock9" runat="server">
                                             <script type="text/javascript">
-                                                function NFIRSCurrentChanged(sender, args) {
+                                                function NERISCurrentChanged(sender, args) {
                                                     var tableView = $find("<%# ((GridItem)Container).OwnerTableView.ClientID %>");
-                                                    tableView.filter("NFIRSCurrent", args.get_item().get_value(), "EqualTo");
+                                                    tableView.filter("NERISCurrent", args.get_item().get_value(), "EqualTo");
                                                 }
                                             </script>
                                         </telerik:RadScriptBlock>
@@ -818,10 +818,10 @@
                                 <telerik:GridBoundColumn DataField="StipendAmount" FilterControlAltText="Filter Stipend Amount column" DataFormatString="{0:C}" HeaderText="Stipend Amount" UniqueName="StipendAmount" FooterText="Total Stip.: " Aggregate="Sum" FooterAggregateFormatString="{0:C}" ColumnGroupName="ProjectBudget">
                                 </telerik:GridBoundColumn>
                                 <%--Application Review--%>
-                                <telerik:GridBoundColumn DataField="strNFIRSCompliant" FilterControlAltText="Filter NFIRS Compliant column" HeaderText="NFIRS Compliant" UniqueName="NFIRSCompliant" ColumnGroupName="ApplicationReview">
+                                <telerik:GridBoundColumn DataField="strNERISCompliant" FilterControlAltText="Filter NERIS Compliant column" HeaderText="NERIS Compliant" UniqueName="NERISCompliant" ColumnGroupName="ApplicationReview">
                                     <FilterTemplate>
-                                        <telerik:RadComboBox RenderMode="Lightweight" ID="rcbNFIRSCompliant" Width="150px" AppendDataBoundItems="true" SelectedValue='<%# ((GridItem)Container).OwnerTableView.GetColumn("NFIRSCompliant").CurrentFilterValue %>'
-                                            runat="server" OnClientSelectedIndexChanged="NFIRSCompliantChanged">
+                                        <telerik:RadComboBox RenderMode="Lightweight" ID="rcbNERISCompliant" Width="150px" AppendDataBoundItems="true" SelectedValue='<%# ((GridItem)Container).OwnerTableView.GetColumn("NERISCompliant").CurrentFilterValue %>'
+                                            runat="server" OnClientSelectedIndexChanged="NERISCompliantChanged">
                                             <Items>
                                                 <telerik:RadComboBoxItem Text="All" />
                                                 <telerik:RadComboBoxItem Text="Yes" Value="Yes" />
@@ -830,9 +830,9 @@
                                         </telerik:RadComboBox>
                                         <telerik:RadScriptBlock ID="RadScriptBlock19" runat="server">
                                             <script type="text/javascript">
-                                                function NFIRSCompliantChanged(sender, args) {
+                                                function NERISCompliantChanged(sender, args) {
                                                     var tableView = $find("<%# ((GridItem)Container).OwnerTableView.ClientID %>");
-                                                    tableView.filter("NFIRSCompliant", args.get_item().get_value(), "EqualTo");
+                                                    tableView.filter("NERISCompliant", args.get_item().get_value(), "EqualTo");
                                                 }
                                             </script>
                                         </telerik:RadScriptBlock>

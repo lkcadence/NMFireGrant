@@ -1,4 +1,4 @@
-﻿<%@ Page Title="Fire Grant: Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="NMSFMFireGrantWF._Default" async="true"%>
+<%@ Page Title="Fire Grant: Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="NMSFMFireGrantWF._Default" async="true"%>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="HeadContent" runat="server">
     
@@ -20,7 +20,7 @@
                 work to improve the process and serve you better.
             </p>
             <p>
-                To begin, enter your department’s five digit NFIRS FDID number in both the NFIRS FDID number field and the Password field. Upon logon, in the General Information page, 
+                To begin, enter your department’s five digit NERIS ID number in both the NERIS ID number field and the Password field. Upon logon, in the General Information page, 
                 you will be prompted to provide an email address and may change the password. Please note: Only one application per department will be accepted; therefore only one email 
                 address and password per department will be recognized.
             </p>

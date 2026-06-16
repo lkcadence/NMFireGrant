@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ApplicationPrint.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.ApplicationPrint" Async="true" %>
+<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="ApplicationPrint.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Reporting.ApplicationPrint" Async="true" %>
 
 <!DOCTYPE html>
 
@@ -168,7 +168,7 @@
                     </tr>
                     <tr>
                         <td class="rowHeader">
-				            Fire Department ID Number (using NFIRS identifier)
+				            Fire Department ID Number (using NERIS identifier)
                         </td>
                         <td colspan="3" class="rowData" id="tdFireDeptId" runat="server">
 					        
@@ -224,9 +224,9 @@
                     </tr>
                     <tr id="trCountyApp" runat="server">
                         <td class="rowHeader">
-				            Are all of the County departments NFIRS and Pump Test complient?
+				            Are all of the County departments NERIS and Pump Test complient?
                         </td>
-                        <td colspan="3" class="rowData" id="tdAllNFIRSCompliant" runat="server">
+                        <td colspan="3" class="rowData" id="tdAllNERISCompliant" runat="server">
 					        
 				        </td>
                     </tr>
@@ -557,9 +557,9 @@
                     </tr>
                     <tr>
                         <td colspan="2" class="rowHeader">
-				            Are you NFIRS Current?
+				            Are you NERIS Current?
                         </td>
-                        <td colspan="2" class="rowData" id="tdNFIRSCurrent" runat="server">
+                        <td colspan="2" class="rowData" id="tdNERISCurrent" runat="server">
 					        
 				        </td>
                     </tr>
