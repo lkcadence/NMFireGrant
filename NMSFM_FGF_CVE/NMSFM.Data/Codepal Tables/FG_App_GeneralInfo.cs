@@ -43,12 +43,5 @@ namespace NMSFM.Data
         public string UpdatedBy { get; set; }
         public bool IsValid { get; set; }
         public string InvalidText { get; set; }
-
-        [NotMapped]
-        public string NERISID
-        {
-            get { return NFIRSID; }
-            set { NFIRSID = value; }
-        }
     }
 }

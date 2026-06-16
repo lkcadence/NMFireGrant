@@ -31,12 +31,5 @@ namespace NMSFM.Data
         public string UpdatedBy { get; set; }
         public bool IsValid { get; set; }
         public string InvalidText { get; set; }
-
-        [NotMapped]
-        public int NERISCurrent
-        {
-            get { return NFIRSCurrent; }
-            set { NFIRSCurrent = value; }
-        }
     }
 }

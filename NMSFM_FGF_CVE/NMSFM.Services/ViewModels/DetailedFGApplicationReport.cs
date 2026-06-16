@@ -150,38 +150,8 @@ namespace NMSFM.ViewModels
 		public decimal? AmountRequested { get; set; }
 		public decimal? StipendAmount { get; set; }
 		//Application Review
-<<<<<<< HEAD
-		public int? NFIRSCompliant { get; set; }
-		public string strNFIRSCompliant { get; set; }
-		public string NERISID
-		{
-			get { return NFIRSID; }
-			set { NFIRSID = value; }
-		}
-		public int? NERISCurrent
-		{
-			get { return NFIRSCurrent; }
-			set { NFIRSCurrent = value; }
-		}
-		public string strNERISCurrent
-		{
-			get { return strNFIRSCurrent; }
-			set { strNFIRSCurrent = value; }
-		}
-		public int? NERISCompliant
-		{
-			get { return NFIRSCompliant; }
-			set { NFIRSCompliant = value; }
-		}
-		public string strNERISCompliant
-		{
-			get { return strNFIRSCompliant; }
-			set { strNFIRSCompliant = value; }
-		}
-=======
 		public int? NERISCompliant { get; set; }
 		public string strNERISCompliant { get; set; }
->>>>>>> 029f7decc2d0d2d6862252aa37089266c7271ecb
 		public int? PumpTestCompliant { get; set; }
 		public string strPumpTestCompliant { get; set; }
 		//Application Scores

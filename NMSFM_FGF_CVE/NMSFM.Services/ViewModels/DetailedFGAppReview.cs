@@ -25,11 +25,5 @@ namespace NMSFM.ViewModels
         public string InvalidText { get; set; }
         public FG_App_Signatures ReviewerSignature { get; set; }
         public List<FG_App_Signatures> AppSignatures { get; set; }
-
-        public int NERISCompliant
-        {
-            get { return NFIRSCompliant; }
-            set { NFIRSCompliant = value; }
-        }
     }
 }

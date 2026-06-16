@@ -140,26 +140,5 @@
 		public int? ConsequencesGrade { get; set; }
 		public int? AppCompletenessGrade { get; set; }
 
-		[NotMapped]
-		public string NERISID
-		{
-			get { return NFIRSID; }
-			set { NFIRSID = value; }
-		}
-
-		[NotMapped]
-		public int? NERISCurrent
-		{
-			get { return NFIRSCurrent; }
-			set { NFIRSCurrent = value; }
-		}
-
-		[NotMapped]
-		public int? NERISCompliant
-		{
-			get { return NFIRSCompliant; }
-			set { NFIRSCompliant = value; }
-		}
-
 	}
 }
