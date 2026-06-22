@@ -369,7 +369,7 @@ namespace NMSFMFireGrantWF.Application
         {
             if (await SaveForm() == true)
             {
-                Response.Redirect("~/Application/PPE", false);
+                Response.Redirect("~/Application/HazardsThreats", false);
             }
         }
 

@@ -368,10 +368,10 @@ namespace NMSFMFireGrantWF.Application
                         {
                             rmStep1.Items[8].ImageUrl = "../Content/images/round.png";
                         }
-                        hazardsThreats = fgAppService.GetFGApplicationHazardsThreats(appId);
-                        if (hazardsThreats != null)
+                        ppe = fgAppService.GetFGApplicationPPE(appId);
+                        if (ppe != null)
                         {
-                            if (hazardsThreats.IsValid)
+                            if (ppe.IsValid)
                             {
                                 rmStep1.Items[9].ImageUrl = "../Content/images/tick.png";
                             }
@@ -384,10 +384,10 @@ namespace NMSFMFireGrantWF.Application
                         {
                             rmStep1.Items[9].ImageUrl = "../Content/images/round.png";
                         }
-                        ppe = fgAppService.GetFGApplicationPPE(appId);
-                        if (ppe != null)
+                        hazardsThreats = fgAppService.GetFGApplicationHazardsThreats(appId);
+                        if (hazardsThreats != null)
                         {
-                            if (ppe.IsValid)
+                            if (hazardsThreats.IsValid)
                             {
                                 rmStep1.Items[10].ImageUrl = "../Content/images/tick.png";
                             }

@@ -327,7 +327,7 @@ namespace NMSFMFireGrantWF.Application
         {
             if (await SaveForm() == true)
             {
-                Response.Redirect("~/Application/CommunicationEquipment", false);
+                Response.Redirect("~/Application/PPE", false);
             }
         }
 
@@ -348,7 +348,7 @@ namespace NMSFMFireGrantWF.Application
         {
             if (await SaveForm() == true)
             {
-                Response.Redirect("~/Application/PPE", false);
+                Response.Redirect("~/Application/EquipmentNeeds", false);
             }
         }
 
