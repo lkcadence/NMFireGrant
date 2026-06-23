@@ -331,14 +331,22 @@
             showSCBADelete();
         });
 
+        function clearPPEFields() {
+            $('#rbPPEInspectedYes').prop('checked', false);
+            $('#rbPPEInspectedNo').prop('checked', false);
+            $('#fldPPEInspected').attr('aria-required', 'false');
+            clearNoteId();
+        }
+
         function showPPE() {
             var show = $('#rbPPEYes').prop('checked');
             if (show == true) {
+                $('#fldPPEInspected').attr('aria-required', 'true');
                 $('#dvPPE').fadeIn("slow");
             }
             else {
                 $('#dvPPE').fadeOut("fast");
-                //Todo - erase form data?
+                clearPPEFields();
             }
         }
 
@@ -350,13 +358,13 @@
                 }
                 else {
                     $('#dvSCBA').fadeOut("fast");
-                    //Todo - erase form data?
+                    clearNote2Id();
                 }
             }
             catch {
 
             }
-            
+
         }
 
 
@@ -393,12 +401,12 @@
         }
 
         function clearNoteId() {
-            $('#hfStandardCompliantPPEId').val('');
-            $('#txtStandardCompliantPPEYear').val('');
-            $('#txtStandardCompliantPPEQuantity').val('');
-            $('#txtStandardCompliantPPEAge').val('');
+            $('#hfStandardCompliaintPPEId').val('');
+            $('#txtStandardCompliaintPPEYear').val('');
+            $('#txtStandardCompliaintPPEQuantity').val('');
+            $('#txtStandardCompliaintPPEAge').val('');
             $('#ddlPPEType').val('');
-            $('#ApplicationContent_btnStandardCompliantPPE').hide();
+            $('#ApplicationContent_btnDeleteStandardCompliaintPPE').hide();
         }
 
         function clearNote2Id() {

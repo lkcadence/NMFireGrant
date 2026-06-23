@@ -17,6 +17,7 @@
                 </fieldset>
             </div>
         </div>
+        <div id="dvApparatusDetails" style="display:none">
         <div class="row formRow" id="dvPumpTestsConducted">
             <div class="col-md-4">
                 <asp:Label ID="lblPumpTestsConducted" runat="server" Text="Are pump tests conducted annually on apparatus? *" AssociatedControlID="fldPumpTestsConducted"></asp:Label>
@@ -101,7 +102,7 @@
         <div class="row">
             <hr />
         </div>
-        <div id="dvApparatus" style="display:none">
+        <div id="dvApparatus">
             <div class="row" id="dvListApparatusHead">
                 <div class="col-md-12">
                     <h3>LIST ALL APPARATUS *</h3>
@@ -162,6 +163,7 @@
             <div class="row">
                 <hr />
             </div>
+        </div>
         </div>
             
         <div class="row">
@@ -318,35 +320,33 @@
 
         $(document).ready(function () {
             showApparatusDelete();
-            showAddApparatus();
+            showApparatusDetails();
             showNoHoseTest();
             showNoPumpTest();
             isTestRequired();
         });
 
-        function showAddApparatus() {
+        function clearApparatusDetailFields() {
+            $('#rbPumpTestsConductedYes').prop('checked', false);
+            $('#rbPumpTestsConductedNo').prop('checked', false);
+            $('#rbHoseTestsYes').prop('checked', false);
+            $('#rbHoseTestsNo').prop('checked', false);
+            $('#ApplicationContent_txtNoPumpTestsExp').val('');
+            $('#ApplicationContent_txtNoHoseTests').val('');
+            $('#dvNoPumpTestsExp').hide();
+            $('#dvNoHoseTests').hide();
+            clearNoteId();
+        }
+
+        function showApparatusDetails() {
             var show = $('#rbApparatusPartYes').prop('checked');
             if (show == true) {
-                $('#dvApparatus').fadeIn("slow");
-                //$('#dvPumpTestsConducted').fadeIn("slow");
-                //$('#dvHoseTests').fadeIn("slow");
-                //$('#dvAddApparatusButton').fadeIn("slow");
-                //$('#dvApparatusList').fadeIn("slow");
+                $('#dvApparatusDetails').fadeIn("slow");
             }
             else {
-                //$('#rbPumpTestsConductedYes').prop('checked', false);
-                //$('#rbPumpTestsConductedNo').prop('checked', false);
-                //$('#dvPumpTestsConducted').fadeOut("slow");
-                //$('#dvNoPumpTestsExp').fadeOut("slow");
-                //$('#dvHoseTests').fadeOut("slow");
-                ////$('#rbHoseTestsYes').prop('checked', false);
-                //$('#rbHoseTestsNo').prop('checked', false);
-                //$('#dvNoHoseTests').fadeOut("slow");
-                $('#dvApparatus').fadeOut("slow");
-                //$('#dvAddApparatusButton').fadeOut("slow");
-                //$('#dvApparatusList').fadeOut("slow");
+                $('#dvApparatusDetails').fadeOut("fast");
+                clearApparatusDetailFields();
             }
-            
         }
 
         function showNoPumpTest() {
@@ -418,7 +418,7 @@
         }
 
         $('#rbApparatusPartYes,#rbApparatusPartNo').change(function () {
-            showAddApparatus();
+            showApparatusDetails();
         });
 
         $('#rbPumpTestsConductedYes,#rbPumpTestsConductedNo').change(function () {

@@ -427,19 +427,30 @@ namespace NMSFMFireGrantWF.Application
                     isValid = false;
                 }
                 int ppeInspected = 0;
-                if (rbPPEYes.Checked) { ppeInspected = 1; }
-                if (rbPPENo.Checked) { ppeInspected = 2; }
-                if (ppePartOfProject == 1 && ppeInspected == 0)
+                if (ppePartOfProject == 2)
                 {
-                    errorMessage += "Is PPE Inspected reponse is required<br />";
-                    isValid = false;
+                    ppeInspected = 0;
+                    rbPPEInspectedYes.Checked = false;
+                    rbPPEInspectedNo.Checked = false;
+                    standardPPE = new List<FG_App_StandardPPE>();
+                    ViewState["dtPPE"] = standardPPE;
                 }
-                if (ppePartOfProject == 1)
+                else
                 {
-                    if (standardPPE == null || standardPPE.Count < 1)
+                    if (rbPPEInspectedYes.Checked) { ppeInspected = 1; }
+                    if (rbPPEInspectedNo.Checked) { ppeInspected = 2; }
+                    if (ppePartOfProject == 1 && ppeInspected == 0)
                     {
-                        errorMessage += "PPE list is required<br />";
+                        errorMessage += "Is PPE Inspected reponse is required<br />";
                         isValid = false;
+                    }
+                    if (ppePartOfProject == 1)
+                    {
+                        if (standardPPE == null || standardPPE.Count < 1)
+                        {
+                            errorMessage += "PPE list is required<br />";
+                            isValid = false;
+                        }
                     }
                 }
 
@@ -451,7 +462,12 @@ namespace NMSFMFireGrantWF.Application
                     errorMessage += "Is SCBA Part of Project reponse is required<br />";
                     isValid = false;
                 }
-                if (scbaPartOfProject == 1)
+                if (scbaPartOfProject == 2)
+                {
+                    standardSCBA = new List<FG_App_StandardSCBA>();
+                    ViewState["dtSCBA"] = standardSCBA;
+                }
+                else if (scbaPartOfProject == 1)
                 {
                     if (standardSCBA == null || standardSCBA.Count < 1)
                     {

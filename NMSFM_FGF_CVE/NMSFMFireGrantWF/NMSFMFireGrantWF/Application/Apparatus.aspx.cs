@@ -466,7 +466,20 @@ namespace NMSFMFireGrantWF.Application
                 {
                     apparatusEquipment = (List<FG_App_ApparatusEquipment>)ViewState["dtApparatusEquipment"];
                 }
-                
+
+                if (apparatusPart == 2)
+                {
+                    pumpTests = 0;
+                    hoseTests = 0;
+                    rbPumpTestsConductedYes.Checked = false;
+                    rbPumpTestsConductedNo.Checked = false;
+                    rbHoseTestsYes.Checked = false;
+                    rbHoseTestsNo.Checked = false;
+                    txtNoPumpTestsExp.Text = "";
+                    txtNoHoseTests.Text = "";
+                    apparatusEquipment = new List<FG_App_ApparatusEquipment>();
+                    ViewState["dtApparatusEquipment"] = apparatusEquipment;
+                }
 
                 if (apparatusPart == 1 && apparatusEquipment.Count < 1)
                 {

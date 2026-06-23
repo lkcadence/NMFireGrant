@@ -771,6 +771,15 @@ namespace NMSFMFireGrantWF.Application.Reporting
         protected global::System.Web.UI.HtmlControls.HtmlTableCell tdApparatusPartOfProject;
 
         /// <summary>
+        /// tbApparatusPart control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl tbApparatusPart;
+
+        /// <summary>
         /// tdPumpTestsConducted control.
         /// </summary>
         /// <remarks>
@@ -823,6 +832,15 @@ namespace NMSFMFireGrantWF.Application.Reporting
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlTableCell tdNoHoseTestsExplanation;
+
+        /// <summary>
+        /// tbApparatusList control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable tbApparatusList;
 
         /// <summary>
         /// ltrApparatusDetails control.

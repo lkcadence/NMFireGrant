@@ -735,6 +735,7 @@
 					        
 				        </td>
                     </tr>
+                    <tbody id="tbApparatusPart" runat="server">
                     <tr>
                         <td class="rowHeader">
 				            Are pump tests conducted annually on apparatus?
@@ -767,8 +768,9 @@
 					        
 				        </td>
                     </tr>
+                    </tbody>
                 </table>
-                <table class="sectionTable" style="margin-top:0px !important; border-top:none">
+                <table id="tbApparatusList" runat="server" class="sectionTable" style="margin-top:0px !important; border-top:none">
                     <tr>
                         <td colspan="7" class="rowHeader">
 				            List Pump Capable Appratus:

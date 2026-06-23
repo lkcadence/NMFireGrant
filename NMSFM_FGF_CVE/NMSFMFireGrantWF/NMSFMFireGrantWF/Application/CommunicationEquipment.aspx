@@ -97,7 +97,6 @@
                     </telerik:RadGrid>
                 </div>
             </div>
-        </div>
         <div class="row">
             <div class="col-md-12">
                 <h3>Do you have interoperability with any of the following agencies?</h3>
@@ -173,7 +172,8 @@
             <div class="col-md-3">
                 <asp:TextBox ID="txtRepeaterDescription" runat="server" CssClass="form-control" ClientIDMode="Static" TextMode="MultiLine" Rows="5" Width="100%" aria-required="true"></asp:TextBox>
             </div>
-        </div> 
+        </div>
+        </div>
         <div id="dvAdmin" runat="server">
             <div class="row">
                 <hr />
@@ -262,6 +262,31 @@
             showRepeaterDesc();
         });
 
+        function clearCommunicationsFields() {
+            var numericBox = $find('ApplicationContent_txtHandheldRadios');
+            if (numericBox) { numericBox.set_value(0); }
+            numericBox = $find('ApplicationContent_txtBaseStations');
+            if (numericBox) { numericBox.set_value(0); }
+            numericBox = $find('ApplicationContent_txtMobileRadios');
+            if (numericBox) { numericBox.set_value(0); }
+            $('#rbAppNoRadioYes').prop('checked', false);
+            $('#rbAppNoRadioNo').prop('checked', false);
+            $('#rbLawEnforcementYes').prop('checked', false);
+            $('#rbLawEnforcementNo').prop('checked', false);
+            $('#rbEmergencyMedicalYes').prop('checked', false);
+            $('#rbEmergencyMedicalNo').prop('checked', false);
+            $('#rbOtherFDYes').prop('checked', false);
+            $('#rbOtherFDNo').prop('checked', false);
+            $('#rbOtherYes').prop('checked', false);
+            $('#rbOtherNo').prop('checked', false);
+            $('#rbNotCoveredYes').prop('checked', false);
+            $('#rbNotCoveredNo').prop('checked', false);
+            $('#txtOtherDescription').val('');
+            $('#txtRepeaterDescription').val('');
+            showOtherDesc();
+            showRepeaterDesc();
+        }
+
         function showCommunications() {
             var show = $('#rbCommunicationsYes').prop('checked');
             if (show == true) {
@@ -269,11 +294,7 @@
             }
             else {
                 $('#dvCommunications').fadeOut("fast");
-                $('#txtHandheldRadios').val("");
-                $('#txtBaseStations').val("");
-                $('#txtMobileRadios').val("");
-                $('#rbAppNoRadioYes').prop('checked', false);
-                $('#rbAppNoRadioYes').prop('checked', false);
+                clearCommunicationsFields();
             }
         }
 

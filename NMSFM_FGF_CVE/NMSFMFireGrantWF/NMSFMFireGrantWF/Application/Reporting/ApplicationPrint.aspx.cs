@@ -578,8 +578,8 @@ namespace NMSFMFireGrantWF.Application.Reporting
                 //        dvError.InnerHtml = "<div class='alert alert-danger'>No Data Saved</div>";
                 //    }
                 //}
-                if (model.ApparatusPartOfProject == 1) { tdApparatusPartOfProject.InnerHtml = "Yes"; }
-                if (model.ApparatusPartOfProject == 2) { tdApparatusPartOfProject.InnerHtml = "No"; }
+                if (model.ApparatusPartOfProject == 1) { tdApparatusPartOfProject.InnerHtml = "Yes"; tbApparatusPart.Visible = true; tbApparatusList.Visible = true; }
+                if (model.ApparatusPartOfProject == 2) { tdApparatusPartOfProject.InnerHtml = "No"; tbApparatusPart.Visible = false; tbApparatusList.Visible = false; }
                 if (model.PumpTestsConducted == 1)
                 {
                     tdPumpTestsConducted.InnerHtml = "Yes";

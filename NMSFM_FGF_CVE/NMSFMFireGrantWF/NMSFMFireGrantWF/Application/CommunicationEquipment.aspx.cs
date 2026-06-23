@@ -403,19 +403,19 @@ namespace NMSFMFireGrantWF.Application
                     isValid = false;
                 }
 
-                if (txtHandheldRadios.Text == "")
+                if (communicationPart == 1 && txtHandheldRadios.Text == "")
                 {
                     errorMessage += "Number of handheld radios is Required.<br />";
                     isValid = false;
                 }
 
-                if (txtBaseStations.Text == "")
+                if (communicationPart == 1 && txtBaseStations.Text == "")
                 {
                     errorMessage += "Number of base stations is Required.<br />";
                     isValid = false;
                 }
 
-                if (txtMobileRadios.Text == "")
+                if (communicationPart == 1 && txtMobileRadios.Text == "")
                 {
                     errorMessage += "Number of mobile radios is Required.<br />";
                     isValid = false;
@@ -465,7 +465,7 @@ namespace NMSFMFireGrantWF.Application
                     errorMessage += "Other Agency Interoperability answer is required.<br />";
                     isValid = false;
                 }
-                if (other == 1)
+                if (communicationPart == 1 && other == 1)
                 {
                     if (txtOtherDescription.Text == "")
                     {
@@ -482,7 +482,7 @@ namespace NMSFMFireGrantWF.Application
                     errorMessage += "Emergency Medical Interoperability answer is required.<br />";
                     isValid = false;
                 }
-                if (notCovered == 1)
+                if (communicationPart == 1 && notCovered == 1)
                 {
                     if (txtRepeaterDescription.Text == "")
                     {
@@ -491,12 +491,46 @@ namespace NMSFMFireGrantWF.Application
                     }
                 }
 
+                List<FG_App_CommunicationEquipment> communicationEquipment =
+                    (List<FG_App_CommunicationEquipment>)ViewState["dtCommunicationEquipment"];
+                if (communicationEquipment == null)
+                {
+                    communicationEquipment = new List<FG_App_CommunicationEquipment>();
+                }
+
+                if (communicationPart == 2)
+                {
+                    noRadio = 0;
+                    lawEnforcement = 0;
+                    emeergencyMedical = 0;
+                    otherFD = 0;
+                    other = 0;
+                    notCovered = 0;
+                    txtHandheldRadios.Text = "0";
+                    txtBaseStations.Text = "0";
+                    txtMobileRadios.Text = "0";
+                    rbAppNoRadioYes.Checked = false;
+                    rbAppNoRadioNo.Checked = false;
+                    rbLawEnforcementYes.Checked = false;
+                    rbLawEnforcementNo.Checked = false;
+                    rbEmergencyMedicalYes.Checked = false;
+                    rbEmergencyMedicalNo.Checked = false;
+                    rbOtherFDYes.Checked = false;
+                    rbOtherFDNo.Checked = false;
+                    rbOtherYes.Checked = false;
+                    rbOtherNo.Checked = false;
+                    rbNotCoveredYes.Checked = false;
+                    rbNotCoveredNo.Checked = false;
+                    txtOtherDescription.Text = "";
+                    txtRepeaterDescription.Text = "";
+                    communicationEquipment = new List<FG_App_CommunicationEquipment>();
+                    ViewState["dtCommunicationEquipment"] = communicationEquipment;
+                }
+
                 if (isValid == false)
                 {
                     dvError.InnerHtml = "<div class='alert alert-danger'>" + errorMessage + "</div>";
                 }
-
-                List<FG_App_CommunicationEquipment> communicationEquipment = (List<FG_App_CommunicationEquipment>)ViewState["dtCommunicationEquipment"];
 
                 var model = new DetailedFGCommunication();
 
