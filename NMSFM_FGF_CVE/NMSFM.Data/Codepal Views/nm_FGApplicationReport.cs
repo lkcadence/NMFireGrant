@@ -24,6 +24,7 @@
 		public decimal? GrantedAmount { get; set; }
 		//General Information
 		public int? IndividualDept { get; set; }
+		[Column("NFIRSID")]
 		public string NERISID { get; set; }
 		public string DepartmentName { get; set; }
 		public string FireChiefName { get; set; }

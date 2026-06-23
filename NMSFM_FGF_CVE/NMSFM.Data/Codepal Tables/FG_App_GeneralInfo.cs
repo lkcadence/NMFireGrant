@@ -14,6 +14,7 @@ namespace NMSFM.Data
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
         public int IndividualDept { get; set; }
+        [Column("NFIRSID")]
         public string NERISID { get; set; }
         public string DepartmentName { get; set; }
         public string FireChiefName { get; set; }
