@@ -105,6 +105,26 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvShowModal;
 
         /// <summary>
+        /// btnUploadPPEDocuments control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnUploadPPEDocuments;
+
+        /// <summary>
+        /// hfUploadAction control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfUploadAction;
+
+        /// <summary>
+        /// fuPPEDocumentation control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.FileUpload fuPPEDocumentation;
+
+        /// <summary>
+        /// dvPPEDocumentError control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvPPEDocumentError;
+
+        /// <summary>
         /// rgStandardComplientPPE control.
         /// </summary>
         /// <remarks>
@@ -112,6 +132,11 @@ namespace NMSFMFireGrantWF.Application
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Telerik.Web.UI.RadGrid rgStandardComplientPPE;
+
+        /// <summary>
+        /// rgPPEDocuments control.
+        /// </summary>
+        protected global::Telerik.Web.UI.RadGrid rgPPEDocuments;
 
         /// <summary>
         /// lblSCBAQuestion control.
@@ -159,6 +184,21 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvShowModal2;
 
         /// <summary>
+        /// btnUploadSCBADocuments control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnUploadSCBADocuments;
+
+        /// <summary>
+        /// fuSCBADocumentation control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.FileUpload fuSCBADocumentation;
+
+        /// <summary>
+        /// dvSCBADocumentError control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvSCBADocumentError;
+
+        /// <summary>
         /// rgStandardComplientSCBA control.
         /// </summary>
         /// <remarks>
@@ -166,6 +206,11 @@ namespace NMSFMFireGrantWF.Application
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Telerik.Web.UI.RadGrid rgStandardComplientSCBA;
+
+        /// <summary>
+        /// rgSCBADocuments control.
+        /// </summary>
+        protected global::Telerik.Web.UI.RadGrid rgSCBADocuments;
 
         /// <summary>
         /// dvAdmin control.
@@ -535,5 +580,35 @@ namespace NMSFMFireGrantWF.Application
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlButton btnSaveStandardCompliaintSCBA;
+
+        /// <summary>
+        /// pdfView control.
+        /// </summary>
+        protected global::Telerik.Web.UI.RadPdfViewer pdfView;
+
+        /// <summary>
+        /// lblEditDocumentNameError control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblEditDocumentNameError;
+
+        /// <summary>
+        /// txtEditDocumentName control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtEditDocumentName;
+
+        /// <summary>
+        /// hfEditDocumentId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfEditDocumentId;
+
+        /// <summary>
+        /// hfEditDocumentSection control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfEditDocumentSection;
+
+        /// <summary>
+        /// btnSaveDocumentName control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnSaveDocumentName;
     }
 }

@@ -75,6 +75,8 @@ namespace NMSFM.Services.FireGrant
         FG_App_DocsSigs GetApplicationDocsSigs(Guid applicationId);
         Task<bool> SaveApplicationDocsSigsAsync(DetailedFGAppSigsDocs model);
         Task<FG_App_Documents> GetApplicationDocumentByIdAsync(Guid id);
+        Task<List<FG_AppDocListItem>> GetApplicationDocumentsByTypesAsync(
+            Guid applicationId, string[] documentTypes);
         Task<bool> SaveApplicationDocumentAsync(FG_App_Documents model);
         Task<bool> DeleteApplicationDocumentAsync(Guid id);
         Task<bool> SaveApplicationSignatures(FG_App_Signatures model);

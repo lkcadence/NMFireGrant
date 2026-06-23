@@ -3699,6 +3699,41 @@ namespace NMSFM.Services.FireGrant
 			return result;
 		}
 
+		public async Task<List<FG_AppDocListItem>> GetApplicationDocumentsByTypesAsync(
+			Guid applicationId, string[] documentTypes)
+		{
+			List<FG_AppDocListItem> documentItems = new List<FG_AppDocListItem>();
+			try
+			{
+				var query = cwmContext.FG_App_Documents
+					.Where(a => a.ApplicationId == applicationId);
+
+				if (documentTypes != null && documentTypes.Length > 0)
+				{
+					query = query.Where(a => documentTypes.Contains(a.DocumentType));
+				}
+
+				var documents = await query.ToListAsync();
+				foreach (FG_App_Documents doc in documents)
+				{
+					FG_AppDocListItem docItem = new FG_AppDocListItem();
+					docItem.DocumentId = doc.DocumentId;
+					docItem.ApplicationId = doc.ApplicationId;
+					docItem.DocumentName = doc.DocumentName;
+					docItem.DocumentType = doc.DocumentType;
+					docItem.DocType = doc.DocType;
+					documentItems.Add(docItem);
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				throw ex;
+			}
+
+			return documentItems;
+		}
+
 		public async Task<bool> SaveApplicationSignatures(FG_App_Signatures model)
 		{
 			try

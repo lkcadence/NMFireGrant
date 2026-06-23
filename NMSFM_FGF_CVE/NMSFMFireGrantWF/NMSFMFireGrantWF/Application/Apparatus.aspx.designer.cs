@@ -195,6 +195,26 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvShowModal;
 
         /// <summary>
+        /// btnUploadApparatusDocuments control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnUploadApparatusDocuments;
+
+        /// <summary>
+        /// hfUploadAction control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfUploadAction;
+
+        /// <summary>
+        /// fuApparatusDocumentation control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.FileUpload fuApparatusDocumentation;
+
+        /// <summary>
+        /// dvApparatusDocumentError control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvApparatusDocumentError;
+
+        /// <summary>
         /// rgApparatus control.
         /// </summary>
         /// <remarks>
@@ -202,6 +222,11 @@ namespace NMSFMFireGrantWF.Application
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::Telerik.Web.UI.RadGrid rgApparatus;
+
+        /// <summary>
+        /// rgApparatusDocuments control.
+        /// </summary>
+        protected global::Telerik.Web.UI.RadGrid rgApparatusDocuments;
 
         /// <summary>
         /// btnBack control.
@@ -463,5 +488,30 @@ namespace NMSFMFireGrantWF.Application
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlButton btnSaveApparatus;
+
+        /// <summary>
+        /// pdfView control.
+        /// </summary>
+        protected global::Telerik.Web.UI.RadPdfViewer pdfView;
+
+        /// <summary>
+        /// lblEditDocumentNameError control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblEditDocumentNameError;
+
+        /// <summary>
+        /// txtEditDocumentName control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtEditDocumentName;
+
+        /// <summary>
+        /// hfEditDocumentId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfEditDocumentId;
+
+        /// <summary>
+        /// btnSaveDocumentName control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnSaveDocumentName;
     }
 }

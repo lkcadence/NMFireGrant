@@ -1,9 +1,14 @@
 ﻿<%@ Page Title="Fire Grant Application: Communication Equipment" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="CommunicationEquipment.aspx.cs" Inherits="NMSFMFireGrantWF.Application.CommunicationEquipment" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.worker.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ApplicationContent" runat="server">
+    <script type="text/javascript">
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.worker.js';
+    </script>
     <div class="wrapper">
         <div class="row" id="dvError" runat="server"></div>
         <div class="row formRow">
@@ -64,12 +69,21 @@
                 </div>
             </div>
             <div class="row" id="dvShowModal" runat="server">
-                <div class="col-md-3">
-                    <button type="button" id="btnShowModal" class="btn btn-primary" onclick="clearNoteId" data-toggle="modal" data-target="#communicationModal">
-                        Add Communication Equipment
-                    </button>
+                <div class="col-md-12">
+                    <button type="button" id="btnShowModal" class="btn btn-primary" onclick="clearNoteId()" data-toggle="modal" data-target="#communicationModal">
+                        Add Communication Equipment</button>
+                    &nbsp;
+                    <asp:Button ID="btnUploadCommunicationDocuments" runat="server" CssClass="btn btn-primary"
+                        Text="Upload Communication Equipment Documents"
+                        OnClientClick="triggerCommunicationFileUpload(); return false;" UseSubmitBehavior="false" />
+                    <asp:HiddenField ID="hfUploadAction" runat="server" Value="" />
+                    <asp:FileUpload ID="fuCommunicationDocumentation" runat="server"
+                        Style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;"
+                        accept=".xls,.xlsx,.csv,.pdf,.doc,.docx"
+                        onchange="onCommunicationFileSelected();" />
                 </div>
             </div>
+            <div class="row" id="dvCommunicationDocumentError" runat="server"></div>
             <div class="row" id="dvCommunicationEquip">
                 <div class="col-md-10">
                     <telerik:RadGrid ID="rgCommunicationEquipment" runat="server" AutoGenerateColumns="False" GroupPanelPosition="Top" Skin="Bootstrap" AllowPaging="True" PageSize="10" OnNeedDataSource="rgCommunicationEquipment_NeedDataSource" OnPageIndexChanged="rgCommunicationEquipment_PageIndexChanged" OnItemDataBound="rgCommunicationEquipment_ItemDataBound" OnItemCommand="rgCommunicationEquipment_ItemCommand">
@@ -97,6 +111,51 @@
                     </telerik:RadGrid>
                 </div>
             </div>
+            <div class="row" id="dvCommunicationDocuments" style="margin-bottom: 2em;">
+                <div class="col-md-12">
+                    <h4>Uploaded Communication Equipment Documents</h4>
+                    <telerik:RadGrid ID="rgCommunicationDocuments" runat="server" AutoGenerateColumns="False" GroupPanelPosition="Top" Skin="Bootstrap" AllowPaging="True" PageSize="10" OnNeedDataSource="rgCommunicationDocuments_NeedDataSource" OnPageIndexChanged="rgCommunicationDocuments_PageIndexChanged" OnItemDataBound="rgCommunicationDocuments_ItemDataBound" OnItemCommand="rgCommunicationDocuments_ItemCommand">
+                        <GroupingSettings CollapseAllTooltip="Collapse all groups"></GroupingSettings>
+                        <ClientSettings AllowKeyboardNavigation="True">
+                        </ClientSettings>
+                        <MasterTableView DataKeyNames="DocumentId">
+                            <Columns>
+                                <telerik:GridBoundColumn DataField="DocumentType" FilterControlAltText="Filter Document Type column" HeaderText="Document Type" UniqueName="DocumentType">
+                                </telerik:GridBoundColumn>
+                                <telerik:GridBoundColumn DataField="DocumentName" FilterControlAltText="Filter Document Name column" HeaderText="Document Name" UniqueName="DocumentName">
+                                </telerik:GridBoundColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Edit Name column" HeaderText="Edit Name" UniqueName="EditName">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnEditName" runat="server" Text="Edit Name" CommandName="EditName" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter View column" HeaderText="View" UniqueName="View">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnView" runat="server" Text="View Document" CommandName="View" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Download column" HeaderText="Download" UniqueName="Download">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnDownload" runat="server" Text="Download Doc" CommandName="Download" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Remove column" HeaderText="Remove" UniqueName="Remove">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnRemove" runat="server" Text="Remove" CommandName="Delete" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridBoundColumn DataField="DocumentId" FilterControlAltText="Filter DocumentId column" HeaderText="DocumentId" UniqueName="DocumentId" Display="False" Resizable="False">
+                                </telerik:GridBoundColumn>
+                            </Columns>
+                        </MasterTableView>
+                    </telerik:RadGrid>
+                </div>
+            </div>
+        <hr style="margin: 2em 0;" />
         <div class="row">
             <div class="col-md-12">
                 <h3>Do you have interoperability with any of the following agencies?</h3>
@@ -200,6 +259,45 @@
         </div>
     </div>
     <asp:HiddenField ID="hfApplicationId" runat="server" />
+    <!-- Document View Modal -->
+    <div class="modal fade" id="docModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblDocModalHeader" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width:fit-content; height:fit-content">
+            <div class="modal-content">
+                <div class="modal-header" id="modalHeaderDoc">
+                    <h4 class="modal-title" id="lblDocModalHeader">View Document</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color:lightgray">
+                    <telerik:RadPdfViewer ID="pdfView" runat="server" Width="750px" Height="900px" MaxSerializerLength="20485760">
+                    </telerik:RadPdfViewer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Document Name Modal -->
+    <div class="modal fade" id="editDocumentNameModal" tabindex="-1" role="dialog" data-backdrop="false" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Document Name</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <asp:Label ID="lblEditDocumentNameError" runat="server"></asp:Label>
+                    <asp:TextBox ID="txtEditDocumentName" runat="server" CssClass="form-control" Width="100%"></asp:TextBox>
+                    <asp:HiddenField ID="hfEditDocumentId" runat="server" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <asp:Button ID="btnSaveDocumentName" runat="server" CssClass="btn btn-primary" Text="Save" OnClick="btnSaveDocumentName_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal -->
     <div class="modal fade" id="communicationModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblCommunicationHeader" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -355,5 +453,27 @@
         $('#rbNotCoveredYes,#rbNotCoveredNo').change(function () {
             showRepeaterDesc();
         });
+
+        function triggerCommunicationFileUpload() {
+            var fileInput = document.getElementById('<%= fuCommunicationDocumentation.ClientID %>');
+            if (fileInput) {
+                fileInput.click();
+            }
+            return false;
+        }
+
+        function onCommunicationFileSelected() {
+            document.getElementById('<%= hfUploadAction.ClientID %>').value = 'COMMUNICATION';
+            document.forms[0].submit();
+        }
+
+        function openDocModal() {
+            $('#docModal').modal('show');
+            $('#modalHeaderDoc').focus();
+        }
+
+        function openEditDocumentNameModal() {
+            $('#editDocumentNameModal').modal('show');
+        }
     </script>
 </asp:Content>

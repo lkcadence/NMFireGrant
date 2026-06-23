@@ -9,6 +9,7 @@ using System.Web.UI.HtmlControls;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.IO;
+using System.Text.RegularExpressions;
 using NMSFM.Data;
 using NMSFM.ViewModels;
 using NMSFM.Services.Logging;
@@ -22,6 +23,12 @@ using NMSFM.Services.FireGrant;
 using NMSFM.Services.CPSystem;
 using NMSFM.Services.UDF;
 using Telerik.Web.UI;
+using Telerik.Windows.Documents.Common.FormatProviders;
+using Telerik.Windows.Documents.Flow.Model;
+using Telerik.Windows.Documents.Flow.FormatProviders.Docx;
+using Telerik.Windows.Documents.Flow.FormatProviders.Rtf;
+using Telerik.Windows.Documents.Flow.FormatProviders.Html;
+using Telerik.Windows.Documents.Flow.FormatProviders.Txt;
 
 namespace NMSFMFireGrantWF.Application
 {
@@ -36,6 +43,15 @@ namespace NMSFMFireGrantWF.Application
         private IFGApplicationServices fgAppService;
 
         RadMenu _rmStep1;
+
+        private const string DocTypeApparatusDocument = "Apparatus File Upload";
+        private const string ViewStateApparatusDocuments = "dtApparatusDocuments";
+        private const string SectionApparatus = "APPARATUS";
+        private static readonly string[] ApparatusDocumentTypes = { DocTypeApparatusDocument };
+        private static readonly string[] AllowedExtensions =
+            { ".xls", ".xlsx", ".csv", ".pdf", ".doc", ".docx" };
+        private const int MaxDocumentNameLength = 255;
+
         protected void Page_Init(object sender, EventArgs e)
         {
             logger = new Logging();
@@ -116,13 +132,22 @@ namespace NMSFMFireGrantWF.Application
                 _rmStep1.ItemClick += new RadMenuEventHandler(rmStep1_Click);
                 //InitTestSources();
 
+                if (Session["ApplicationId"] != null)
+                {
+                    hfApplicationId.Value = Session["ApplicationId"].ToString();
+                }
+
+                if (Page.IsPostBack)
+                {
+                    await HandlePendingFileUploadAsync();
+                }
+
                 if (!Page.IsPostBack)
                 {
                     short fiscalYear = Convert.ToInt16(Session["FiscalYear"]);
                     await LoadStatutes(fiscalYear);
-                    string appId = Session["ApplicationId"].ToString();
-                    hfApplicationId.Value = appId;
-                    if (appId != null)
+                    string appId = hfApplicationId.Value;
+                    if (!string.IsNullOrEmpty(appId))
                     {
                         Guid appIdGuid = new Guid(appId);
                         DetailedFGApparatus apparatus = new DetailedFGApparatus();
@@ -155,6 +180,7 @@ namespace NMSFMFireGrantWF.Application
                                 }
                             }
                         }
+                        await LoadApplicationDocuments(appIdGuid);
                     }
                     if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
                     {
@@ -169,6 +195,66 @@ namespace NMSFMFireGrantWF.Application
                 dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
             }
             
+        }
+
+        protected override void OnPreRender(EventArgs e)
+        {
+            base.OnPreRender(e);
+            if (Page.Form != null)
+            {
+                Page.Form.Enctype = "multipart/form-data";
+            }
+        }
+
+        private static string NormalizeInvalidText(string invalidText)
+        {
+            if (string.IsNullOrEmpty(invalidText))
+            {
+                return invalidText;
+            }
+
+            return invalidText
+                .Replace("You must list Apparatus", "Apparatus list or File Upload is required")
+                .Replace("Apparatus list is required", "Apparatus list or File Upload is required");
+        }
+
+        private async Task HandlePendingFileUploadAsync()
+        {
+            string action = hfUploadAction.Value;
+            if (string.IsNullOrEmpty(action) || action != SectionApparatus)
+            {
+                return;
+            }
+
+            try
+            {
+                if (!fuApparatusDocumentation.HasFile)
+                {
+                    dvApparatusDocumentError.InnerHtml =
+                        "<div class='alert alert-danger'>No file was received. Please try again.</div>";
+                    return;
+                }
+
+                await UploadDocumentAsync(
+                    fuApparatusDocumentation,
+                    DocTypeApparatusDocument,
+                    dvApparatusDocumentError,
+                    ApparatusDocumentTypes,
+                    ViewStateApparatusDocuments,
+                    rgApparatusDocuments);
+
+                dvError.InnerHtml = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+                dvApparatusDocumentError.InnerHtml =
+                    "<div class='alert alert-danger'>" + ex.Message + "</div>";
+            }
+            finally
+            {
+                hfUploadAction.Value = string.Empty;
+            }
         }
 
         private void DisableControls(Control con)
@@ -202,12 +288,17 @@ namespace NMSFMFireGrantWF.Application
                 RadioButton t = (RadioButton)con;
                 t.Enabled = false;
             }
+            else if (con is FileUpload)
+            {
+                con.Visible = false;
+            }
             else if (con is RadGrid)
             {
                 RadGrid g = (RadGrid)con;
                 g.Columns[0].Visible = false;
             }
             btnSave.Visible = false;
+            btnUploadApparatusDocuments.Visible = false;
             dvShowModal.Visible = false;
         }
 
@@ -258,7 +349,8 @@ namespace NMSFMFireGrantWF.Application
                 {
                     if (model.InvalidText != null)
                     {
-                        dvError.InnerHtml = "<div class='alert alert-danger'>" + model.InvalidText + "</div>";
+                        string invalidText = NormalizeInvalidText(model.InvalidText);
+                        dvError.InnerHtml = "<div class='alert alert-danger'>" + invalidText + "</div>";
                     }
                     else
                     {
@@ -481,14 +573,24 @@ namespace NMSFMFireGrantWF.Application
                     ViewState["dtApparatusEquipment"] = apparatusEquipment;
                 }
 
-                if (apparatusPart == 1 && apparatusEquipment.Count < 1)
+                if (apparatusPart == 1)
                 {
-                    errorMessage += "You must list Apparatus<br />";
-                    isValid = false;
+                    Guid appId = new Guid(hfApplicationId.Value);
+                    List<FG_AppDocListItem> apparatusDocuments =
+                        await fgAppService.GetApplicationDocumentsByTypesAsync(
+                            appId, ApparatusDocumentTypes);
+                    bool hasApparatusList = apparatusEquipment != null && apparatusEquipment.Count >= 1;
+                    bool hasDocuments = apparatusDocuments != null && apparatusDocuments.Count >= 1;
+                    if (!hasApparatusList && !hasDocuments)
+                    {
+                        errorMessage += "Apparatus list or File Upload is required<br />";
+                        isValid = false;
+                    }
                 }
 
                 if (isValid == false)
                 {
+                    errorMessage = NormalizeInvalidText(errorMessage);
                     dvError.InnerHtml = "<div class='alert alert-danger'>" + errorMessage + "</div>";
                 }
 
@@ -497,7 +599,7 @@ namespace NMSFMFireGrantWF.Application
                 model.ApplicationId = new Guid(hfApplicationId.Value);
 
                 model.IsValid = isValid;
-                model.InvalidText = errorMessage;
+                model.InvalidText = NormalizeInvalidText(errorMessage);
                 model.UpdatedBy = Session["WebUser"].ToString();
                 model.ApparatusPartOfProject = apparatusPart;
                 model.PumpTestsConducted = pumpTests;
@@ -856,6 +958,374 @@ namespace NMSFMFireGrantWF.Application
                 lblApparatusError.Text = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
                 System.Web.UI.ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "openApparatusModal();", true);
             }
+        }
+
+        private async Task LoadApplicationDocuments(Guid applicationId)
+        {
+            List<FG_AppDocListItem> docs =
+                await fgAppService.GetApplicationDocumentsByTypesAsync(
+                    applicationId, ApparatusDocumentTypes);
+            ViewState[ViewStateApparatusDocuments] = docs;
+            rgApparatusDocuments.DataSource = docs;
+            rgApparatusDocuments.DataBind();
+        }
+
+        private List<FG_AppDocListItem> GetDocumentListFromViewState(string viewStateKey)
+        {
+            if (ViewState[viewStateKey] != null)
+            {
+                return (List<FG_AppDocListItem>)ViewState[viewStateKey];
+            }
+            return new List<FG_AppDocListItem>();
+        }
+
+        private async Task UploadDocumentAsync(
+            FileUpload upload,
+            string documentType,
+            HtmlGenericControl errorDiv,
+            string[] sectionDocumentTypes,
+            string viewStateKey,
+            RadGrid grid)
+        {
+            errorDiv.InnerHtml = string.Empty;
+
+            if (string.IsNullOrWhiteSpace(documentType))
+            {
+                throw new Exception("Document Type is required.<br />");
+            }
+            if (!upload.HasFile)
+            {
+                throw new Exception("You must select a file to upload.<br />");
+            }
+
+            HttpPostedFile file = upload.PostedFile;
+            string fileName = Path.GetFileName(file.FileName);
+            if (string.IsNullOrWhiteSpace(fileName))
+            {
+                throw new Exception("You must select a file to upload.<br />");
+            }
+            if (fileName.Length > MaxDocumentNameLength)
+            {
+                throw new Exception(
+                    "File name must be " + MaxDocumentNameLength + " characters or less. " +
+                    "Please rename the file and try again.<br />");
+            }
+
+            string extension = Path.GetExtension(fileName).ToLowerInvariant();
+            if (!AllowedExtensions.Contains(extension))
+            {
+                throw new Exception(
+                    "File type not allowed. Allowed types: .xls, .xlsx, .csv, .pdf, .doc, .docx<br />");
+            }
+
+            if (file.ContentLength > 10000000)
+            {
+                throw new Exception("File size must be 10MB or less.<br />");
+            }
+
+            byte[] fileData = new byte[file.ContentLength];
+            int bytesRead = file.InputStream.Read(fileData, 0, file.ContentLength);
+            if (bytesRead != file.ContentLength)
+            {
+                throw new Exception("Unable to read the uploaded file.<br />");
+            }
+
+            Guid appId = new Guid(hfApplicationId.Value);
+            FG_App_Documents doc = new FG_App_Documents();
+            doc.DocumentId = Guid.NewGuid();
+            doc.ApplicationId = appId;
+            doc.DocumentType = documentType;
+            doc.DocumentName = fileName;
+            doc.Document = fileData;
+            doc.DocType = extension;
+
+            bool saved = await fgAppService.SaveApplicationDocumentAsync(doc);
+            if (!saved)
+            {
+                throw new Exception(
+                    "An error occurred saving " + fileName +
+                    ". Please try again or use a shorter file name.<br />");
+            }
+
+            List<FG_AppDocListItem> docs =
+                await fgAppService.GetApplicationDocumentsByTypesAsync(appId, sectionDocumentTypes);
+            ViewState[viewStateKey] = docs;
+            grid.DataSource = docs;
+            grid.DataBind();
+
+            errorDiv.InnerHtml =
+                "<div class='alert alert-success'>" + doc.DocumentName + " has been added.</div>";
+        }
+
+        protected void rgApparatusDocuments_NeedDataSource(object sender, GridNeedDataSourceEventArgs e)
+        {
+            rgApparatusDocuments.DataSource = GetDocumentListFromViewState(ViewStateApparatusDocuments);
+        }
+
+        protected void rgApparatusDocuments_PageIndexChanged(object sender, GridPageChangedEventArgs e)
+        {
+            rgApparatusDocuments.DataSource = GetDocumentListFromViewState(ViewStateApparatusDocuments);
+            rgApparatusDocuments.DataBind();
+        }
+
+        protected void rgApparatusDocuments_ItemDataBound(object sender, GridItemEventArgs e)
+        {
+            HideDocumentActionColumnsIfReadOnly(e);
+        }
+
+        protected async void rgApparatusDocuments_ItemCommand(object sender, GridCommandEventArgs e)
+        {
+            await HandleDocumentGridCommand(e);
+        }
+
+        private void HideDocumentActionColumnsIfReadOnly(GridItemEventArgs e)
+        {
+            if (Session["ReadOnly"] == null || !Convert.ToBoolean(Session["ReadOnly"]))
+            {
+                return;
+            }
+            if (e.Item is GridDataItem)
+            {
+                GridDataItem item = (GridDataItem)e.Item;
+                LinkButton btnEditName = item.FindControl("btnEditName") as LinkButton;
+                LinkButton btnRemove = item.FindControl("btnRemove") as LinkButton;
+                if (btnEditName != null) { btnEditName.Visible = false; }
+                if (btnRemove != null) { btnRemove.Visible = false; }
+            }
+        }
+
+        private async Task HandleDocumentGridCommand(GridCommandEventArgs e)
+        {
+            try
+            {
+                dvApparatusDocumentError.InnerHtml = string.Empty;
+                if (!(e.Item is GridDataItem))
+                {
+                    return;
+                }
+
+                string pId = e.CommandArgument.ToString();
+                Guid docId = new Guid(pId);
+
+                if (e.CommandName == "Delete")
+                {
+                    bool deleted = await fgAppService.DeleteApplicationDocumentAsync(docId);
+                    if (deleted)
+                    {
+                        string docName = "";
+                        List<FG_AppDocListItem> docs =
+                            GetDocumentListFromViewState(ViewStateApparatusDocuments);
+                        for (int i = 0; i < docs.Count; i++)
+                        {
+                            if (docs[i].DocumentId.ToString() == pId)
+                            {
+                                docName = docs[i].DocumentName;
+                                docs.RemoveAt(i);
+                                break;
+                            }
+                        }
+                        ViewState[ViewStateApparatusDocuments] = docs;
+                        rgApparatusDocuments.DataSource = docs;
+                        rgApparatusDocuments.DataBind();
+                        dvApparatusDocumentError.InnerHtml =
+                            "<div class='alert alert-success'>" + docName + " has been removed.</div>";
+                    }
+                    else
+                    {
+                        dvApparatusDocumentError.InnerHtml =
+                            "<div class='alert alert-danger'>An error occurred removing the document.</div>";
+                    }
+                }
+                else if (e.CommandName == "View")
+                {
+                    await ViewDocumentAsync(pId);
+                }
+                else if (e.CommandName == "Download")
+                {
+                    await DownloadDocumentAsync(pId);
+                }
+                else if (e.CommandName == "EditName")
+                {
+                    List<FG_AppDocListItem> docs =
+                        GetDocumentListFromViewState(ViewStateApparatusDocuments);
+                    FG_AppDocListItem docItem = docs.FirstOrDefault(d => d.DocumentId == docId);
+                    if (docItem != null)
+                    {
+                        hfEditDocumentId.Value = docId.ToString();
+                        txtEditDocumentName.Text = docItem.DocumentName;
+                        lblEditDocumentNameError.Text = "";
+                        System.Web.UI.ScriptManager.RegisterStartupScript(
+                            this, this.GetType(), "EditDocName", "openEditDocumentNameModal();", true);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+                dvApparatusDocumentError.InnerHtml =
+                    "<div class='alert alert-danger'>" + ex.Message + "</div>";
+            }
+        }
+
+        protected async void btnSaveDocumentName_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                lblEditDocumentNameError.Text = "";
+                if (string.IsNullOrWhiteSpace(txtEditDocumentName.Text))
+                {
+                    throw new Exception("Document Name is required.");
+                }
+
+                Guid docId = new Guid(hfEditDocumentId.Value);
+                FG_App_Documents doc = await fgAppService.GetApplicationDocumentByIdAsync(docId);
+                if (doc == null)
+                {
+                    throw new Exception("Document not found.");
+                }
+
+                doc.DocumentName = txtEditDocumentName.Text.Trim();
+                bool saved = await fgAppService.SaveApplicationDocumentAsync(doc);
+                if (!saved)
+                {
+                    throw new Exception("An error occurred saving the document name.");
+                }
+
+                Guid appId = new Guid(hfApplicationId.Value);
+                List<FG_AppDocListItem> docs =
+                    await fgAppService.GetApplicationDocumentsByTypesAsync(
+                        appId, ApparatusDocumentTypes);
+                ViewState[ViewStateApparatusDocuments] = docs;
+                rgApparatusDocuments.DataSource = docs;
+                rgApparatusDocuments.DataBind();
+
+                dvApparatusDocumentError.InnerHtml =
+                    "<div class='alert alert-success'>Document name has been updated.</div>";
+                System.Web.UI.ScriptManager.RegisterStartupScript(
+                    this, this.GetType(), "CloseEditDoc", "$('#editDocumentNameModal').modal('hide');", true);
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+                lblEditDocumentNameError.Text =
+                    "<div class='alert alert-danger'>" + ex.Message + "</div>";
+                System.Web.UI.ScriptManager.RegisterStartupScript(
+                    this, this.GetType(), "EditDocName", "openEditDocumentNameModal();", true);
+            }
+        }
+
+        private async Task ViewDocumentAsync(string docId)
+        {
+            Guid id = new Guid(docId);
+            FG_App_Documents doc = await fgAppService.GetApplicationDocumentByIdAsync(id);
+            if (doc == null)
+            {
+                throw new Exception("Document not found.");
+            }
+
+            byte[] bytes = doc.Document;
+            string fileName = doc.DocumentName;
+            string extension = GetExtension(fileName).ToLowerInvariant();
+            byte[] renderedBytes = bytes;
+
+            if (Regex.IsMatch(extension, @"\.(docx|rtf|html|txt|pdf)$"))
+            {
+                if (Regex.IsMatch(extension, @"\.(docx|rtf|html|txt)$"))
+                {
+                    IFormatProvider<RadFlowDocument> provider = null;
+                    MemoryStream stream = new MemoryStream(bytes);
+                    switch (extension)
+                    {
+                        case ".docx": provider = new DocxFormatProvider(); break;
+                        case ".rtf": provider = new RtfFormatProvider(); break;
+                        case ".html": provider = new HtmlFormatProvider(); break;
+                        case ".txt": provider = new TxtFormatProvider(); break;
+                    }
+                    if (provider != null)
+                    {
+                        RadFlowDocument document = provider.Import(stream);
+                        Telerik.Windows.Documents.Flow.FormatProviders.Pdf.PdfFormatProvider pdfProvider =
+                            new Telerik.Windows.Documents.Flow.FormatProviders.Pdf.PdfFormatProvider();
+                        using (MemoryStream ms = new MemoryStream())
+                        {
+                            pdfProvider.Export(document, ms);
+                            renderedBytes = ms.ToArray();
+                        }
+                    }
+                }
+                pdfView.PdfjsProcessingSettings.FileSettings.Data =
+                    Convert.ToBase64String(renderedBytes);
+                System.Web.UI.ScriptManager.RegisterStartupScript(
+                    this, this.GetType(), "Pop", "openDocModal();", true);
+            }
+            else
+            {
+                dvApparatusDocumentError.InnerHtml =
+                    "<div class='alert alert-info'>Preview is not available for this file type. " +
+                    "Please use Download instead.</div>";
+            }
+        }
+
+        private async Task DownloadDocumentAsync(string docId)
+        {
+            Guid id = new Guid(docId);
+            FG_App_Documents doc = await fgAppService.GetApplicationDocumentByIdAsync(id);
+            if (doc == null)
+            {
+                throw new Exception("Document not found.");
+            }
+
+            byte[] bytes = doc.Document;
+            string fileName = doc.DocumentName;
+            string extension = GetExtension(fileName).ToLowerInvariant();
+            string contentType = GetContentType(extension);
+
+            Response.Clear();
+            Response.Buffer = true;
+            Response.Charset = "";
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.ContentType = contentType;
+            Response.AppendHeader("Content-Disposition", "attachment; filename=" + fileName);
+            Response.BinaryWrite(bytes);
+            Response.Flush();
+            Response.End();
+        }
+
+        private static string GetContentType(string extension)
+        {
+            switch (extension)
+            {
+                case ".doc":
+                    return "application/vnd.ms-word";
+                case ".docx":
+                    return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+                case ".xls":
+                    return "application/vnd.ms-excel";
+                case ".xlsx":
+                    return "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+                case ".csv":
+                    return "text/csv";
+                case ".pdf":
+                    return "application/pdf";
+                default:
+                    return "application/octet-stream";
+            }
+        }
+
+        private static string GetExtension(string path)
+        {
+            var ret = "";
+            for (; ; )
+            {
+                var ext = Path.GetExtension(path);
+                if (String.IsNullOrEmpty(ext))
+                {
+                    break;
+                }
+                path = path.Substring(0, path.Length - ext.Length);
+                ret = ext + ret;
+            }
+            return ret;
         }
     }
 }
