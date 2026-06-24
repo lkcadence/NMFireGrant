@@ -770,7 +770,8 @@
                     </tr>
                     </tbody>
                 </table>
-                <table id="tbApparatusList" runat="server" class="sectionTable" style="margin-top:0px !important; border-top:none">
+                <div id="tbApparatusList" runat="server">
+                <table class="sectionTable" style="margin-top:0px !important; border-top:none">
                     <tr>
                         <td colspan="7" class="rowHeader">
 				            List Pump Capable Appratus:
@@ -810,6 +811,7 @@
                     </tr>
                     <asp:Literal ID="ltrApparatusDetails" runat="server"></asp:Literal>
                 </table>
+                </div>
             </div>
             <div style='page-break-before:always'></div>
             <div id="dvCommunicationEquipment">
