@@ -24,15 +24,6 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvError;
 
         /// <summary>
-        /// btnAccept control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAccept;
-
-        /// <summary>
         /// ltrInstructions control.
         /// </summary>
         /// <remarks>
@@ -42,12 +33,39 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.WebControls.Literal ltrInstructions;
 
         /// <summary>
-        /// btnAccept2 control.
+        /// dvAcknowledgment control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnAccept2;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvAcknowledgment;
+
+        /// <summary>
+        /// chkInstructionsRead control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.CheckBox chkInstructionsRead;
+
+        /// <summary>
+        /// lblInstructionsAck control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblInstructionsAck;
+
+        /// <summary>
+        /// btnContinue control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnContinue;
     }
 }

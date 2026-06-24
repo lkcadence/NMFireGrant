@@ -113,8 +113,8 @@ namespace NMSFMFireGrantWF.Application
                     await LoadAppInfo();
                     if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
                     {
-                        btnAccept.Visible = false;
-                        btnAccept2.Visible = false;
+                        dvAcknowledgment.Visible = false;
+                        btnContinue.Visible = false;
                     }
                 }
             }
@@ -141,22 +141,22 @@ namespace NMSFMFireGrantWF.Application
                 {
                     if (DateTime.Now < result.StartDate || DateTime.Now > result.EndDate.AddMinutes(1339))
                     {
-                        btnAccept.Visible = false;
-                        btnAccept2.Visible = false;
+                        dvAcknowledgment.Visible = false;
+                        btnContinue.Visible = false;
                     }
                     if (Session["WebUser"].ToString() == "tuser@test.com")
                     {
                         if (DateTime.Now > Convert.ToDateTime("6/22/2024") && DateTime.Now < Convert.ToDateTime("6/26/2024"))
                         {
-                            btnAccept.Visible = true;
-                            btnAccept2.Visible = true;
+                            dvAcknowledgment.Visible = true;
+                            btnContinue.Visible = true;
                         }
                     }
                 }
                 else
                 {
-                    btnAccept.Visible = false;
-                    btnAccept2.Visible = false;
+                    dvAcknowledgment.Visible = false;
+                    btnContinue.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -183,8 +183,13 @@ namespace NMSFMFireGrantWF.Application
                 {
                     if (existingApp.InstructionsSubmitted)
                     {
-                        btnAccept.Text = "Go To Application";
-                        btnAccept2.Text = "Go To Application";
+                        btnContinue.Text = "Go To Application";
+                        dvAcknowledgment.Visible = false;
+                    }
+                    else
+                    {
+                        btnContinue.Text = "Continue to Application";
+                        dvAcknowledgment.Visible = true;
                     }
                     if (Session["Role"].ToString() == "External")
                     {
@@ -197,6 +202,11 @@ namespace NMSFMFireGrantWF.Application
                             Session["ReadOnly"] = true;
                         }
                     }
+                }
+                else
+                {
+                    btnContinue.Text = "Continue to Application";
+                    dvAcknowledgment.Visible = true;
                 }
             }
             catch (Exception ex)
@@ -261,33 +271,40 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
-        protected async void btnAccept_Click(object sender, EventArgs e)
+        protected async void btnContinue_Click(object sender, EventArgs e)
         {
-            if (btnAccept.Text == "Go To Application")
+            if (btnContinue.Text == "Go To Application")
             {
                 Response.Redirect("~/Application/GeneralInformation", false);
+                return;
             }
-            else
+
+            if (!chkInstructionsRead.Checked)
             {
-                //ToDo Create the Application
-                try
+                dvError.InnerHtml = "<div class='col-md-10'><span class='alert alert-error'>"
+                    + "You must confirm that you have read and understand the instructions before continuing."
+                    + "</span></div>";
+                dvError.Focus();
+                return;
+            }
+
+            try
+            {
+                if (await SaveForm() == true)
                 {
-                    if (await SaveForm() == true)
-                    {
-                        Response.Redirect("~/Application/GeneralInformation", false);
-                    }
-                    else
-                    {
-                        dvError.InnerHtml = "<div class='col-md-10'><span class='alert alert-error'>Error Creating New Application</span></div>";
-                        dvError.Focus();
-                    }
+                    Response.Redirect("~/Application/GeneralInformation", false);
                 }
-                catch (Exception ex)
-            {
-                _ = ex;
-                    dvError.InnerHtml = "<div class='col-md-10'><span class='alert alert-error'>" + ex.Message.ToString() + "</span></div>";
+                else
+                {
+                    dvError.InnerHtml = "<div class='col-md-10'><span class='alert alert-error'>Error Creating New Application</span></div>";
                     dvError.Focus();
                 }
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+                dvError.InnerHtml = "<div class='col-md-10'><span class='alert alert-error'>" + ex.Message.ToString() + "</span></div>";
+                dvError.Focus();
             }
         }
 
@@ -342,9 +359,3 @@ namespace NMSFMFireGrantWF.Application
         }
     }
 }
-
-
-
-
-
-
