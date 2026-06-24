@@ -13,6 +13,7 @@ namespace NMSFM.Data
         [Key]
         public Guid Id { get; set; }
         public Guid ApplicationId { get; set; }
+        [Column("NFIRSCurrent")]
         public int NERISCurrent { get; set; }
         public int ResponseStructure { get; set; }
         public int ResponseVehicle { get; set; }

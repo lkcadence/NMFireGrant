@@ -71,6 +71,7 @@
 		public int? ResidentPopulation { get; set; }
 		public int? AidAgreements { get; set; }
 		//Response History
+		[Column("NFIRSCurrent")]
 		public int? NERISCurrent { get; set; }
 		public int? ResponseStructure { get; set; }
 		public int? ResponseVehicle { get; set; }
@@ -131,6 +132,7 @@
 		public decimal? AmountRequested { get; set; }
 		public decimal? StipendAmount { get; set; }
 		//Application Review
+		[Column("NFIRSCompliant")]
 		public int? NERISCompliant { get; set; }
 		public int? PumpTestCompliant { get; set; }
 		//Application Scores
