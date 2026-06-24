@@ -18,7 +18,7 @@
         </div>
         <div class="row">
             <div class="col-md-12">
-                <asp:Literal ID="ltrInstructions" runat="server" Text=""></asp:Literal>
+                <asp:Literal ID="ltrInstructions" runat="server" Mode="PassThrough" Text=""></asp:Literal>
             </div>
         </div>
         <div class="row">

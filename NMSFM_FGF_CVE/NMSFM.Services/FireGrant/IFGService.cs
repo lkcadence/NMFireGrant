@@ -9,6 +9,7 @@ namespace NMSFM.Services.FireGrant
     public interface IFGService
     {
         Task<FGApplicationSettings> GetFireGrantAppSettings(short year);
+        Task<string> GetApplicationInstructionsAsync(short year);
         Task<List<FG_Categories>> GetFGCategories();
         Task<FG_Categories> GetFGCategory(int categoryId);
         Task<List<FG_FDIDs>> GetFG_FDIDs();

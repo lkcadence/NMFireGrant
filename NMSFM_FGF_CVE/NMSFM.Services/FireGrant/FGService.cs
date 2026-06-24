@@ -65,6 +65,40 @@ namespace NMSFM.Services.FireGrant
 			return result;
 		}
 
+		public async Task<string> GetApplicationInstructionsAsync(short year)
+		{
+			try
+			{
+				FGApplicationSettings settings = await GetFireGrantAppSettings(year);
+				if (!string.IsNullOrWhiteSpace(settings?.ApplicationInstructions))
+				{
+					return settings.ApplicationInstructions;
+				}
+
+				List<FGApplicationSettings> priorSettings = await cwmContext.FGApplicationSettings
+					.Where(s => s.FiscalYear < year)
+					.OrderByDescending(s => s.FiscalYear)
+					.ToListAsync();
+
+				foreach (FGApplicationSettings prior in priorSettings)
+				{
+					if (!string.IsNullOrWhiteSpace(prior.ApplicationInstructions))
+					{
+						return prior.ApplicationInstructions;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				logger.Error(
+					"Unexpected exception caught while retrieving Application Instructions for Year '"
+					+ year.ToString() + "'.",
+					ex);
+			}
+
+			return null;
+		}
+
 		public async Task<List<FG_Categories>> GetFGCategories()
 		{
 			List<FG_Categories> result = null;

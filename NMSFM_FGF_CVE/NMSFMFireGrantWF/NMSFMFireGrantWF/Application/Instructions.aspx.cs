@@ -109,8 +109,8 @@ namespace NMSFMFireGrantWF.Application
                 short fiscalYear = Convert.ToInt16(Session["FiscalYear"]);
                 if (!Page.IsPostBack)
                 {
-                    LoadInstructions(fiscalYear);
-                    LoadAppInfo();
+                    await LoadInstructions(fiscalYear);
+                    await LoadAppInfo();
                     if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
                     {
                         btnAccept.Visible = false;
@@ -126,18 +126,19 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
-        private async void LoadInstructions(short fYear)
+        private async Task LoadInstructions(short fYear)
         {
             try
             {
-                FGApplicationSettings result = null;
-                result = await fgService.GetFireGrantAppSettings(fYear);
+                FGApplicationSettings result = await fgService.GetFireGrantAppSettings(fYear);
+                string instructions = await fgService.GetApplicationInstructionsAsync(fYear);
+                if (!string.IsNullOrWhiteSpace(instructions))
+                {
+                    ltrInstructions.Text = instructions;
+                }
+
                 if (result != null)
                 {
-                    if (result.ApplicationInstructions != null)
-                    {
-                        ltrInstructions.Text = result.ApplicationInstructions;
-                    }
                     if (DateTime.Now < result.StartDate || DateTime.Now > result.EndDate.AddMinutes(1339))
                     {
                         btnAccept.Visible = false;
@@ -165,7 +166,7 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
-        private async void LoadAppInfo()
+        private async Task LoadAppInfo()
         {
             try
             {
