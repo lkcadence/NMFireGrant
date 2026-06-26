@@ -1,9 +1,14 @@
 ﻿<%@ Page Title="Fire Grant Application: Apparatus" Language="C#" MasterPageFile="~/Application/ApplicationMstr.Master" AutoEventWireup="true" CodeBehind="Apparatus.aspx.cs" Inherits="NMSFMFireGrantWF.Application.Apparatus" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="head" runat="server">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.worker.js"></script>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MenuContent" runat="server">
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="ApplicationContent" runat="server">
+    <script type="text/javascript">
+        window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.2.2/pdf.worker.js';
+    </script>
     <div class="wrapper">
         <div class="row" id="dvError" runat="server"></div>
         <div class="row formRow">
@@ -17,6 +22,7 @@
                 </fieldset>
             </div>
         </div>
+        <div id="dvApparatusDetails" style="display:none">
         <div class="row formRow" id="dvPumpTestsConducted">
             <div class="col-md-4">
                 <asp:Label ID="lblPumpTestsConducted" runat="server" Text="Are pump tests conducted annually on apparatus? *" AssociatedControlID="fldPumpTestsConducted"></asp:Label>
@@ -101,19 +107,28 @@
         <div class="row">
             <hr />
         </div>
-        <div id="dvApparatus" style="display:none">
+        <div id="dvApparatus">
             <div class="row" id="dvListApparatusHead">
                 <div class="col-md-12">
                     <h3>LIST ALL APPARATUS *</h3>
                 </div>
             </div>
             <div class="row" id="dvAddApparatusButton">
-                <div class="col-md-3" id="dvShowModal" runat="server">
-                    <button type="button" id="btnShowModal" class="btn btn-primary" onclick="clearNoteId" data-toggle="modal" data-target="#apparatusModal">
-                        Add Apparatus
-                    </button>
+                <div class="col-md-12" id="dvShowModal" runat="server">
+                    <button type="button" id="btnShowModal" class="btn btn-primary" onclick="clearNoteId()" data-toggle="modal" data-target="#apparatusModal">
+                        Add Apparatus</button>
+                    &nbsp;
+                    <asp:Button ID="btnUploadApparatusDocuments" runat="server" CssClass="btn btn-primary"
+                        Text="Upload Apparatus Documents"
+                        OnClientClick="triggerApparatusFileUpload(); return false;" UseSubmitBehavior="false" />
+                    <asp:HiddenField ID="hfUploadAction" runat="server" Value="" />
+                    <asp:FileUpload ID="fuApparatusDocumentation" runat="server"
+                        Style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;"
+                        accept=".xls,.xlsx,.csv,.pdf,.doc,.docx"
+                        onchange="onApparatusFileSelected();" />
                 </div>
             </div>
+            <div class="row" id="dvApparatusDocumentError" runat="server"></div>
             <div class="row" id="dvApparatusList">
                 <div class="col-md-12">
                     <telerik:RadGrid ID="rgApparatus" runat="server" AutoGenerateColumns="False" GroupPanelPosition="Top" Skin="Bootstrap" AllowPaging="True" PageSize="10" OnNeedDataSource="rgApparatus_NeedDataSource" OnPageIndexChanged="rgApparatus_PageIndexChanged" OnItemDataBound="rgApparatus_ItemDataBound" OnItemCommand="rgApparatus_ItemCommand">
@@ -159,9 +174,54 @@
                     </telerik:RadGrid>
                 </div>
             </div>
+            <div class="row" id="dvApparatusDocuments" style="margin-bottom: 2em;">
+                <div class="col-md-12">
+                    <h4>Uploaded Apparatus Documents</h4>
+                    <telerik:RadGrid ID="rgApparatusDocuments" runat="server" AutoGenerateColumns="False" GroupPanelPosition="Top" Skin="Bootstrap" AllowPaging="True" PageSize="10" OnNeedDataSource="rgApparatusDocuments_NeedDataSource" OnPageIndexChanged="rgApparatusDocuments_PageIndexChanged" OnItemDataBound="rgApparatusDocuments_ItemDataBound" OnItemCommand="rgApparatusDocuments_ItemCommand">
+                        <GroupingSettings CollapseAllTooltip="Collapse all groups"></GroupingSettings>
+                        <ClientSettings AllowKeyboardNavigation="True">
+                        </ClientSettings>
+                        <MasterTableView DataKeyNames="DocumentId">
+                            <Columns>
+                                <telerik:GridBoundColumn DataField="DocumentType" FilterControlAltText="Filter Document Type column" HeaderText="Document Type" UniqueName="DocumentType">
+                                </telerik:GridBoundColumn>
+                                <telerik:GridBoundColumn DataField="DocumentName" FilterControlAltText="Filter Document Name column" HeaderText="Document Name" UniqueName="DocumentName">
+                                </telerik:GridBoundColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Edit Name column" HeaderText="Edit Name" UniqueName="EditName">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnEditName" runat="server" Text="Edit Name" CommandName="EditName" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter View column" HeaderText="View" UniqueName="View">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnView" runat="server" Text="View Document" CommandName="View" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Download column" HeaderText="Download" UniqueName="Download">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnDownload" runat="server" Text="Download Doc" CommandName="Download" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Remove column" HeaderText="Remove" UniqueName="Remove">
+                                    <ItemTemplate>
+                                        <asp:LinkButton ID="btnRemove" runat="server" Text="Remove" CommandName="Delete" CommandArgument='<%# Eval("DocumentId") %>'>
+                                        </asp:LinkButton>
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
+                                <telerik:GridBoundColumn DataField="DocumentId" FilterControlAltText="Filter DocumentId column" HeaderText="DocumentId" UniqueName="DocumentId" Display="False" Resizable="False">
+                                </telerik:GridBoundColumn>
+                            </Columns>
+                        </MasterTableView>
+                    </telerik:RadGrid>
+                </div>
+            </div>
             <div class="row">
                 <hr />
             </div>
+        </div>
         </div>
             
         <div class="row">
@@ -174,6 +234,45 @@
         </div>
     </div>
     <asp:HiddenField ID="hfApplicationId" runat="server" />
+    <!-- Document View Modal -->
+    <div class="modal fade" id="docModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblDocModalHeader" aria-hidden="true">
+        <div class="modal-dialog" role="document" style="width:fit-content; height:fit-content">
+            <div class="modal-content">
+                <div class="modal-header" id="modalHeaderDoc">
+                    <h4 class="modal-title" id="lblDocModalHeader">View Document</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body" style="background-color:lightgray">
+                    <telerik:RadPdfViewer ID="pdfView" runat="server" Width="750px" Height="900px" MaxSerializerLength="20485760">
+                    </telerik:RadPdfViewer>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Edit Document Name Modal -->
+    <div class="modal fade" id="editDocumentNameModal" tabindex="-1" role="dialog" data-backdrop="false" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Document Name</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <asp:Label ID="lblEditDocumentNameError" runat="server"></asp:Label>
+                    <asp:TextBox ID="txtEditDocumentName" runat="server" CssClass="form-control" Width="100%"></asp:TextBox>
+                    <asp:HiddenField ID="hfEditDocumentId" runat="server" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
+                    <asp:Button ID="btnSaveDocumentName" runat="server" CssClass="btn btn-primary" Text="Save" OnClick="btnSaveDocumentName_Click" />
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- Modal -->
     <div class="modal fade" id="apparatusModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblApparatusHeader" aria-hidden="true">
         <div class="modal-dialog" role="document">
@@ -318,35 +417,33 @@
 
         $(document).ready(function () {
             showApparatusDelete();
-            showAddApparatus();
+            showApparatusDetails();
             showNoHoseTest();
             showNoPumpTest();
             isTestRequired();
         });
 
-        function showAddApparatus() {
+        function clearApparatusDetailFields() {
+            $('#rbPumpTestsConductedYes').prop('checked', false);
+            $('#rbPumpTestsConductedNo').prop('checked', false);
+            $('#rbHoseTestsYes').prop('checked', false);
+            $('#rbHoseTestsNo').prop('checked', false);
+            $('#ApplicationContent_txtNoPumpTestsExp').val('');
+            $('#ApplicationContent_txtNoHoseTests').val('');
+            $('#dvNoPumpTestsExp').hide();
+            $('#dvNoHoseTests').hide();
+            clearNoteId();
+        }
+
+        function showApparatusDetails() {
             var show = $('#rbApparatusPartYes').prop('checked');
             if (show == true) {
-                $('#dvApparatus').fadeIn("slow");
-                //$('#dvPumpTestsConducted').fadeIn("slow");
-                //$('#dvHoseTests').fadeIn("slow");
-                //$('#dvAddApparatusButton').fadeIn("slow");
-                //$('#dvApparatusList').fadeIn("slow");
+                $('#dvApparatusDetails').fadeIn("slow");
             }
             else {
-                //$('#rbPumpTestsConductedYes').prop('checked', false);
-                //$('#rbPumpTestsConductedNo').prop('checked', false);
-                //$('#dvPumpTestsConducted').fadeOut("slow");
-                //$('#dvNoPumpTestsExp').fadeOut("slow");
-                //$('#dvHoseTests').fadeOut("slow");
-                ////$('#rbHoseTestsYes').prop('checked', false);
-                //$('#rbHoseTestsNo').prop('checked', false);
-                //$('#dvNoHoseTests').fadeOut("slow");
-                $('#dvApparatus').fadeOut("slow");
-                //$('#dvAddApparatusButton').fadeOut("slow");
-                //$('#dvApparatusList').fadeOut("slow");
+                $('#dvApparatusDetails').fadeOut("fast");
+                clearApparatusDetailFields();
             }
-            
         }
 
         function showNoPumpTest() {
@@ -418,7 +515,7 @@
         }
 
         $('#rbApparatusPartYes,#rbApparatusPartNo').change(function () {
-            showAddApparatus();
+            showApparatusDetails();
         });
 
         $('#rbPumpTestsConductedYes,#rbPumpTestsConductedNo').change(function () {
@@ -432,5 +529,27 @@
         $('#rbHoseTestsYes,#rbHoseTestsNo').change(function () {
             showNoHoseTest();
         });
+
+        function triggerApparatusFileUpload() {
+            var fileInput = document.getElementById('<%= fuApparatusDocumentation.ClientID %>');
+            if (fileInput) {
+                fileInput.click();
+            }
+            return false;
+        }
+
+        function onApparatusFileSelected() {
+            document.getElementById('<%= hfUploadAction.ClientID %>').value = 'APPARATUS';
+            document.forms[0].submit();
+        }
+
+        function openDocModal() {
+            $('#docModal').modal('show');
+            $('#modalHeaderDoc').focus();
+        }
+
+        function openEditDocumentNameModal() {
+            $('#editDocumentNameModal').modal('show');
+        }
     </script>
 </asp:Content>

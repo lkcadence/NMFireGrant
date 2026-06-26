@@ -264,8 +264,8 @@
                                 <telerik:RadMenuItem Text="Training"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="Apparatus"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="Communication Equipment"></telerik:RadMenuItem>
-                                <telerik:RadMenuItem Text="Hazards/Threats"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="PPE"></telerik:RadMenuItem>
+                                <telerik:RadMenuItem Text="Hazards/Threats"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="Equipment Needs"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="Step 2" CssClass="list-group-item active menu-spacer" NavigateUrl="#" Enabled="false"></telerik:RadMenuItem>
                                 <telerik:RadMenuItem Text="Grant Funding Justification"></telerik:RadMenuItem>

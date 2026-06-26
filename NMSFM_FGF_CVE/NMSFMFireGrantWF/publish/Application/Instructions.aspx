@@ -8,7 +8,7 @@
         <div class="row" id="dvError" runat="server"></div>
         <div class="row">
             <div class="col-md-12">
-                <asp:Button ID="btnAccept" runat="server" Text="Click Here to Start Filling out the Application" OnClick="btnAccept_Click" />
+                <asp:Literal ID="ltrInstructions" runat="server" Mode="PassThrough" Text=""></asp:Literal>
             </div>
         </div>
         <div class="row">
@@ -16,28 +16,40 @@
                 <hr />
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <asp:Literal ID="ltrInstructions" runat="server" Text=""></asp:Literal>
+        <div class="row formRow" id="dvAcknowledgment" runat="server">
+            <div class="col-md-1">
+                <asp:CheckBox ID="chkInstructionsRead" runat="server" ClientIDMode="Static" />
+            </div>
+            <div class="col-md-9">
+                <asp:Label ID="lblInstructionsAck" runat="server" ClientIDMode="Static"
+                    AssociatedControlID="chkInstructionsRead"
+                    Text="I have read and understand the application instructions above." />
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
-                <hr />
+                <asp:Button ID="btnContinue" runat="server" ClientIDMode="Static"
+                    CssClass="btn btn-primary" Text="Continue to Application"
+                    OnClick="btnContinue_Click" />
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-12">
-                <asp:Button ID="btnAccept2" runat="server" Text="Click Here to Start Filling out the Application" OnClick="btnAccept_Click" />
-            </div>
-        </div>
-        
     </div>
     <script type="text/javascript">
-        function disableLogin() {
-            $("#btnAccept2").prop('disabled', true);
-            $("#btnAccept").prop('disabled', true);
+        function updateContinueButton() {
+            if ($('#dvAcknowledgment').is(':visible')) {
+                $('#btnContinue').prop('disabled', !$('#chkInstructionsRead').is(':checked'));
+            }
         }
-        window.onbeforeunload = disableLogin;
+
+        function disableContinue() {
+            $('#btnContinue').prop('disabled', true);
+        }
+
+        $(document).ready(function () {
+            updateContinueButton();
+            $('#chkInstructionsRead').change(updateContinueButton);
+        });
+
+        window.onbeforeunload = disableContinue;
     </script>
 </asp:Content>

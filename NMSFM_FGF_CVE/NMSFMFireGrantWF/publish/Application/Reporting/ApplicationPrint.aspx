@@ -735,6 +735,7 @@
 					        
 				        </td>
                     </tr>
+                    <tbody id="tbApparatusPart" runat="server">
                     <tr>
                         <td class="rowHeader">
 				            Are pump tests conducted annually on apparatus?
@@ -767,7 +768,9 @@
 					        
 				        </td>
                     </tr>
+                    </tbody>
                 </table>
+                <div id="tbApparatusList" runat="server">
                 <table class="sectionTable" style="margin-top:0px !important; border-top:none">
                     <tr>
                         <td colspan="7" class="rowHeader">
@@ -808,6 +811,7 @@
                     </tr>
                     <asp:Literal ID="ltrApparatusDetails" runat="server"></asp:Literal>
                 </table>
+                </div>
             </div>
             <div style='page-break-before:always'></div>
             <div id="dvCommunicationEquipment">
