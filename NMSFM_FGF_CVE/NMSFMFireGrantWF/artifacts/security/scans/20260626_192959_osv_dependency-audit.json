@@ -1,0 +1,13 @@
+{
+  "generatedAtUtc": "2026-06-26T19:29:59.3129834Z",
+  "threshold": "high",
+  "suppressedIds": [],
+  "counts": {
+    "all": 0,
+    "suppressed": 0,
+    "warnings": 0,
+    "failures": 0
+  },
+  "result": "pass",
+  "findings": []
+}

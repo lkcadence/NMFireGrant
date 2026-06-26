@@ -87,8 +87,6 @@ namespace NMSFMFireGrantWF.Application
             if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
             {
                 spReadOnly.InnerHtml = " (Read-Only)";
-                txtProjectDescription.ReadOnly = true;
-                btnSaveProjectDescription.Visible = false;
             }
             else
             {
@@ -403,19 +401,17 @@ namespace NMSFMFireGrantWF.Application
                             rmStep1.Items[10].ImageUrl = "../Content/images/round.png";
                         }
                         equipmentNeeds = fgAppService.GetFGApplicationEquipmentNeeds(appId);
-                        if (!Page.IsPostBack)
+                        if (equipmentNeeds != null)
                         {
-                            if (equipmentNeeds != null)
+                            if (equipmentNeeds.SpecificNeeds != "")
                             {
-                                txtProjectDescription.Text = equipmentNeeds.SpecificNeeds ?? "";
+                                spProjectDescription.InnerHtml = equipmentNeeds.SpecificNeeds;
                             }
                             else
                             {
-                                txtProjectDescription.Text = "";
+                                spProjectDescription.Visible = false;
                             }
-                        }
-                        if (equipmentNeeds != null)
-                        {
+                            
                             if (equipmentNeeds.IsValid)
                             {
                                 rmStep1.Items[11].ImageUrl = "../Content/images/tick.png";
@@ -428,6 +424,7 @@ namespace NMSFMFireGrantWF.Application
                         else
                         {
                             rmStep1.Items[11].ImageUrl = "../Content/images/round.png";
+                            spProjectDescription.Visible = false;
                         }
                         fundingJustification = fgAppService.GetFGApplicationFundingJustification(appId);
                         if (fundingJustification != null)
@@ -499,63 +496,6 @@ namespace NMSFMFireGrantWF.Application
         {
             Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
             Session.Abandon();
-        }
-
-        protected void btnSaveProjectDescription_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
-                {
-                    return;
-                }
-                if (Session["ApplicationId"] == null)
-                {
-                    return;
-                }
-                Guid appId = new Guid(Session["ApplicationId"].ToString());
-                DetailedFGAppEquipmentNeeds model =
-                    fgAppService.GetFGApplicationEquipmentNeedsAsync(appId).GetAwaiter().GetResult();
-                if (model == null
-                    || model.Id.ToString() == "00000000-0000-0000-0000-000000000000")
-                {
-                    model = new DetailedFGAppEquipmentNeeds
-                    {
-                        ApplicationId = appId,
-                        ApplicationEquipment = new List<FG_App_ApplicationEquipment>(),
-                        IsValid = false,
-                        InvalidText = ""
-                    };
-                }
-                if (model.ApplicationEquipment == null)
-                {
-                    model.ApplicationEquipment = new List<FG_App_ApplicationEquipment>();
-                }
-                model.SpecificNeeds = txtProjectDescription.Text;
-                model.UpdatedBy = Session["WebUser"] != null
-                    ? Session["WebUser"].ToString()
-                    : "";
-                bool saved = fgAppService.SaveEquipmentNeedsAsync(model).GetAwaiter().GetResult();
-                if (saved)
-                {
-                    dvProjectDescriptionMessage.InnerHtml =
-                        "<div class='alert alert-success' style='margin-top:8px; margin-bottom:0;'>"
-                        + "Project description saved.</div>";
-                }
-                else
-                {
-                    dvProjectDescriptionMessage.InnerHtml =
-                        "<div class='alert alert-danger' style='margin-top:8px; margin-bottom:0;'>"
-                        + "Unable to save project description.</div>";
-                }
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-                dvProjectDescriptionMessage.InnerHtml =
-                    "<div class='alert alert-danger' style='margin-top:8px; margin-bottom:0;'>"
-                    + ex.Message + "</div>";
-            }
         }
 
         protected void rmStep1_ItemClick(object sender, Telerik.Web.UI.RadMenuEventArgs e)
