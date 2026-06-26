@@ -133,6 +133,8 @@ namespace NMSFMFireGrantWF.Application
                             communityInfo = await fgAppService.GetFGApplicationPriorYearCommunityInfoAsync(addressId, appIdGuid);
                             if (communityInfo != null && communityInfo.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                             {
+                                PrefillChildRowRemap.RemapAidDistricts(
+                                    communityInfo.AidDistricts, appIdGuid);
                                 LoadCommunityInfoData(communityInfo, true);
                                 if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                                 {
@@ -201,6 +203,24 @@ namespace NMSFMFireGrantWF.Application
 
         }
 
+        private void ApplyCommunityProtectedAndAidAgreements(DetailedFGAppCommunityInfo model)
+        {
+            if (model.CommunityName != null)
+            {
+                txtCommunityProtected.Text = model.CommunityName;
+            }
+
+            int aidAgreements = model.AidAgreements;
+            if (aidAgreements == 0
+                && model.AidDistricts != null
+                && model.AidDistricts.Count > 0)
+            {
+                aidAgreements = 1;
+            }
+            rbAidAgreementsYes.Checked = aidAgreements == 1;
+            rbAidAgreementsNo.Checked = aidAgreements == 2;
+        }
+
         private void LoadCommunityInfoData(DetailedFGAppCommunityInfo model, bool communityListOnly = false)
         {
             try
@@ -216,20 +236,12 @@ namespace NMSFMFireGrantWF.Application
                         dvError.InnerHtml = "<div class='alert alert-danger'>No Data Saved</div>";
                     }
                 }
+                ApplyCommunityProtectedAndAidAgreements(model);
                 if (communityListOnly == false)
                 {
-                    txtCommunityProtected.Text = model.CommunityName;
                     txtHomesProtected.Text = model.NumberOfHomes.ToString();
                     txtCommercial.Text = model.NumberOfComm.ToString();
                     txtPopulation.Text = model.ResidentPopulation.ToString();
-                    if (model.AidAgreements == 1)
-                    {
-                        rbAidAgreementsYes.Checked = true;
-                    }
-                    else if (model.AidAgreements == 2)
-                    {
-                        rbAidAgreementsNo.Checked = true;
-                    }
                 }
                 
                 rgAidDistricts.DataSource = model.AidDistricts;
@@ -435,7 +447,8 @@ namespace NMSFMFireGrantWF.Application
 
                 bool retVal = await fgAppService.SaveCommunityInformationAsync(model);
 
-                return retVal;
+                // return retVal;
+                return isValid && retVal;
             }
             catch (Exception ex)
             {

@@ -1166,6 +1166,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_AidDistricts aidDist in model.AidDistricts)
 								{
+									aidDist.ApplicationId = model.ApplicationId;
 									await SaveAidDistrict(aidDist);
 								}
 							}
@@ -1194,6 +1195,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_AidDistricts aidDist in model.AidDistricts)
 								{
+									aidDist.ApplicationId = model.ApplicationId;
 									await SaveAidDistrict(aidDist);
 								}
 							}
@@ -1522,6 +1524,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_WaterSources waterSource in model.WaterSources)
 								{
+									waterSource.ApplicationId = model.ApplicationId;
 									await SaveWaterSource(waterSource);
 								}
 							}
@@ -1550,6 +1553,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_WaterSources waterSource in model.WaterSources)
 								{
+									waterSource.ApplicationId = model.ApplicationId;
 									await SaveWaterSource(waterSource);
 								}
 							}
@@ -2023,6 +2027,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_ApparatusEquipment apparatusEquipment in model.ApparatusEquipment)
 								{
+									apparatusEquipment.ApplicationId = model.ApplicationId;
 									await SaveApparatusEquipment(apparatusEquipment);
 								}
 							}
@@ -2051,6 +2056,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_ApparatusEquipment apparatusEquipment in model.ApparatusEquipment)
 								{
+									apparatusEquipment.ApplicationId = model.ApplicationId;
 									await SaveApparatusEquipment(apparatusEquipment);
 								}
 							}
@@ -2310,6 +2316,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_CommunicationEquipment communicationEquipment in model.CommunicationEquipment)
 								{
+									communicationEquipment.ApplicationId = model.ApplicationId;
 									await SaveCommunicationEquipment(communicationEquipment);
 								}
 							}
@@ -2338,6 +2345,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_CommunicationEquipment communicationEquipment in model.CommunicationEquipment)
 								{
+									communicationEquipment.ApplicationId = model.ApplicationId;
 									await SaveCommunicationEquipment(communicationEquipment);
 								}
 							}
@@ -2554,6 +2562,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_HazardThreatEvents hazardThreatEvent in model.HazardsThreats)
 								{
+									hazardThreatEvent.ApplicationId = model.ApplicationId;
 									await SaveHazardThreatEvents(hazardThreatEvent);
 								}
 							}
@@ -2582,6 +2591,7 @@ namespace NMSFM.Services.FireGrant
 							{
 								foreach (FG_App_HazardThreatEvents hazardThreatEvent in model.HazardsThreats)
 								{
+									hazardThreatEvent.ApplicationId = model.ApplicationId;
 									await SaveHazardThreatEvents(hazardThreatEvent);
 								}
 							}

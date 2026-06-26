@@ -369,6 +369,29 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
+        private void ApplyPPEPartOfProjectGates(DetailedFGAppPPE model)
+        {
+            int ppePart = model.PPEPartOfProject;
+            if (ppePart == 0
+                && model.StandardPPE != null
+                && model.StandardPPE.Count > 0)
+            {
+                ppePart = 1;
+            }
+            rbPPEYes.Checked = ppePart == 1;
+            rbPPENo.Checked = ppePart == 2;
+
+            int scbaPart = model.SCBAPartOfProject;
+            if (scbaPart == 0
+                && model.StandardSCBA != null
+                && model.StandardSCBA.Count > 0)
+            {
+                scbaPart = 1;
+            }
+            rbSCBAYes.Checked = scbaPart == 1;
+            rbSCBANo.Checked = scbaPart == 2;
+        }
+
         private void LoadPPE(DetailedFGAppPPE model)
         {
             try
@@ -385,14 +408,10 @@ namespace NMSFMFireGrantWF.Application
                         dvError.InnerHtml = "<div class='alert alert-danger'>No Data Saved</div>";
                     }
                 }
-                if (model.PPEPartOfProject == 1) { rbPPEYes.Checked = true; }
-                if (model.PPEPartOfProject == 2) { rbPPENo.Checked = true; }
+                ApplyPPEPartOfProjectGates(model);
 
                 if (model.PPEInspected == 1) { rbPPEInspectedYes.Checked = true; }
                 if (model.PPEInspected == 2) { rbPPEInspectedNo.Checked = true; }
-
-                if (model.SCBAPartOfProject == 1) { rbSCBAYes.Checked = true; }
-                if (model.SCBAPartOfProject == 2) { rbSCBANo.Checked = true; }
 
                 txtComments.Text = (model.AdminComments != null) ? model.AdminComments.ToString() : "";
 
@@ -556,36 +575,34 @@ namespace NMSFMFireGrantWF.Application
                     isValid = false;
                 }
                 int ppeInspected = 0;
-                if (ppePartOfProject == 2)
-                {
-                    ppeInspected = 0;
-                    rbPPEInspectedYes.Checked = false;
-                    rbPPEInspectedNo.Checked = false;
-                    standardPPE = new List<FG_App_StandardPPE>();
-                    ViewState["dtPPE"] = standardPPE;
-                }
-                else
+                // Disabled: preserve section data when PartOfProject = No
+                //if (ppePartOfProject == 2)
+                //{
+                //    ppeInspected = 0;
+                //    rbPPEInspectedYes.Checked = false;
+                //    rbPPEInspectedNo.Checked = false;
+                //    standardPPE = new List<FG_App_StandardPPE>();
+                //    ViewState["dtPPE"] = standardPPE;
+                //}
+                if (ppePartOfProject == 1)
                 {
                     if (rbPPEInspectedYes.Checked) { ppeInspected = 1; }
                     if (rbPPEInspectedNo.Checked) { ppeInspected = 2; }
-                    if (ppePartOfProject == 1 && ppeInspected == 0)
+                    if (ppeInspected == 0)
                     {
                         errorMessage += "Is PPE Inspected reponse is required<br />";
                         isValid = false;
                     }
-                    if (ppePartOfProject == 1)
+                    Guid appId = new Guid(hfApplicationId.Value);
+                    List<FG_AppDocListItem> ppeDocuments =
+                        await fgAppService.GetApplicationDocumentsByTypesAsync(
+                            appId, PpeDocumentTypes);
+                    bool hasPpeList = standardPPE != null && standardPPE.Count >= 1;
+                    bool hasPpeDocuments = ppeDocuments != null && ppeDocuments.Count >= 1;
+                    if (!hasPpeList && !hasPpeDocuments)
                     {
-                        Guid appId = new Guid(hfApplicationId.Value);
-                        List<FG_AppDocListItem> ppeDocuments =
-                            await fgAppService.GetApplicationDocumentsByTypesAsync(
-                                appId, PpeDocumentTypes);
-                        bool hasPpeList = standardPPE != null && standardPPE.Count >= 1;
-                        bool hasPpeDocuments = ppeDocuments != null && ppeDocuments.Count >= 1;
-                        if (!hasPpeList && !hasPpeDocuments)
-                        {
-                            errorMessage += "PPE list or File Upload is required<br />";
-                            isValid = false;
-                        }
+                        errorMessage += "PPE list or File Upload is required<br />";
+                        isValid = false;
                     }
                 }
 
@@ -597,12 +614,13 @@ namespace NMSFMFireGrantWF.Application
                     errorMessage += "Is SCBA Part of Project reponse is required<br />";
                     isValid = false;
                 }
-                if (scbaPartOfProject == 2)
-                {
-                    standardSCBA = new List<FG_App_StandardSCBA>();
-                    ViewState["dtSCBA"] = standardSCBA;
-                }
-                else if (scbaPartOfProject == 1)
+                // Disabled: preserve section data when PartOfProject = No
+                //if (scbaPartOfProject == 2)
+                //{
+                //    standardSCBA = new List<FG_App_StandardSCBA>();
+                //    ViewState["dtSCBA"] = standardSCBA;
+                //}
+                if (scbaPartOfProject == 1)
                 {
                     Guid appId = new Guid(hfApplicationId.Value);
                     List<FG_AppDocListItem> scbaDocuments =

@@ -22,7 +22,7 @@
                 </fieldset>
             </div>
         </div>
-        <div id="dvCommunications">
+        <div id="dvCommunications" style="display:none">
             <div class="row" id="dvAidAgreementsHeader">
                 <div class="col-md-12">
                     <h3>Do you have any of the following?</h3>
@@ -392,7 +392,8 @@
             }
             else {
                 $('#dvCommunications').fadeOut("fast");
-                clearCommunicationsFields();
+                // Disabled: preserve section data when PartOfProject = No
+                //clearCommunicationsFields();
             }
         }
 

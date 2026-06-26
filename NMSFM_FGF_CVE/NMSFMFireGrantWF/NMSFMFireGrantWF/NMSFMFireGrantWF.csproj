@@ -659,6 +659,7 @@
       <DependentUpon>Instructions.aspx</DependentUpon>
     </Compile>
     <Compile Include="Application\IPageInterface.cs" />
+    <Compile Include="Application\PrefillChildRowRemap.cs" />
     <Compile Include="Application\PPE.aspx.cs">
       <DependentUpon>PPE.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

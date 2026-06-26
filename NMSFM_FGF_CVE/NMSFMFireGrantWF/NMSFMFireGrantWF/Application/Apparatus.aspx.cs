@@ -168,6 +168,8 @@ namespace NMSFMFireGrantWF.Application
                             apparatus = await fgAppService.GetPriorFGApplicationApparatusAsync(addressId, appIdGuid);
                             if (apparatus != null && apparatus.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                             {
+                                PrefillChildRowRemap.RemapApparatusEquipment(
+                                    apparatus.ApparatusEquipment, appIdGuid);
                                 LoadApparatusInfo(apparatus, true);
                                 if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                                 {
@@ -341,6 +343,19 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
+        private void ApplyApparatusPartOfProjectGate(DetailedFGApparatus model)
+        {
+            int part = model.ApparatusPartOfProject;
+            if (part == 0
+                && model.ApparatusEquipment != null
+                && model.ApparatusEquipment.Count > 0)
+            {
+                part = 1;
+            }
+            rbApparatusPartYes.Checked = part == 1;
+            rbApparatusPartNo.Checked = part == 2;
+        }
+
         private void LoadApparatusInfo(DetailedFGApparatus model, bool apparatusOnly = false)
         {
             try
@@ -357,10 +372,9 @@ namespace NMSFMFireGrantWF.Application
                         dvError.InnerHtml = "<div class='alert alert-danger'>No Data Saved</div>";
                     }
                 }
+                ApplyApparatusPartOfProjectGate(model);
                 if (apparatusOnly == false)
                 {
-                    if (model.ApparatusPartOfProject == 1) { rbApparatusPartYes.Checked = true; }
-                    if (model.ApparatusPartOfProject == 2) { rbApparatusPartNo.Checked = true; }
                     if (model.PumpTestsConducted == 1) { rbPumpTestsConductedYes.Checked = true; }
                     if (model.PumpTestsConducted == 2) { rbPumpTestsConductedNo.Checked = true; }
                     txtNoPumpTestsExp.Text = model.ExplainNoPumpTests.ToString();
@@ -559,19 +573,20 @@ namespace NMSFMFireGrantWF.Application
                     apparatusEquipment = (List<FG_App_ApparatusEquipment>)ViewState["dtApparatusEquipment"];
                 }
 
-                if (apparatusPart == 2)
-                {
-                    pumpTests = 0;
-                    hoseTests = 0;
-                    rbPumpTestsConductedYes.Checked = false;
-                    rbPumpTestsConductedNo.Checked = false;
-                    rbHoseTestsYes.Checked = false;
-                    rbHoseTestsNo.Checked = false;
-                    txtNoPumpTestsExp.Text = "";
-                    txtNoHoseTests.Text = "";
-                    apparatusEquipment = new List<FG_App_ApparatusEquipment>();
-                    ViewState["dtApparatusEquipment"] = apparatusEquipment;
-                }
+                // Disabled: preserve section data when PartOfProject = No
+                //if (apparatusPart == 2)
+                //{
+                //    pumpTests = 0;
+                //    hoseTests = 0;
+                //    rbPumpTestsConductedYes.Checked = false;
+                //    rbPumpTestsConductedNo.Checked = false;
+                //    rbHoseTestsYes.Checked = false;
+                //    rbHoseTestsNo.Checked = false;
+                //    txtNoPumpTestsExp.Text = "";
+                //    txtNoHoseTests.Text = "";
+                //    apparatusEquipment = new List<FG_App_ApparatusEquipment>();
+                //    ViewState["dtApparatusEquipment"] = apparatusEquipment;
+                //}
 
                 if (apparatusPart == 1)
                 {
@@ -610,7 +625,8 @@ namespace NMSFMFireGrantWF.Application
 
                 bool retVal = await fgAppService.SaveApparatusAsync(model);
 
-                return retVal;
+                // return retVal;
+                return isValid && retVal;
             }
             catch (Exception ex)
             {

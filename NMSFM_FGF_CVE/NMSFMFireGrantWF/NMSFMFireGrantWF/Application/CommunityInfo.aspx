@@ -40,7 +40,7 @@
         </div>
         <div class="row formRow">
             <div class="col-md-5">
-                <asp:Label ID="lblAidAgreements" runat="server" Text="Do you have formal automatic aid or mutial aid agreements? *" AssociatedControlID="fldAidAgreements"></asp:Label>
+                <asp:Label ID="lblAidAgreements" runat="server" Text="Do you have formal automatic aid or mutual aid agreements? *" AssociatedControlID="fldAidAgreements"></asp:Label>
             </div>
             <div class="col-md-3">
                 <fieldset id="fldAidAgreements" runat="server" aria-required="true">

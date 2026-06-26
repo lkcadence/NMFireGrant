@@ -442,7 +442,8 @@
             }
             else {
                 $('#dvApparatusDetails').fadeOut("fast");
-                clearApparatusDetailFields();
+                // Disabled: preserve section data when PartOfProject = No
+                //clearApparatusDetailFields();
             }
         }
 

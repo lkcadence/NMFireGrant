@@ -228,10 +228,19 @@
                 <div class="col-md-12">
                     <h2><asp:Label ID="lblTitle" runat="server"></asp:Label><span id="spReadOnly" runat="server"></span></h2>
                     <i><span ID="spSubTitle" runat="server" style="font-size:1.1em; color:#337ab7; font-weight:bold"></span></i><br />
-                    <div class="card">
+                    <div class="card" id="dvProjectDescription" runat="server">
                         <div class="card-body">
-                            <span style="font-size:1em; color:darkgray; font-weight:bold">Project Description: </span>
-                            <span id="spProjectDescription" runat="server" style="font-size:1em; color:darkgray;"></span>
+                            <asp:Label ID="lblProjectDescription" runat="server" AssociatedControlID="txtProjectDescription"
+                                Text="Project Description:" style="font-size:1em; color:darkgray; font-weight:bold"></asp:Label>
+                            <div style="margin-top:8px;">
+                                <asp:TextBox ID="txtProjectDescription" runat="server" CssClass="form-control"
+                                    TextMode="MultiLine" Rows="3" Width="100%" style="font-size:1em; color:darkgray;"></asp:TextBox>
+                            </div>
+                            <div style="margin-top:8px;">
+                                <asp:Button ID="btnSaveProjectDescription" runat="server" Text="Save Description"
+                                    CssClass="btn btn-default btn-sm" OnClick="btnSaveProjectDescription_Click" />
+                            </div>
+                            <div id="dvProjectDescriptionMessage" runat="server"></div>
                         </div>
                     </div>
                 </div>

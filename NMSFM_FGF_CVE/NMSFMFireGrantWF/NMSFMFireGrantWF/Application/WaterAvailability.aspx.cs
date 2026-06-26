@@ -129,6 +129,8 @@ namespace NMSFMFireGrantWF.Application
                             waterAvailability = await fgAppService.GetFGApplicationPriorYearWaterAvailabilityAsync(addressId, appIdGuid);
                             if (waterAvailability != null && waterAvailability.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                             {
+                                PrefillChildRowRemap.RemapWaterSources(
+                                    waterAvailability.WaterSources, appIdGuid);
                                 LoadWaterAvailability(waterAvailability);
                                 if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                                 {
@@ -407,7 +409,8 @@ namespace NMSFMFireGrantWF.Application
 
                 bool retVal = await fgAppService.SaveWaterAvailabilityAsync(model);
 
-                return retVal;
+                // return retVal;
+                return isValid && retVal;
             }
             catch (Exception ex)
             {

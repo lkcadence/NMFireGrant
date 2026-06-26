@@ -142,6 +142,8 @@ namespace NMSFMFireGrantWF.Application
                             hazardsThreats = await fgAppService.GetFGApplicationPriorYearHazardsThreatsAsync(addressId, appIdGuid);
                             if (hazardsThreats != null && hazardsThreats.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                             {
+                                PrefillChildRowRemap.RemapHazardThreatEvents(
+                                    hazardsThreats.HazardsThreats, appIdGuid);
                                 LoadHazadsThreats(hazardsThreats, true);
                                 if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                                 {
@@ -385,7 +387,8 @@ namespace NMSFMFireGrantWF.Application
 
                 bool retVal = await fgAppService.SaveHazardThreatsAsync(model);
 
-                return retVal;
+                // return retVal;
+                return isValid && retVal;
             }
             catch (Exception ex)
             {

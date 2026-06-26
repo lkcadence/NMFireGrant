@@ -87,13 +87,49 @@ namespace NMSFMFireGrantWF.Application
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl spSubTitle;
 
         /// <summary>
-        /// spProjectDescription control.
+        /// dvProjectDescription control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl spProjectDescription;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvProjectDescription;
+
+        /// <summary>
+        /// lblProjectDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label lblProjectDescription;
+
+        /// <summary>
+        /// txtProjectDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox txtProjectDescription;
+
+        /// <summary>
+        /// btnSaveProjectDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button btnSaveProjectDescription;
+
+        /// <summary>
+        /// dvProjectDescriptionMessage control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvProjectDescriptionMessage;
 
         /// <summary>
         /// appMenuAppStatus control.

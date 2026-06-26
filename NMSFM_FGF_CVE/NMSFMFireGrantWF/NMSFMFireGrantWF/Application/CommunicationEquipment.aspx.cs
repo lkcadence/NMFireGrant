@@ -165,6 +165,8 @@ namespace NMSFMFireGrantWF.Application
                             communication = await fgAppService.GetFGApplicationPriorYearCommunicationAsync(addressId, appIdGuid);
                             if (communication != null && communication.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                             {
+                                PrefillChildRowRemap.RemapCommunicationEquipment(
+                                    communication.CommunicationEquipment, appIdGuid);
                                 LoadCommunication(communication, true);
                                 if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                                 {
@@ -308,6 +310,19 @@ namespace NMSFMFireGrantWF.Application
             }
         }
 
+        private void ApplyCommunicationPartOfProjectGate(DetailedFGCommunication model)
+        {
+            int part = model.CommunicationProject;
+            if (part == 0
+                && model.CommunicationEquipment != null
+                && model.CommunicationEquipment.Count > 0)
+            {
+                part = 1;
+            }
+            rbCommunicationsYes.Checked = part == 1;
+            rbCommunicationsNo.Checked = part == 2;
+        }
+
         private void LoadCommunication(DetailedFGCommunication model, bool listOnly = false)
         {
             try
@@ -324,11 +339,9 @@ namespace NMSFMFireGrantWF.Application
                         dvError.InnerHtml = "<div class='alert alert-danger'>No Data Saved</div>";
                     }
                 }
+                ApplyCommunicationPartOfProjectGate(model);
                 if (listOnly == false)
                 {
-                    if (model.CommunicationProject == 1) { rbCommunicationsYes.Checked = true; }
-                    if (model.CommunicationProject == 2) { rbCommunicationsNo.Checked = true; }
-
                     txtHandheldRadios.Text = model.HandheldRadios.ToString();
                     txtBaseStations.Text = model.BaseStations.ToString();
                     txtMobileRadios.Text = model.MobileRadios.ToString();
@@ -593,35 +606,36 @@ namespace NMSFMFireGrantWF.Application
                     communicationEquipment = new List<FG_App_CommunicationEquipment>();
                 }
 
-                if (communicationPart == 2)
-                {
-                    noRadio = 0;
-                    lawEnforcement = 0;
-                    emeergencyMedical = 0;
-                    otherFD = 0;
-                    other = 0;
-                    notCovered = 0;
-                    txtHandheldRadios.Text = "0";
-                    txtBaseStations.Text = "0";
-                    txtMobileRadios.Text = "0";
-                    rbAppNoRadioYes.Checked = false;
-                    rbAppNoRadioNo.Checked = false;
-                    rbLawEnforcementYes.Checked = false;
-                    rbLawEnforcementNo.Checked = false;
-                    rbEmergencyMedicalYes.Checked = false;
-                    rbEmergencyMedicalNo.Checked = false;
-                    rbOtherFDYes.Checked = false;
-                    rbOtherFDNo.Checked = false;
-                    rbOtherYes.Checked = false;
-                    rbOtherNo.Checked = false;
-                    rbNotCoveredYes.Checked = false;
-                    rbNotCoveredNo.Checked = false;
-                    txtOtherDescription.Text = "";
-                    txtRepeaterDescription.Text = "";
-                    communicationEquipment = new List<FG_App_CommunicationEquipment>();
-                    ViewState["dtCommunicationEquipment"] = communicationEquipment;
-                }
-                else if (communicationPart == 1)
+                // Disabled: preserve section data when PartOfProject = No
+                //if (communicationPart == 2)
+                //{
+                //    noRadio = 0;
+                //    lawEnforcement = 0;
+                //    emeergencyMedical = 0;
+                //    otherFD = 0;
+                //    other = 0;
+                //    notCovered = 0;
+                //    txtHandheldRadios.Text = "0";
+                //    txtBaseStations.Text = "0";
+                //    txtMobileRadios.Text = "0";
+                //    rbAppNoRadioYes.Checked = false;
+                //    rbAppNoRadioNo.Checked = false;
+                //    rbLawEnforcementYes.Checked = false;
+                //    rbLawEnforcementNo.Checked = false;
+                //    rbEmergencyMedicalYes.Checked = false;
+                //    rbEmergencyMedicalNo.Checked = false;
+                //    rbOtherFDYes.Checked = false;
+                //    rbOtherFDNo.Checked = false;
+                //    rbOtherYes.Checked = false;
+                //    rbOtherNo.Checked = false;
+                //    rbNotCoveredYes.Checked = false;
+                //    rbNotCoveredNo.Checked = false;
+                //    txtOtherDescription.Text = "";
+                //    txtRepeaterDescription.Text = "";
+                //    communicationEquipment = new List<FG_App_CommunicationEquipment>();
+                //    ViewState["dtCommunicationEquipment"] = communicationEquipment;
+                //}
+                if (communicationPart == 1)
                 {
                     Guid appId = new Guid(hfApplicationId.Value);
                     List<FG_AppDocListItem> communicationDocuments =
@@ -666,7 +680,8 @@ namespace NMSFMFireGrantWF.Application
 
                 bool retVal = await fgAppService.SaveCommunicationAsync(model);
 
-                return retVal;
+                // return retVal;
+                return isValid && retVal;
             }
             catch (Exception ex)
             {
