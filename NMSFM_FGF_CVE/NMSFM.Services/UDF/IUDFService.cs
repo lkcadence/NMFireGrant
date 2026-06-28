@@ -11,6 +11,7 @@ namespace NMSFM.Services.UDF
 	public interface IUDFService
 	{
 		Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByAddressIdAsync(Guid id, Guid agency);
+		Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByAgencyIdAsync(Guid agencyId);
 		Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByActivityIdAsync(Guid id, Guid agency);
 		//Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByActivityTypeIdAsync(Guid actTypeId, Guid addressId, Guid agency);
 		Task SaveUserDefinedValuesAsync(List<UserDefValue> list);

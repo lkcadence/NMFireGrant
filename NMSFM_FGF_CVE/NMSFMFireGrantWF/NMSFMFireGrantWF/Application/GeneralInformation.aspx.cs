@@ -120,7 +120,7 @@ namespace NMSFMFireGrantWF.Application
                         genInfo = await fgAppService.GetFGApplicationGeneralInfoAsync(appIdGuid);
                         if (genInfo != null && genInfo.Id.ToString() != "00000000-0000-0000-0000-000000000000")
                         {
-                            await LoadDepartment();
+                            await LoadDepartment(applyMasterListNerisOverride: false);
                             await LoadGeneralInfoData(genInfo);
                             if (dvError.InnerHtml == "" && Session["SaveMessage"] != null)
                             {
@@ -194,7 +194,7 @@ namespace NMSFMFireGrantWF.Application
             btnSave.Visible = false;
         }
 
-        private async Task<bool> LoadDepartment()
+        private async Task<bool> LoadDepartment(bool applyMasterListNerisOverride = true)
         {
             try
             {
@@ -294,11 +294,14 @@ namespace NMSFMFireGrantWF.Application
                         }
                     }
 
-                    bool masterListIdFound = await ApplyMasterListNerisIdOverrideAsync(department.AddressCode);
-                    if (masterListIdFound && priorApp != null)
+                    if (applyMasterListNerisOverride)
                     {
-                        dvError.InnerHtml = "<div class='alert alert-info'>Some data has been loaded from prior fiscal year application (FY"
-                            + priorApp.FiscalYear + "). NERIS ID loaded from master list. Please verify all data is current.</div>";
+                        bool masterListIdFound = await ApplyMasterListNerisIdOverrideAsync(department.AddressCode);
+                        if (masterListIdFound && priorApp != null)
+                        {
+                            dvError.InnerHtml = "<div class='alert alert-info'>Some data has been loaded from prior fiscal year application (FY"
+                                + priorApp.FiscalYear + "). NERIS ID loaded from master list. Please verify all data is current.</div>";
+                        }
                     }
                 }
                 return true;

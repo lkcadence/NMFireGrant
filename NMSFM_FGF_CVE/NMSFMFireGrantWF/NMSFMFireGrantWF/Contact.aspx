@@ -14,6 +14,7 @@
     </address>
 
     <address>
-        <strong>Support:</strong>   <a href="mailto:Support@example.com">Support@codepaltoolkit.com</a><br />
+        <strong>Support:</strong> Please reach out to your SFMO contact for support.
+        You can also use the <strong>Support</strong> menu in the application banner.
     </address>
 </asp:Content>

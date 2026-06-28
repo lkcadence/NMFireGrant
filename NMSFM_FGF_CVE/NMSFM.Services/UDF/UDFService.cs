@@ -143,6 +143,126 @@ namespace NMSFM.Services.UDF
 			return results;
 		}
 
+		public async Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByAgencyIdAsync(Guid agencyId)
+		{
+			IEnumerable<UserDefinedValue> results = new List<UserDefinedValue>();
+			try
+			{
+				Module module = await cwmContext.Modules.SingleOrDefaultAsync(
+					a => (a.AgencyId ?? Guid.Empty) == agencyId && a.ModuleDesc == "Agency");
+				if (module == null)
+				{
+					return results;
+				}
+
+				Guid moduleId = module.ModuleId;
+				var models = from cats in cwmContext.UserDefCategories
+							 where ((cats.ModuleId == moduleId)
+								|| (cats.ModuleId == null && cats.AllAgency == "Age"))
+							 && cats.Inactive == false
+							 join flds in cwmContext.UserDefFields on cats.UserDefCategoryId
+								equals flds.UserDefCategoryId
+							 where flds.Inactive == false
+							 join vals in cwmContext.UserDefValues on new
+							 {
+							   id = flds.UserDefFieldId,
+							   ad = agencyId
+							 } equals new
+							 {
+							   id = vals.UserDefFieldId,
+							   ad = vals.RecordId
+							 } into subvals
+							 from usevals in subvals.DefaultIfEmpty()
+							 orderby cats.SeqNum, cats.Category, flds.SeqNum
+							 select new UserDefinedValue
+							 {
+							   Category = cats.Category,
+							   CategoryId = cats.UserDefCategoryId,
+							   FieldDescription = flds.FieldDesc,
+							   FieldValue = usevals.UserDefValue1 == null
+								? String.Empty
+								: usevals.UserDefValue1,
+							   FieldOldValue = usevals.UserDefValue1 == null
+								? String.Empty
+								: usevals.UserDefValue1,
+							   ValueId = usevals.UserDefValueId == null
+								? Guid.Empty
+								: usevals.UserDefValueId,
+							   FieldId = flds.UserDefFieldId,
+							   FieldType = flds.UserDefTypeId,
+							   SequenceNumber = cats.SeqNum ?? 0,
+							   FieldSequenceNumber = flds.SeqNum ?? 0,
+							   WebViewable = cats.WebViewable ?? false,
+							   StaticCombo = flds.StaticCombo,
+							   Required = flds.Required,
+							   DefaultValue = flds.DefaultValue,
+							   Persistent = flds.GlobalId != null,
+							 };
+
+				var resolutionResults = await models.ToListAsync();
+
+				for (int i = 0; i < resolutionResults.Count(); i++)
+				{
+					resolutionResults[i].Resolutions = new List<Resolution>();
+					if (resolutionResults[i].FieldType
+						== new Guid("BCECC8B9-9C57-47F6-AB75-452F8A6F1488"))
+					{
+						var fieldId = resolutionResults[i].FieldId;
+						resolutionResults[i].Resolutions = await cwmContext.Resolutions
+							.Where(a => (a.ResolutionType ?? Guid.Empty) == fieldId)
+							.OrderBy(a => a.Sequence)
+							.ToListAsync();
+						if (resolutionResults[i].Resolutions != null
+							&& resolutionResults[i].Resolutions.Count() > 0)
+						{
+							resolutionResults[i].boolValue = new List<bool>();
+							for (int j = 0; j < resolutionResults[i].Resolutions.Count(); j++)
+							{
+								if (resolutionResults[i].FieldValue != String.Empty
+									&& resolutionResults[i].FieldValue.Length
+									== resolutionResults[i].Resolutions.Count())
+								{
+									resolutionResults[i].boolValue.Add(
+										resolutionResults[i].FieldValue.ElementAt(j) == '1');
+								}
+								else
+								{
+									resolutionResults[i].boolValue.Add(false);
+								}
+							}
+						}
+					}
+					else if (resolutionResults[i].FieldType
+						== new Guid("6382BED2-B352-4D6B-8CD3-7DAD85C7CB0E"))
+					{
+						var fieldId = resolutionResults[i].FieldId;
+						resolutionResults[i].Resolutions = await cwmContext.Resolutions
+							.Where(a => (a.ResolutionType ?? Guid.Empty) == fieldId
+								|| a.ResolutionType == null)
+							.OrderBy(a => a.Sequence)
+							.ToListAsync();
+						var linkedResolution = resolutionResults[i].Resolutions.Find(
+							a => a.Resolution1 == resolutionResults[i].FieldValue);
+						if (linkedResolution != null)
+						{
+							resolutionResults[i].ResolutionId = linkedResolution.ResolutionId;
+						}
+					}
+				}
+
+				results = resolutionResults;
+			}
+			catch (Exception ex)
+			{
+				logger.Error(
+					"Unexpected exception caught while retrieving user defined values for agency '"
+					+ agencyId.ToString() + "'.",
+					ex);
+			}
+
+			return results;
+		}
+
 		public async Task<IEnumerable<UserDefinedValue>> GetUserDefinedValuesByActivityIdAsync(Guid id, Guid agency)
 		{
 			IEnumerable<UserDefinedValue> results = new List<UserDefinedValue>();

@@ -85,5 +85,18 @@ namespace NMSFM.Services.Address
 		Task<IEnumerable<v_Addresses2>> GetHydrantAddresses(Guid addressId);
 		Task<IEnumerable<cv_CPTKHotlist>> GetHotlist();
 		Task<bool> UpdateAddressInactive(Guid addressId, string value);
+		Task<IReadOnlyList<FireDepartmentAddressMatch>> GetFireDepartmentAddressMatchesAsync(
+			string departmentName,
+			int maxResults = 20);
+		Task<bool> ActiveFireDeptAddressCodeExistsAsync(
+			string addressCode,
+			Guid? excludeAddressId = null);
+		Task<Guid?> ResolveOrCreateZipIdAsync(string zipCode, Guid? countyId);
+		Task<v_Addresses2> GetAssociatedFireDepartmentAddressAsync(string departmentName);
+		Task<DepartmentAddressUdfValues> GetDepartmentAddressUdfValuesAsync(Guid addressId);
+		Task SaveDepartmentAddressUdfValuesAsync(
+			Guid addressId,
+			DepartmentAddressUdfValues values);
+		Task<string> GetZipTextByZipIdAsync(Guid? zipId);
 	}
 }

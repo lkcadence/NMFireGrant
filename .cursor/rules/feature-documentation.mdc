@@ -1,0 +1,42 @@
+---
+description: Require planning and implementation docs when adding new functionality
+alwaysApply: true
+---
+
+# Feature documentation
+
+When adding **new functionality** to this application (new pages, services,
+workflows, admin tools, integrations, or user-visible behavior changes), create
+**two documents before or alongside implementation**:
+
+## 1. Planning document
+
+- **Location:** `NMSFM_FGF_CVE/NMSFMFireGrantWF/docs/planning/`
+- **Filename:** `<feature-slug>-plan.md` (kebab-case, e.g. `manage-agency-information-plan.md`)
+- **Purpose:** High-level plan for stakeholders — problem, decisions, scope, phases,
+  success criteria, out-of-scope, rollback.
+- **Link** to the detailed implementation doc at the top.
+
+## 2. Implementation document
+
+- **Location:** `NMSFM_FGF_CVE/NMSFMFireGrantWF/docs/`
+- **Filename:** `<feature-slug>-implementation-plan.md`
+- **Purpose:** Developer-ready spec — architecture, file-by-file changes, service
+  signatures, UI/code-behind steps, constants, QA checklist, build command.
+- **Link** back to the planning doc.
+
+## Agent behavior
+
+- Create or update both docs when starting a new feature; do not skip for "small"
+  features if they add new user-facing or admin behavior.
+- Keep planning docs concise; put step-by-step implementation detail in the
+  implementation doc.
+- Match existing doc headers: Project, Document version, Date, Status, Related
+  artifacts.
+- After implementation, update **Status** in both docs (Planned → Implemented).
+
+## Exemptions
+
+- Bug fixes with no behavior change
+- Dependency/CVE-only updates
+- Typo or comment-only edits

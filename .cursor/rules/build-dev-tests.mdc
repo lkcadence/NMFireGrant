@@ -1,25 +1,39 @@
 ---
-description: Run .\build-release.ps1 for builds and verification; never ask the user to build
+description: Run .\build.ps1 after code changes; use .\build-release.ps1 only when the user requests a release build
 alwaysApply: true
 ---
 
 # Build and verification
 
-After making code changes in this repo, **run the release build yourself**. Do not ask the
-user to run it unless you are blocked (permissions, missing tooling, or environment
-you cannot access).
+After making code changes in this repo, **run a build yourself**. Do not ask the user to
+run it unless you are blocked (permissions, missing tooling, or environment you cannot
+access).
 
-## Command
+## Default command
 
 From `NMSFM_FGF_CVE/NMSFMFireGrantWF/`:
+
+```powershell
+.\build.ps1
+```
+
+Use **`.\build.ps1`** for compile/audit verification after normal code changes.
+
+## Release build (only when requested)
+
+Run **`.\build-release.ps1`** only when the user **explicitly asks** for a release build,
+publish output, or deploy zip — for example: "run release build", "build for deploy",
+"create the release zip".
+
+From the same working directory:
 
 ```powershell
 .\build-release.ps1
 ```
 
-Always use `.\build-release.ps1` — not `.\build.ps1`. Release is the default configuration.
+Do **not** run `.\build-release.ps1` by default after every edit.
 
-## When to run
+## When to run a build
 
 - After editing C#, ASPX, project, or config files that affect the web app
 - Before telling the user a change is ready to test
@@ -27,13 +41,13 @@ Always use `.\build-release.ps1` — not `.\build.ps1`. Release is the default c
 
 ## Agent behavior
 
-- Run `.\build-release.ps1` in the terminal; do not delegate to the user
+- Run `.\build.ps1` in the terminal after changes; do not delegate to the user
+- Run `.\build-release.ps1` only on explicit user request for release/publish/deploy
 - If the build fails, fix issues and re-run until it succeeds or you are blocked
 - Report build result briefly (success or what failed)
-- Do not say "please rebuild" or "run build-release.ps1" when you can run it yourself
-- If you already built successfully in the same session after the latest changes,
-  do not ask for another build; tell the user to restart the app if runtime refresh
-  is needed
+- Do not say "please rebuild" or "run build.ps1" when you can run it yourself
+- If you already built successfully in the same session after the latest changes, do not
+  ask for another build; tell the user to restart the app if runtime refresh is needed
 
 ## Working directory
 
@@ -41,4 +55,4 @@ Always execute from:
 
 `NMSFM_FGF_CVE/NMSFMFireGrantWF/`
 
-Not the repo root. Use `publish/` only when inspecting deploy output.
+Not the repo root. Use `publish/` only when inspecting deploy output from a release build.

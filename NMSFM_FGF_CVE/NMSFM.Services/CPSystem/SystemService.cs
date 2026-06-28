@@ -5,6 +5,7 @@ using NMSFM.Services.Models;
 using NMSFM.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Data.Entity;
 using System.Linq;
 using System.Text;
@@ -55,6 +56,121 @@ namespace NMSFM.Services.CPSystem
 				logger.Error("Unexpected exception caught while retrieving setting '" + propertyField + "' for Agency '" + agencyId + ".", ex);
 			}
 			return retval;
+		}
+
+		public async Task<bool> SaveCodepalSetting(string propertyField, string value, Guid? agencyId)
+		{
+			try
+			{
+				Setting setting = null;
+				if (agencyId != null && agencyId != Guid.Empty)
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(
+						s => s.PropertyField == propertyField && s.AgencyId == agencyId);
+				}
+				else
+				{
+					setting = await cwmContext.Settings.SingleOrDefaultAsync(
+						s => s.PropertyField == propertyField);
+				}
+
+				if (setting == null)
+				{
+					setting = new Setting
+					{
+						SettingsId = Guid.NewGuid(),
+						PropertyField = propertyField,
+						ValueField = value ?? string.Empty,
+						AgencyId = agencyId,
+						rowguid = Guid.NewGuid(),
+						DateInserted = DateTime.Now,
+						DateUpdated = DateTime.Now
+					};
+					cwmContext.Settings.Add(setting);
+				}
+				else
+				{
+					setting.ValueField = value ?? string.Empty;
+					setting.DateUpdated = DateTime.Now;
+				}
+
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+					return true;
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while saving setting '"
+					+ propertyField + "' for Agency '" + agencyId + "'.",
+					ex);
+			}
+
+			return false;
+		}
+
+		public async Task<SupportEmailRecipients> GetSupportEmailRecipientsAsync(Guid agencyId)
+		{
+			string technical = await GetSupportSettingValueAsync(
+				FireGrantSettingKeys.TechnicalSupportEmail,
+				agencyId,
+				"TechnicalSupportEmail");
+
+			string fireServices = await GetSupportSettingValueAsync(
+				FireGrantSettingKeys.FireServicesSupportEmail,
+				agencyId,
+				"FireServicesSupportEmail");
+
+			return new SupportEmailRecipients
+			{
+				TechnicalSupport = technical ?? string.Empty,
+				FireServicesSupport = fireServices ?? string.Empty
+			};
+		}
+
+		private async Task<string> GetSupportSettingValueAsync(
+			string propertyField,
+			Guid agencyId,
+			string webConfigKey)
+		{
+			string value = await GetCodepalSetting(propertyField, agencyId);
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				value = await cwmContext.Settings
+					.Where(s => s.PropertyField == propertyField && s.ValueField != null && s.ValueField != "")
+					.Select(s => s.ValueField)
+					.FirstOrDefaultAsync();
+			}
+
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				value = ConfigurationManager.AppSettings[webConfigKey] ?? string.Empty;
+			}
+
+			return value;
+		}
+
+		public async Task<bool> SaveSupportEmailRecipientsAsync(
+			Guid agencyId,
+			string technicalSupport,
+			string fireServicesSupport)
+		{
+			bool technicalSaved = await SaveCodepalSetting(
+				FireGrantSettingKeys.TechnicalSupportEmail,
+				technicalSupport ?? string.Empty,
+				agencyId);
+			if (!technicalSaved)
+			{
+				return false;
+			}
+
+			return await SaveCodepalSetting(
+				FireGrantSettingKeys.FireServicesSupportEmail,
+				fireServicesSupport ?? string.Empty,
+				agencyId);
 		}
 
 		public async Task<bool> GetCodepalBooleanSettingAsync(string propertyField, Guid? agencyId, string userName = "")

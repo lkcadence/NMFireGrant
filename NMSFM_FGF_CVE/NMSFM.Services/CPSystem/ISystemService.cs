@@ -11,6 +11,16 @@ namespace NMSFM.Services.CPSystem
 	public interface ISystemService
 	{
 		Task<string> GetCodepalSetting(string propertyField, Guid? agencyId, string userName = "");
+
+		Task<bool> SaveCodepalSetting(string propertyField, string value, Guid? agencyId);
+
+		Task<SupportEmailRecipients> GetSupportEmailRecipientsAsync(Guid agencyId);
+
+		Task<bool> SaveSupportEmailRecipientsAsync(
+			Guid agencyId,
+			string technicalSupport,
+			string fireServicesSupport);
+
 		Task<bool> GetCodepalBooleanSettingAsync(string propertyField, Guid? agencyId, string userName = "");
 
 		Task<bool> GetCodepalBooleanSetting(string propertyField, Guid? agencyId, string userName = "");

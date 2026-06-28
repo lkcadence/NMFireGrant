@@ -108,12 +108,15 @@
     <Compile Include="Account\IAccountService.cs" />
     <Compile Include="Activity\ActivityService.cs" />
     <Compile Include="Activity\IActivityService.cs" />
+    <Compile Include="Agency\AgencyService.cs" />
+    <Compile Include="Agency\IAgencyService.cs" />
     <Compile Include="Address\AddressService.cs" />
     <Compile Include="Address\IAddressService.cs" />
     <Compile Include="Audit\AuditService.cs" />
     <Compile Include="Audit\IAuditService.cs" />
     <Compile Include="Complaint\ComplaintService.cs" />
     <Compile Include="Complaint\IComplaintService.cs" />
+    <Compile Include="CPSystem\FireGrantSettingKeys.cs" />
     <Compile Include="CPSystem\ISystemService.cs" />
     <Compile Include="CPSystem\SystemService.cs" />
     <Compile Include="CPSystem\TripleDES.cs" />
@@ -160,6 +163,8 @@
     <Compile Include="ViewModels\DetailedFGCategory.cs" />
     <Compile Include="ViewModels\DetailedFGCommunication.cs" />
     <Compile Include="ViewModels\DetailedFGDepartment.cs" />
+    <Compile Include="ViewModels\FireDepartmentAddressMatch.cs" />
+    <Compile Include="ViewModels\DepartmentAddressUdfValues.cs" />
     <Compile Include="ViewModels\DetailedFGLegacyApps.cs" />
     <Compile Include="ViewModels\DetailedFYAppList.cs" />
     <Compile Include="ViewModels\DetailedFYAllowableDist.cs" />
@@ -243,6 +248,7 @@
     <Compile Include="ViewModels\SignatureTypeViewModel.cs" />
     <Compile Include="ViewModels\StateViewModel.cs" />
     <Compile Include="ViewModels\StationViewModel.cs" />
+    <Compile Include="ViewModels\SupportEmailRecipients.cs" />
     <Compile Include="ViewModels\UserActivities.cs" />
     <Compile Include="ViewModels\UserList.cs" />
     <Compile Include="ViewModels\ZipViewModel.cs" />

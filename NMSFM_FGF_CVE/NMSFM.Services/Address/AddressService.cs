@@ -13,6 +13,8 @@ using System.Security.Cryptography;
 using NMSFM.ViewModels;
 using AutoMapper;
 using System.Data.Entity.Infrastructure;
+using System.Data.Entity.Validation;
+using System.Data.SqlClient;
 using System.Web;
 using System.Net;
 using System.Xml.Linq;
@@ -1049,8 +1051,9 @@ namespace NMSFM.Services.Address
 				var address = await cwmContext.Addresses.SingleOrDefaultAsync(a => a.AddressId == model.AddressId);
 				if (address == null)
 				{
-					logger.Error("Unable to update address '" + model.AddressId.ToString() + "'.  The address could not be located in the database.");
-					return;
+					throw new InvalidOperationException(
+						"Unable to update address '" + model.AddressId.ToString()
+						+ "'. The address could not be located in the database.");
 				}
 
 				var audit = new AuditModel { TableName = "Addresses", RecordId = model.AddressId, AuditAction = "RECORD UPDATED", Description = "" };
@@ -1204,16 +1207,18 @@ namespace NMSFM.Services.Address
             {
                 _ = ex;
 						logger.Error("Unable to save the changes for address '" + model.AddressId.ToString() + "'.", ex);
+						throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
 					}
 				}
 				else
 				{
-					logger.Error("Unable to update address '" + model.AddressId.ToString() + "', DbContext was not available.");
+					throw new InvalidOperationException(
+						"Unable to update address '" + model.AddressId.ToString() + "', DbContext was not available.");
 				}
 			}
 			else
 			{
-				logger.Error("SaveAddress was called with a null reference.");
+				throw new ArgumentNullException(nameof(model), "SaveAddress was called with a null reference.");
 			}
 		}
 
@@ -1225,8 +1230,9 @@ namespace NMSFM.Services.Address
 				var address = await cwmContext.Addresses.SingleOrDefaultAsync(a => a.AddressId == model.AddressId);
 				if (address != null)
 				{
-					logger.Error("Unable to create address '" + model.AddressId.ToString() + "'.  The address is already located in the database.");
-					return;
+					throw new InvalidOperationException(
+						"Unable to create address '" + model.AddressId.ToString()
+						+ "'. The address is already located in the database.");
 				}
 
 				var audit = new AuditModel { TableName = "Addresses", RecordId = model.AddressId, AuditAction = "RECORD CREATED", Description = "" };
@@ -1239,6 +1245,8 @@ namespace NMSFM.Services.Address
 				address.DateUpdated = address.DateInserted;
 				address.DefaultPass = false;
 				address.Inactive = false;
+				address.FromWeb = model.FromWeb ?? false;
+				address.POBox = model.POBox;
 
 				auditFields.Add(new AuditFieldModel { ControlName = "", FieldDesc = "", OldId = null, OldValue = null, NewId = address.AddressId, NewValue = null });
 
@@ -1334,10 +1342,9 @@ namespace NMSFM.Services.Address
 					address.OccupancyTypeId = model.OccupancyTypeId;
 				}
 
-				if (model.POBox != false)
+				if (model.POBox)
 				{
 					auditFields.Add(new AuditFieldModel { ControlName = "POBox", FieldDesc = "POBox", OldId = null, OldValue = null, NewId = null, NewValue = model.POBox.ToString() });
-					address.POBox = model.POBox;
 				}
 
 				if (model.PropertyUseTypeId != null)
@@ -1390,16 +1397,18 @@ namespace NMSFM.Services.Address
             {
                 _ = ex;
 						logger.Error("Unable to create address '" + model.AddressId.ToString() + "'.", ex);
+						throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
 					}
 				}
 				else
 				{
-					logger.Error("Unable to create address '" + model.AddressId.ToString() + "', DbContext was not available.");
+					throw new InvalidOperationException(
+						"Unable to create address '" + model.AddressId.ToString() + "', DbContext was not available.");
 				}
 			}
 			else
 			{
-				logger.Error("CreateAddress was called with a null reference.");
+				throw new ArgumentNullException(nameof(model), "CreateAddress was called with a null reference.");
 			}
 		}
 
@@ -3174,6 +3183,539 @@ namespace NMSFM.Services.Address
 				logger.Error("Unable to change address inactive for address '" + addressId.ToString() + "', DbContext was not available.");
 			}
 			return result;
+		}
+
+		private static readonly Guid FireDeptAddressTypeId =
+			new Guid("43856752-8b7a-4e6f-b697-bf8acd457c16");
+
+		private static readonly Guid IsoUdfFieldId =
+			new Guid("6b8517ef-9483-4b8b-8c95-5b95a6b8f579");
+
+		private static readonly Guid MainStationsUdfFieldId =
+			new Guid("7ad61001-cac8-4f3c-ae4e-32d28393f891");
+
+		private static readonly Guid AdminBldgsUdfFieldId =
+			new Guid("8baa0b86-f1e5-4d84-b4f9-a8219f4b11b8");
+
+		private static readonly Guid SubStationsUdfFieldId =
+			new Guid("4f34b96d-d944-44aa-9665-d47c55cc025d");
+
+		public async Task<IReadOnlyList<FireDepartmentAddressMatch>> GetFireDepartmentAddressMatchesAsync(
+			string departmentName,
+			int maxResults = 20)
+		{
+			if (string.IsNullOrWhiteSpace(departmentName))
+			{
+				return new List<FireDepartmentAddressMatch>();
+			}
+
+			string normalized = departmentName.Trim();
+			try
+			{
+				List<v_Addresses2> candidates = await cwmContext.v_Addresses2
+					.Where(a => a.AddressTypeId == FireDeptAddressTypeId && !a.Inactive)
+					.ToListAsync();
+
+				var ranked = candidates
+					.Select(a => new
+					{
+						Address = a,
+						MatchRank = ComputeFireDeptMatchRank(a, normalized)
+					})
+					.Where(x => x.MatchRank > 0)
+					.OrderBy(x => x.MatchRank)
+					.ThenBy(x => x.Address.AddressCode)
+					.Take(maxResults)
+					.ToList();
+
+				if (ranked.Count == 0)
+				{
+					return new List<FireDepartmentAddressMatch>();
+				}
+
+				List<Guid> addressIds = ranked.Select(x => x.Address.AddressId).ToList();
+
+				List<Guid> appAddressIds = await cwmContext.FGApplications
+					.Where(f => addressIds.Contains(f.AddressId))
+					.Select(f => f.AddressId)
+					.ToListAsync();
+
+				Dictionary<Guid, int> appCounts = appAddressIds
+					.GroupBy(id => id)
+					.ToDictionary(g => g.Key, g => g.Count());
+
+				List<Guid> partyAddressIds = await cwmContext.AddressParties
+					.Where(ap => addressIds.Contains(ap.AddressID) && !ap.Inactive)
+					.Select(ap => ap.AddressID)
+					.ToListAsync();
+
+				Dictionary<Guid, int> partyCounts = partyAddressIds
+					.GroupBy(id => id)
+					.ToDictionary(g => g.Key, g => g.Count());
+
+				return ranked
+					.Select(x => new FireDepartmentAddressMatch
+					{
+						AddressId = x.Address.AddressId,
+						AddressCode = x.Address.AddressCode,
+						FullAddress = x.Address.FullAddress,
+						City = x.Address.City,
+						MatchRank = x.MatchRank,
+						AppCount = appCounts.ContainsKey(x.Address.AddressId)
+							? appCounts[x.Address.AddressId] : 0,
+						PartyLinkCount = partyCounts.ContainsKey(x.Address.AddressId)
+							? partyCounts[x.Address.AddressId] : 0
+					})
+					.OrderBy(x => x.MatchRank)
+					.ThenByDescending(x => x.AppCount + x.PartyLinkCount)
+					.ThenBy(x => x.AddressCode)
+					.ToList();
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while retrieving fire department address matches.",
+					ex);
+				return new List<FireDepartmentAddressMatch>();
+			}
+		}
+
+		public async Task<bool> ActiveFireDeptAddressCodeExistsAsync(
+			string addressCode,
+			Guid? excludeAddressId = null)
+		{
+			if (string.IsNullOrWhiteSpace(addressCode))
+			{
+				return false;
+			}
+
+			string normalized = addressCode.Trim();
+			try
+			{
+				List<Data.Address> candidates = await cwmContext.Addresses
+					.Where(a => !a.Inactive)
+					.ToListAsync();
+
+				return candidates.Any(a =>
+					a.AddressCode != null
+					&& a.AddressCode.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase)
+					&& (excludeAddressId == null || a.AddressId != excludeAddressId));
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while checking fire department address code.",
+					ex);
+				return false;
+			}
+		}
+
+		private static int ComputeFireDeptMatchRank(v_Addresses2 address, string departmentName)
+		{
+			if (address == null || string.IsNullOrWhiteSpace(departmentName))
+			{
+				return 0;
+			}
+
+			string code = (address.AddressCode ?? string.Empty).Trim();
+			string normalized = departmentName.Trim();
+
+			if (code.Equals(normalized, StringComparison.OrdinalIgnoreCase))
+			{
+				return 1;
+			}
+
+			string[] tokens = normalized.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+			if (tokens.Length > 0)
+			{
+				string firstToken = tokens[0];
+				if (code.StartsWith(firstToken, StringComparison.OrdinalIgnoreCase))
+				{
+					return 2;
+				}
+			}
+
+			if (code.IndexOf(normalized, StringComparison.OrdinalIgnoreCase) >= 0
+				|| normalized.IndexOf(code, StringComparison.OrdinalIgnoreCase) >= 0)
+			{
+				return 3;
+			}
+
+			string fullAddress = (address.FullAddress ?? string.Empty);
+			string city = (address.City ?? string.Empty);
+			foreach (string token in tokens)
+			{
+				if (token.Length <= 2)
+				{
+					continue;
+				}
+
+				if (fullAddress.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0
+					|| city.IndexOf(token, StringComparison.OrdinalIgnoreCase) >= 0)
+				{
+					return 4;
+				}
+			}
+
+			return 0;
+		}
+
+		public async Task<Guid?> ResolveOrCreateZipIdAsync(string zipCode, Guid? countyId)
+		{
+			if (string.IsNullOrWhiteSpace(zipCode))
+			{
+				return null;
+			}
+
+			string normalized = zipCode.Trim();
+			try
+			{
+				List<Zip> zips = await cwmContext.Zips.ToListAsync();
+				Zip match = null;
+
+				if (countyId.HasValue)
+				{
+					match = zips.FirstOrDefault(z =>
+						z.Zip1 != null
+						&& z.Zip1.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase)
+						&& z.CountyId == countyId);
+				}
+
+				if (match == null)
+				{
+					match = zips.FirstOrDefault(z =>
+						z.Zip1 != null
+						&& z.Zip1.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase));
+				}
+
+				if (match != null)
+				{
+					return match.ZipId;
+				}
+
+				if (!countyId.HasValue)
+				{
+					return null;
+				}
+
+				Guid newZipId = Guid.NewGuid();
+				DateTime now = DateTime.Now;
+				var newZip = new Zip
+				{
+					ZipId = newZipId,
+					Zip1 = normalized,
+					CountyId = countyId,
+					rowguid = Guid.NewGuid(),
+					DateInserted = now,
+					DateUpdated = now
+				};
+
+				cwmContext.Zips.Add(newZip);
+
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+				}
+				else
+				{
+					logger.Error("Unable to create zip '" + normalized + "', DbContext was not available.");
+					return null;
+				}
+
+				logger.Info(string.Format(
+					"Created zip '{0}' (ZipId={1}, CountyId={2}).",
+					normalized,
+					newZipId,
+					countyId));
+
+				return newZipId;
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while resolving or creating zip '" + normalized + "'.",
+					ex);
+				throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
+			}
+		}
+
+		public async Task<v_Addresses2> GetAssociatedFireDepartmentAddressAsync(string departmentName)
+		{
+			if (string.IsNullOrWhiteSpace(departmentName))
+			{
+				return null;
+			}
+
+			string normalized = departmentName.Trim();
+			try
+			{
+				List<v_Addresses2> candidates = await cwmContext.v_Addresses2
+					.Where(a => a.AddressTypeId == FireDeptAddressTypeId && !a.Inactive)
+					.ToListAsync();
+
+				List<v_Addresses2> exactMatches = candidates
+					.Where(a =>
+						a.AddressCode != null
+						&& a.AddressCode.Trim().Equals(normalized, StringComparison.OrdinalIgnoreCase))
+					.ToList();
+
+				if (exactMatches.Count == 0)
+				{
+					return null;
+				}
+
+				if (exactMatches.Count > 1)
+				{
+					throw new InvalidOperationException(
+						"Multiple fire department addresses match this department name. "
+						+ "Use Link to address to select the correct row.");
+				}
+
+				return exactMatches[0];
+			}
+			catch (InvalidOperationException)
+			{
+				throw;
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while resolving associated fire department address.",
+					ex);
+				throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
+			}
+		}
+
+		public async Task<DepartmentAddressUdfValues> GetDepartmentAddressUdfValuesAsync(Guid addressId)
+		{
+			var result = new DepartmentAddressUdfValues
+			{
+				IsoRating = "0",
+				MainStations = "0",
+				SubStations = "0",
+				AdminBldgs = "0"
+			};
+
+			if (addressId == Guid.Empty)
+			{
+				return result;
+			}
+
+			try
+			{
+				List<UserDefValue> rows = await cwmContext.UserDefValues
+					.Where(u => u.RecordId == addressId)
+					.ToListAsync();
+
+				result.IsoRating = GetUdfValueFromRows(rows, IsoUdfFieldId);
+				result.MainStations = GetUdfValueFromRows(rows, MainStationsUdfFieldId);
+				result.SubStations = GetUdfValueFromRows(rows, SubStationsUdfFieldId);
+				result.AdminBldgs = GetUdfValueFromRows(rows, AdminBldgsUdfFieldId);
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while reading department address UDFs for '"
+					+ addressId.ToString() + "'.",
+					ex);
+				throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
+			}
+
+			return result;
+		}
+
+		public async Task SaveDepartmentAddressUdfValuesAsync(
+			Guid addressId,
+			DepartmentAddressUdfValues values)
+		{
+			if (addressId == Guid.Empty)
+			{
+				throw new ArgumentException("AddressId is required to save department UDF values.");
+			}
+
+			if (values == null)
+			{
+				throw new ArgumentNullException(nameof(values));
+			}
+
+			try
+			{
+				await UpsertDepartmentUdfValueAsync(
+					addressId,
+					IsoUdfFieldId,
+					NormalizeUdfNumericValue(values.IsoRating));
+				await UpsertDepartmentUdfValueAsync(
+					addressId,
+					MainStationsUdfFieldId,
+					NormalizeUdfNumericValue(values.MainStations));
+				await UpsertDepartmentUdfValueAsync(
+					addressId,
+					SubStationsUdfFieldId,
+					NormalizeUdfNumericValue(values.SubStations));
+				await UpsertDepartmentUdfValueAsync(
+					addressId,
+					AdminBldgsUdfFieldId,
+					NormalizeUdfNumericValue(values.AdminBldgs));
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unable to save department address UDF values for '" + addressId.ToString() + "'.",
+					ex);
+				throw new InvalidOperationException(FormatDbSaveErrorMessage(ex), ex);
+			}
+		}
+
+		public async Task<string> GetZipTextByZipIdAsync(Guid? zipId)
+		{
+			if (!zipId.HasValue || zipId.Value == Guid.Empty)
+			{
+				return string.Empty;
+			}
+
+			try
+			{
+				Zip zip = await cwmContext.Zips.SingleOrDefaultAsync(z => z.ZipId == zipId.Value);
+				return zip?.Zip1 ?? string.Empty;
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(
+					"Unexpected exception caught while reading zip '" + zipId.ToString() + "'.",
+					ex);
+				return string.Empty;
+			}
+		}
+
+		private static string GetUdfValueFromRows(List<UserDefValue> rows, Guid fieldId)
+		{
+			UserDefValue row = rows.FirstOrDefault(r => r.UserDefFieldId == fieldId);
+			if (row == null || string.IsNullOrWhiteSpace(row.UserDefValue1))
+			{
+				return "0";
+			}
+
+			return row.UserDefValue1.Trim();
+		}
+
+		private static string NormalizeUdfNumericValue(string value)
+		{
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				return "0";
+			}
+
+			return value.Trim();
+		}
+
+		private async Task UpsertDepartmentUdfValueAsync(
+			Guid addressId,
+			Guid fieldId,
+			string value)
+		{
+			UserDefValue udfValue = await cwmContext.UserDefValues
+				.FirstOrDefaultAsync(u => u.RecordId == addressId && u.UserDefFieldId == fieldId);
+
+			DateTime now = DateTime.Now;
+			if (udfValue == null)
+			{
+				udfValue = cwmContext.UserDefValues.Add(new UserDefValue());
+				udfValue.UserDefValueId = Guid.NewGuid();
+				udfValue.UserDefFieldId = fieldId;
+				udfValue.RecordId = addressId;
+				udfValue.rowguid = Guid.NewGuid();
+				udfValue.DateInserted = now;
+				udfValue.VActPrint = false;
+				udfValue.ExternalId = null;
+			}
+
+			udfValue.UserDefValue1 = value;
+			udfValue.DateUpdated = now;
+
+			if (cwmContext is DbContext)
+			{
+				await ((DbContext)cwmContext).SaveChangesAsync();
+			}
+			else
+			{
+				throw new InvalidOperationException(
+					"Unable to save department UDF value, DbContext was not available.");
+			}
+		}
+
+		private static string FormatDbSaveErrorMessage(Exception ex)
+		{
+			if (ex == null)
+			{
+				return "Database save failed.";
+			}
+
+			DbEntityValidationException validationException = null;
+			SqlException sqlException = null;
+			for (Exception current = ex; current != null; current = current.InnerException)
+			{
+				if (validationException == null && current is DbEntityValidationException)
+				{
+					validationException = (DbEntityValidationException)current;
+				}
+
+				if (sqlException == null && current is SqlException)
+				{
+					sqlException = (SqlException)current;
+				}
+			}
+
+			if (validationException != null)
+			{
+				var validationMessages = validationException.EntityValidationErrors
+					.SelectMany(entry => entry.ValidationErrors)
+					.Select(error => error.PropertyName + ": " + error.ErrorMessage)
+					.ToList();
+				if (validationMessages.Count > 0)
+				{
+					return string.Join("; ", validationMessages);
+				}
+			}
+
+			if (sqlException != null)
+			{
+				return sqlException.Message;
+			}
+
+			var parts = new List<string>();
+			for (Exception current = ex; current != null; current = current.InnerException)
+			{
+				string msg = (current.Message ?? string.Empty).Trim();
+				if (msg.Length == 0)
+				{
+					continue;
+				}
+
+				if (!parts.Exists(p => string.Equals(p, msg, StringComparison.OrdinalIgnoreCase)))
+				{
+					parts.Add(msg);
+				}
+			}
+
+			Exception baseException = ex.GetBaseException();
+			if (baseException != null && !ReferenceEquals(baseException, ex))
+			{
+				string baseMsg = (baseException.Message ?? string.Empty).Trim();
+				if (baseMsg.Length > 0
+					&& !parts.Exists(p => string.Equals(p, baseMsg, StringComparison.OrdinalIgnoreCase)))
+				{
+					parts.Add(baseMsg);
+				}
+			}
+
+			return parts.Count > 0 ? string.Join(" ", parts) : ex.Message;
 		}
 
 	}

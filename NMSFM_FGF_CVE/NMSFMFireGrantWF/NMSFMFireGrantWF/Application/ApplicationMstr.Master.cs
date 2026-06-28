@@ -10,17 +10,10 @@ using Microsoft.AspNet.Identity;
 using NMSFM.Data;
 using NMSFM.ViewModels;
 using NMSFM.Services.Logging;
-using NMSFM.Services.Images;
-using NMSFM.Services.Party;
 using NMSFM.Services.Address;
-using NMSFM.Services.Account;
-using NMSFM.Services.Menu;
-using NMSFM.Services.FYDist;
 using NMSFM.Services.FireGrant;
 using NMSFM.Services.CPSystem;
-using NMSFM.Services.UDF;
 using Telerik.Web.UI;
-using System.Configuration;
 
 namespace NMSFMFireGrantWF.Application
 {
@@ -35,8 +28,6 @@ namespace NMSFMFireGrantWF.Application
         private ISystemService systemService;
         private IFGService fgService;
         private IFGApplicationServices fgAppService;
-
-        private Emailer emailer;
 
         protected void Page_Init(object sender, EventArgs e)
         {
@@ -83,7 +74,6 @@ namespace NMSFMFireGrantWF.Application
             {
                 this.addressService = null;
             }
-            this.emailer = new Emailer();
             if (Session["ReadOnly"] != null && Convert.ToBoolean(Session["ReadOnly"]) == true)
             {
                 spReadOnly.InnerHtml = " (Read-Only)";
@@ -506,113 +496,7 @@ namespace NMSFMFireGrantWF.Application
             //    pageInterface.DoSomeAction();
             //}
         }
-
-
-        protected void btnSendTA_ServerClick(object sender, EventArgs e)
-        {
-            try
-            {
-                string error = "";
-                bool errBol = false;
-                if (txtTAFromName.Text == "")
-                {
-                    errBol = true;
-                    error += "From Name is Required<br />";
-                }
-                if (txtTAFromEmail.Text == "")
-                {
-                    errBol = true;
-                    error += "From Email is Required<br />";
-                }
-                else
-                {
-                    if (emailer.EmailIsValid(txtTAFromEmail.Text) == false)
-                    {
-                        errBol = true;
-                        error += "From Email must be valid email<br />";
-                    }
-                }
-                if (txtTADetails.Text == "")
-                {
-                    errBol = true;
-                    error += "Details Required<br />";
-                }
-                if (errBol)
-                {
-                    throw new Exception(error);
-                }
-
-                string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
-                string to = (ConfigurationManager.AppSettings["TechnicalSupportEmail"] != null) ? ConfigurationManager.AppSettings["TechnicalSupportEmail"].ToString() : "vance@vscomptech.com";
-                string subject = "Technical Support Request from NMSFM Fire Grant Application";
-                string body = txtTAFromName.Text + " (" + txtTAFromEmail.Text + ") has subitted a request for Technical Assistance. <br /><br />Details: <br />" + txtTADetails.Text;
-                emailer.SendMailMessage(from, to, "", "", subject, body);
-                dvEmailSuccess.InnerHtml = "<div class='alert alert-danger'>Email Sent</div>"; ;
-                dvEmailSuccess.Focus();
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-                lblTAError.Text = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
-                System.Web.UI.ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "showTAModal();", true);
-            }
-        }
-
-        protected void bntSendFS_ServerClick(object sender, EventArgs e)
-        {
-            try
-            {
-                string error = "";
-                bool errBol = false;
-                if (txtFSFromName.Text == "")
-                {
-                    errBol = true;
-                    error += "From Name is Required<br />";
-                }
-                if (txtFSFromEmail.Text == "")
-                {
-                    errBol = true;
-                    error += "From Email is Required<br />";
-                }
-                else
-                {
-                    if (emailer.EmailIsValid(txtFSFromEmail.Text) == false)
-                    {
-                        errBol = true;
-                        error += "From Email must be valid email<br />";
-                    }
-                }
-                if (txtFSDetails.Text == "")
-                {
-                    errBol = true;
-                    error += "Details Required<br />";
-                }
-                if (errBol)
-                {
-                    throw new Exception(error);
-                }
-                string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
-                string to = (ConfigurationManager.AppSettings["AccountEmailApprovers"] != null) ? ConfigurationManager.AppSettings["AccountEmailApprovers"].ToString() : "vance@vscomptech.com";
-                string subject = "Fire Services Support Request from NMSFM Fire Grant Application";
-                string body = txtFSFromName.Text + " (" + txtTAFromEmail.Text + ") has subitted a request for Fire Services Support. <br /><br />Details: <br />" + txtTADetails.Text;
-                emailer.SendMailMessage(from, to, "", "", subject, body);
-                dvEmailSuccess.InnerHtml = "<div class='alert alert-danger'>Email Sent</div>"; ;
-                dvEmailSuccess.Focus();
-            }
-            catch (Exception ex)
-            {
-                _ = ex;
-                lblFSError.Text = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
-                System.Web.UI.ScriptManager.RegisterStartupScript(this, this.GetType(), "Pop", "showFSModal();", true);
-            }
-        }
     }
 }
-
-
-
-
 
 

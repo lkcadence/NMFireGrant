@@ -115,9 +115,10 @@
                                             <li><a href="/Account/ManageUsers">Manage Users</a></li>
                                             <li><a href="/Admin/ManageSettings">Manage Settings</a></li>
                                             <li><a href="/Admin/ManageCategories">Manage Categories</a></li>
-                                            <li><a href="/Admin/ManageFDIDs">Manage FD ID's</a></li>
+                                            <li><a href="/Admin/ManageFDIDs">Manage FDIDs / Related Addresses</a></li>
                                             <li><a href="/Admin/ManageHelpText">Manage Help Text</a></li>
                                             <li><a href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
+                                            <li><a href="/Admin/ManageAgencyInformation">Manage Agency Information</a></li>
                                         </ul>
                                     </li>
                                     <li class="dropdown">

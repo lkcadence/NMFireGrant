@@ -95,13 +95,9 @@ namespace NMSFMFireGrantWF.Admin
         protected global::System.Web.UI.WebControls.Button btnClose;
 
         /// <summary>
-        /// lblFDIDError control.
+        /// dvFDIDModalError control.
         /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFDIDError;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvFDIDModalError;
 
         /// <summary>
         /// lblFDID control.
@@ -174,5 +170,195 @@ namespace NMSFMFireGrantWF.Admin
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.HtmlControls.HtmlButton btnSaveFDID;
+
+        /// <summary>
+        /// dvAddressSyncSection control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvAddressSyncSection;
+
+        /// <summary>
+        /// rbAddressLink control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.RadioButton rbAddressLink;
+
+        /// <summary>
+        /// rbAddressCreate control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.RadioButton rbAddressCreate;
+
+        /// <summary>
+        /// dvAddressLinkPanel control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvAddressLinkPanel;
+
+        /// <summary>
+        /// lblAddressLink control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblAddressLink;
+
+        /// <summary>
+        /// ddlAddressLink control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlAddressLink;
+
+        /// <summary>
+        /// dvAddressCreatePanel control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvAddressCreatePanel;
+
+        /// <summary>
+        /// lblCreateAddressType control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateAddressType;
+
+        /// <summary>
+        /// ddlCreateAddressType control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreateAddressType;
+
+        /// <summary>
+        /// lblCreateAddressNumber control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateAddressNumber;
+
+        /// <summary>
+        /// txtCreateAddressNumber control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtCreateAddressNumber;
+
+        /// <summary>
+        /// lblCreateDirection control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateDirection;
+
+        /// <summary>
+        /// ddlCreateDirection control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreateDirection;
+
+        /// <summary>
+        /// lblCreateAddress control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateAddress;
+
+        /// <summary>
+        /// txtCreateAddress control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtCreateAddress;
+
+        /// <summary>
+        /// lblCreateSuffix control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateSuffix;
+
+        /// <summary>
+        /// ddlCreateSuffix control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreateSuffix;
+
+        /// <summary>
+        /// lblCreateCity control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateCity;
+
+        /// <summary>
+        /// txtCreateCity control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtCreateCity;
+
+        /// <summary>
+        /// lblCreateState control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateState;
+
+        /// <summary>
+        /// ddlCreateState control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreateState;
+
+        /// <summary>
+        /// lblCreateCounty control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateCounty;
+
+        /// <summary>
+        /// ddlCreateCounty control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.DropDownList ddlCreateCounty;
+
+        /// <summary>
+        /// lblCreateZip control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblCreateZip;
+
+        /// <summary>
+        /// txtCreateZip control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtCreateZip;
+
+        /// <summary>
+        /// hfAddressAction control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfAddressAction;
+
+        /// <summary>
+        /// hfAddressId control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfAddressId;
+
+        /// <summary>
+        /// hfPriorAddressCode control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.HiddenField hfPriorAddressCode;
+
+        /// <summary>
+        /// btnLoadAddressMatches control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Button btnLoadAddressMatches;
+
+        /// <summary>
+        /// dvDepartmentUdfSection control.
+        /// </summary>
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl dvDepartmentUdfSection;
+
+        /// <summary>
+        /// lblDeptIso control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblDeptIso;
+
+        /// <summary>
+        /// txtDeptIso control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtDeptIso;
+
+        /// <summary>
+        /// lblMainStations control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblMainStations;
+
+        /// <summary>
+        /// txtMainStations control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtMainStations;
+
+        /// <summary>
+        /// lblSubStations control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblSubStations;
+
+        /// <summary>
+        /// txtSubStations control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtSubStations;
+
+        /// <summary>
+        /// lblAdminBldgs control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.Label lblAdminBldgs;
+
+        /// <summary>
+        /// txtAdminBldgs control.
+        /// </summary>
+        protected global::System.Web.UI.WebControls.TextBox txtAdminBldgs;
     }
 }

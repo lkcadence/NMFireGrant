@@ -1,4 +1,5 @@
 using System;
+using System.Net;
 using System.Net.Mail;
 using System.Text.RegularExpressions;
 using System.Web;
@@ -17,13 +18,17 @@ namespace NMSFM.Services.FireGrant
         ///     ''' <param name="subject">Subject of mail message</param>
         ///     ''' <param name="body">Body of mail message</param>
         ///     ''' <param name="Att">Is there an attachment</param>
-        public void SendMailMessage(string from, string recepient, string bcc, string cc, string subject, string body, string Att = "")
+        public void SendMailMessage(string from, string recepient, string bcc, string cc, string subject, string body, string Att = "", string replyTo = "")
         {
             // Instantiate a new instance of MailMessage
             MailMessage mMailMessage = new MailMessage();
 
             // Set the sender address of the mail message
             mMailMessage.From = new MailAddress(from);
+            if (!string.IsNullOrWhiteSpace(replyTo))
+            {
+                mMailMessage.ReplyToList.Add(new MailAddress(replyTo));
+            }
             // Set the recepient address of the mail message
             //mMailMessage.To.Add(new MailAddress(recepient));
             if (recepient.Contains(";"))
@@ -67,13 +72,9 @@ namespace NMSFM.Services.FireGrant
 
             // Instantiate a new instance of SmtpClient
             SmtpClient mSmtpClient = new SmtpClient();
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            //mSmtpClient.Host = "smtp.office365.com";
-            //mSmtpClient.Port = 587;
-            //mSmtpClient.EnableSsl = true;
-            //mSmtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-            //mSmtpClient.UseDefaultCredentials = false;
-            //mSmtpClient.Credentials = new System.Net.NetworkCredential("", "");
+            mSmtpClient.Timeout = 15000;
 
             // Send the mail message
             bool emailsent = false;

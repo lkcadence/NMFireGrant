@@ -249,6 +249,7 @@
     <Content Include="Admin\Category.aspx" />
     <Content Include="Admin\Documents\DefaultEligibilityText.txt" />
     <Content Include="Admin\Home.aspx" />
+    <Content Include="Admin\ManageAgencyInformation.aspx" />
     <Content Include="Admin\ManageCategories.aspx" />
     <Content Include="Admin\ManageFDIDs.aspx" />
     <Content Include="Admin\ManageHelpText.aspx" />
@@ -517,6 +518,13 @@
     </Compile>
     <Compile Include="Admin\Home.aspx.designer.cs">
       <DependentUpon>Home.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\ManageAgencyInformation.aspx.cs">
+      <DependentUpon>ManageAgencyInformation.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\ManageAgencyInformation.aspx.designer.cs">
+      <DependentUpon>ManageAgencyInformation.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\ManageCategories.aspx.cs">
       <DependentUpon>ManageCategories.aspx</DependentUpon>

@@ -100,6 +100,7 @@ namespace NMSFM.Data
         [StringLength(350)]
         public string Schedule { get; set; }
 
+        [NotMapped]
         public DbGeometry SpatialPoint { get; set; }
     }
 }

@@ -121,9 +121,10 @@
                                             <li><a href="/Account/ManageUsers">Manage Users</a></li>
                                             <li><a href="/Admin/ManageSettings">Manage Settings</a></li>
                                             <li><a href="/Admin/ManageCategories">Manage Categories</a></li>
-                                            <li><a href="/Admin/ManageFDIDs">Manage FD ID's</a></li>
+                                            <li><a href="/Admin/ManageFDIDs">Manage FDIDs / Related Addresses</a></li>
                                             <li><a href="/Admin/ManageHelpText">Manage Help Text</a></li>
                                             <li><a href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
+                                            <li><a href="/Admin/ManageAgencyInformation">Manage Agency Information</a></li>
                                         </ul>
                                     </li>
                                     <li class="dropdown">
@@ -131,8 +132,8 @@
                                             Support <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navSupport">
-                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -170,8 +171,8 @@
                                             Support <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navSupportExternal">
-                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -202,8 +203,8 @@
                                             Support <span class="caret"></span>
                                         </a>
                                         <ul class="dropdown-menu" aria-labelledby="navSupportManager">
-                                            <li><a href="#" onclick="clearTA(); return false;" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
-                                            <li><a href="#" onclick="clearFS(); return false;" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#techAssistModal">Technical Support</a></li>
+                                            <li><a href="#" data-toggle="modal" data-target="#FSModal">Fire Services Support</a></li>
                                         </ul>
                                     </li>
                                 </ul>
@@ -230,52 +231,24 @@
                 </div>
                 <asp:LinkButton ID="lnkSearchHelp" runat="server" Visible="false" PostBackUrl="~/Admin/SearchHelp">Search All Help</asp:LinkButton>
             </div>
-            <div id="dvEmailSuccess" runat="server"></div>
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
             <hr />
-            <!-- Technical Assistance Modal -->
+            <!-- Technical Support Modal -->
             <div class="modal fade" id="techAssistModal" tabindex="-1" role="dialog" data-backdrop="false" aria-labelledby="lblTechHeader" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header" id="modalHeaderTA">
-                            <h4 class="modal-title" id="lblTechHeader">Submit Technical Assistance</h4>
+                            <h4 class="modal-title" id="lblTechHeader">Technical Support</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <asp:Label ID="lblTAError" runat="server"></asp:Label>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblTAFromName" runat="server" AssociatedControlID="txtTAFromName">Your Name *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtTAFromName" runat="server" Width="75%" aria-required="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblTAFromEmail" runat="server" AssociatedControlID="txtTAFromEmail">Your Email *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtTAFromEmail" runat="server" TextMode="Email" Width="75%" aria-required="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblTADetails" runat="server" AssociatedControlID="txtTADetails">Description *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtTADetails" runat="server" Rows="5" TextMode="MultiLine" Width="75%" aria-required="true"></asp:TextBox>
-                                </div>
-                            </div>
+                            <p class="lead">Please reach out to your SFMO contact for support.</p>
                         </div>
                         <div class="modal-footer">
-                            <button id="btnClose" type="button" class="btn btn-primary" onclick="clearTA()" data-dismiss="modal">Close</button>
-                            <button id="btnSendTA" class="btn btn-primary" runat="server" onserverclick="btnSendTA_ServerClick">Send Email</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -285,43 +258,16 @@
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header" id="modalHeaderFS">
-                            <h4 class="modal-title" id="lblFSHeader">Submit Fire Services Support</h4>
+                            <h4 class="modal-title" id="lblFSHeader">Fire Services Support</h4>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
                         <div class="modal-body">
-                            <div class="row">
-                                <asp:Label ID="lblFSError" runat="server"></asp:Label>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblFSFromName" runat="server" AssociatedControlID="txtFSFromName">Your Name *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtFSFromName" runat="server" Width="75%" aria-required="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblFSFromEmail" runat="server" AssociatedControlID="txtFSFromEmail">Your Email *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtFSFromEmail" runat="server" TextMode="Email" Width="75%" aria-required="true"></asp:TextBox>
-                                </div>
-                            </div>
-                            <div class="row formRow">
-                                <div class="col-md-3">
-                                    <asp:Label ID="lblFSDetails" runat="server" AssociatedControlID="txtFSDetails">Description *</asp:Label>
-                                </div>
-                                <div class="col-md-9">
-                                    <asp:TextBox ID="txtFSDetails" runat="server" Rows="5" TextMode="MultiLine" Width="75%" aria-required="true"></asp:TextBox>                                
-                                </div>
-                            </div>
+                            <p class="lead">Please reach out to your SFMO contact for support.</p>
                         </div>
                         <div class="modal-footer">
-                            <button id="btnFSClose" type="button" class="btn btn-primary" onclick="clearFS()" data-dismiss="modal">Close</button>
-                            <button id="bntSendFS" class="btn btn-primary" runat="server" onserverclick="bntSendFS_ServerClick">Send Email</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">Close</button>
                         </div>
                     </div>
                 </div>
@@ -356,28 +302,6 @@
                                 }
                             });
                         }, 1000);
-
-                        function clearTA() {
-                            $('#lblTAError').html('');
-                            $('#txtTAFromName').val('');
-                            $('#txtTAFromEmail').val('');
-                            $('#txtTADetails').val('');
-                        }
-
-                        function showTAModal() {
-                            $('#techAssistModal').modal('show');
-                        }
-
-                        function showFSModal() {
-                            $('#FSModal').modal('show');
-                        }
-
-                        function clearFS() {
-                            $('#lblFSError').html('');
-                            $('#txtFSFromName').val('');
-                            $('#txtFSFromEmail').val('');
-                            $('#txtFSDetails').val('');
-                        }
 
                     </script>
                     Session Time Remaining: <span id="timer" data-seconds="3600" class="countdown">01:00:00</span>
