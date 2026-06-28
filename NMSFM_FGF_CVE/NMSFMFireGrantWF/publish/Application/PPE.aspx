@@ -22,7 +22,7 @@
                 </fieldset>
             </div>
         </div>
-        <div id="dvPPE">
+        <div id="dvPPE" style="display:none">
             <%--<div class="row" id="dvAidAgreementsHeader">
                 <div class="col-md-12">
                     <h3>Bunker Gear</h3>
@@ -154,7 +154,7 @@
                 </fieldset>
             </div>
         </div>
-        <div id="dvSCBA">
+        <div id="dvSCBA" style="display:none">
             <div class="row" id="dvStandardComplientSCBAHead">
                 <div class="col-md-12">
                     <h3>Standard Compliant SCBA *</h3>
@@ -509,7 +509,8 @@
             }
             else {
                 $('#dvPPE').fadeOut("fast");
-                clearPPEFields();
+                // Disabled: preserve section data when PartOfProject = No
+                //clearPPEFields();
             }
         }
 
@@ -521,7 +522,8 @@
                 }
                 else {
                     $('#dvSCBA').fadeOut("fast");
-                    clearNote2Id();
+                    // Disabled: preserve section data when PartOfProject = No
+                    //clearNote2Id();
                 }
             }
             catch {

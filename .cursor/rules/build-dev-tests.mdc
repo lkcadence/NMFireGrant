@@ -1,11 +1,11 @@
 ---
-description: Run .\build.ps1 for dev builds and verification; never ask the user to build
+description: Run .\build-release.ps1 for builds and verification; never ask the user to build
 alwaysApply: true
 ---
 
-# Dev build and verification
+# Build and verification
 
-After making code changes in this repo, **run the dev build yourself**. Do not ask the
+After making code changes in this repo, **run the release build yourself**. Do not ask the
 user to run it unless you are blocked (permissions, missing tooling, or environment
 you cannot access).
 
@@ -14,10 +14,10 @@ you cannot access).
 From `NMSFM_FGF_CVE/NMSFMFireGrantWF/`:
 
 ```powershell
-.\build.ps1
+.\build-release.ps1
 ```
 
-Use `-Configuration Release` only when release output is explicitly required.
+Always use `.\build-release.ps1` — not `.\build.ps1`. Release is the default configuration.
 
 ## When to run
 
@@ -27,10 +27,10 @@ Use `-Configuration Release` only when release output is explicitly required.
 
 ## Agent behavior
 
-- Run `.\build.ps1` in the terminal; do not delegate to the user
+- Run `.\build-release.ps1` in the terminal; do not delegate to the user
 - If the build fails, fix issues and re-run until it succeeds or you are blocked
 - Report build result briefly (success or what failed)
-- Do not say "please rebuild" or "run build.ps1" when you can run it yourself
+- Do not say "please rebuild" or "run build-release.ps1" when you can run it yourself
 - If you already built successfully in the same session after the latest changes,
   do not ask for another build; tell the user to restart the app if runtime refresh
   is needed
@@ -41,4 +41,4 @@ Always execute from:
 
 `NMSFM_FGF_CVE/NMSFMFireGrantWF/`
 
-Not the repo root and not `publish/` unless deployment is the explicit task.
+Not the repo root. Use `publish/` only when inspecting deploy output.
