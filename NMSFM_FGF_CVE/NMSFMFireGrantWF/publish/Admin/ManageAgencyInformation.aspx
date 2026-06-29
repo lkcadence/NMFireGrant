@@ -45,6 +45,10 @@
               <a href="#tabAdvanced" aria-controls="tabAdvanced" role="tab"
                 data-toggle="tab">Advanced</a>
             </li>
+            <li role="presentation">
+              <a href="#tabSupportEmail" aria-controls="tabSupportEmail" role="tab"
+                data-toggle="tab">Support Email</a>
+            </li>
           </ul>
 
           <div class="tab-content" style="padding-top:15px;">
@@ -182,6 +186,39 @@
               <asp:PlaceHolder ID="phAdvancedUdf" runat="server" />
               <asp:Label ID="lblNoUdfFields" runat="server" Visible="false"
                 Text="There are no additional fields defined for this record." />
+            </div>
+
+            <div role="tabpanel" class="tab-pane" id="tabSupportEmail">
+              <div class="row formRow">
+                <div class="col-sm-12">
+                  <p class="text-muted">
+                    Separate multiple addresses with semicolons. Leave blank to use
+                    web.config fallback values.
+                  </p>
+                </div>
+              </div>
+              <div class="row formRow">
+                <div class="col-sm-4">
+                  <asp:Label ID="lblTechnicalSupportEmail" runat="server"
+                    AssociatedControlID="txtTechnicalSupportEmail"
+                    Text="Technical Support Email"></asp:Label>
+                </div>
+                <div class="col-sm-8">
+                  <asp:TextBox ID="txtTechnicalSupportEmail" runat="server"
+                    CssClass="form-control" MaxLength="500" ClientIDMode="Static" />
+                </div>
+              </div>
+              <div class="row formRow">
+                <div class="col-sm-4">
+                  <asp:Label ID="lblFireServicesSupportEmail" runat="server"
+                    AssociatedControlID="txtFireServicesSupportEmail"
+                    Text="Fire Services Support Email"></asp:Label>
+                </div>
+                <div class="col-sm-8">
+                  <asp:TextBox ID="txtFireServicesSupportEmail" runat="server"
+                    CssClass="form-control" MaxLength="500" ClientIDMode="Static" />
+                </div>
+              </div>
             </div>
           </div>
 
