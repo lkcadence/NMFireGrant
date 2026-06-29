@@ -4092,6 +4092,157 @@ namespace NMSFM.Services.FireGrant
 
 			return result;
 		}
+
+		public async Task<bool> DeleteFGApplicationAsync(Guid applicationId)
+		{
+			try
+			{
+				var db = cwmContext as DbContext;
+				if (db == null)
+				{
+					logger.Error("DeleteFGApplicationAsync: DbContext was not available.");
+					return false;
+				}
+
+				using (var tx = db.Database.BeginTransaction())
+				{
+					try
+					{
+						cwmContext.FG_App_AidDistricts.RemoveRange(
+							await cwmContext.FG_App_AidDistricts
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_WaterSources.RemoveRange(
+							await cwmContext.FG_App_WaterSources
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_TrainingOpportunities.RemoveRange(
+							await cwmContext.FG_App_TrainingOpportunities
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_ApparatusEquipment.RemoveRange(
+							await cwmContext.FG_App_ApparatusEquipment
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_CommunicationEquipment.RemoveRange(
+							await cwmContext.FG_App_CommunicationEquipment
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_HazardThreatEvents.RemoveRange(
+							await cwmContext.FG_App_HazardThreatEvents
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_StandardPPEs.RemoveRange(
+							await cwmContext.FG_App_StandardPPEs
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_StandardSCBAs.RemoveRange(
+							await cwmContext.FG_App_StandardSCBAs
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_ApplicationEquipments.RemoveRange(
+							await cwmContext.FG_App_ApplicationEquipments
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Documents.RemoveRange(
+							await cwmContext.FG_App_Documents
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Signatures.RemoveRange(
+							await cwmContext.FG_App_Signatures
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Scores.RemoveRange(
+							await cwmContext.FG_App_Scores
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_GeneralInfos.RemoveRange(
+							await cwmContext.FG_App_GeneralInfos
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_BudgetInfos.RemoveRange(
+							await cwmContext.FG_App_BudgetInfos
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_CommunityInfos.RemoveRange(
+							await cwmContext.FG_App_CommunityInfos
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_ResponseHistories.RemoveRange(
+							await cwmContext.FG_App_ResponseHistories
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_WaterAvailabilities.RemoveRange(
+							await cwmContext.FG_App_WaterAvailabilities
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Trainings.RemoveRange(
+							await cwmContext.FG_App_Trainings
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Apparatuses.RemoveRange(
+							await cwmContext.FG_App_Apparatuses
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Communications.RemoveRange(
+							await cwmContext.FG_App_Communications
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_HazardsThreats.RemoveRange(
+							await cwmContext.FG_App_HazardsThreats
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_PPEs.RemoveRange(
+							await cwmContext.FG_App_PPEs
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_EquipmentNeeds.RemoveRange(
+							await cwmContext.FG_App_EquipmentNeeds
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_FundingJustifications.RemoveRange(
+							await cwmContext.FG_App_FundingJustifications
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_ProjectBudgets.RemoveRange(
+							await cwmContext.FG_App_ProjectBudgets
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_DocsSigs.RemoveRange(
+							await cwmContext.FG_App_DocsSigs
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+						cwmContext.FG_App_Reviews.RemoveRange(
+							await cwmContext.FG_App_Reviews
+								.Where(a => a.ApplicationId == applicationId).ToListAsync());
+
+						var application = await cwmContext.FGApplications
+							.SingleOrDefaultAsync(a => a.ApplicationId == applicationId);
+						if (application == null)
+						{
+							tx.Rollback();
+							return false;
+						}
+
+						cwmContext.FGApplications.Remove(application);
+						await db.SaveChangesAsync();
+						tx.Commit();
+						return true;
+					}
+					catch (Exception ex)
+					{
+						tx.Rollback();
+						logger.Error(
+							"DeleteFGApplicationAsync failed for '" + applicationId + "'.", ex);
+						return false;
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error(ex.Message.ToString());
+				return false;
+			}
+		}
+
+		public async Task<int> DeleteFGApplicationsAsync(IEnumerable<Guid> applicationIds)
+		{
+			if (applicationIds == null)
+			{
+				return 0;
+			}
+
+			int deleted = 0;
+			foreach (Guid applicationId in applicationIds.Distinct())
+			{
+				if (applicationId == Guid.Empty)
+				{
+					continue;
+				}
+
+				if (await DeleteFGApplicationAsync(applicationId))
+				{
+					deleted++;
+				}
+			}
+
+			return deleted;
+		}
 	}
 }
 

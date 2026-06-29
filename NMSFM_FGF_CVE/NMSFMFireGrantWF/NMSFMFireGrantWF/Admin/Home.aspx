@@ -1,7 +1,51 @@
 ﻿<%@ Page Title="Fire Grant: Admin Home" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Home.aspx.cs" Inherits="NMSFMFireGrantWF.Admin.Home" async="true"%>
 
 <asp:Content ID="Content2" ContentPlaceHolderID="HeadContent" runat="server">
-    
+    <script type="text/javascript">
+        function updateDeleteButtonState() {
+            var btn = document.getElementById('<%= btnDelete.ClientID %>');
+            if (!btn) return;
+            var anyChecked = false;
+            var boxes = document.querySelectorAll('.app-delete-chk input[type=checkbox]');
+            for (var i = 0; i < boxes.length; i++) {
+                if (boxes[i].checked) {
+                    anyChecked = true;
+                    break;
+                }
+            }
+            btn.disabled = !anyChecked;
+        }
+
+        function wireDeleteConfirm() {
+            var btn = document.getElementById('<%= btnDelete.ClientID %>');
+            if (!btn) return;
+
+            var existingOnclick = btn.getAttribute('onclick') || '';
+            if (existingOnclick.indexOf('confirm(') >= 0) {
+                return;
+            }
+
+            btn.setAttribute('onclick',
+                "if (this.disabled) return false; if (!confirm('Are you sure you want to permanently delete the selected application(s) and all associated data?')) return false; " +
+                existingOnclick);
+        }
+
+        function initDeleteCheckboxes() {
+            wireDeleteConfirm();
+            var boxes = document.querySelectorAll('.app-delete-chk input[type=checkbox]');
+            for (var i = 0; i < boxes.length; i++) {
+                boxes[i].removeEventListener('change', updateDeleteButtonState);
+                boxes[i].addEventListener('change', updateDeleteButtonState);
+            }
+            updateDeleteButtonState();
+        }
+
+        if (typeof Sys !== 'undefined' && Sys.Application) {
+            Sys.Application.add_load(initDeleteCheckboxes);
+        } else {
+            document.addEventListener('DOMContentLoaded', initDeleteCheckboxes);
+        }
+    </script>
 </asp:Content>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <h2>Applications for Review / Approval for FY<span id="spFiscalYear" runat="server"></span></h2>
@@ -51,6 +95,7 @@
                     </div>
                     <div class="col-md-3">
                         <asp:Button ID="btnSearch" CssClass="btn btn-primary" runat="server" Text="Search" OnClick="btnSearch_Click"/>
+                        <asp:Button ID="btnDelete" CssClass="btn btn-danger" runat="server" Text="Delete" OnClick="btnDelete_Click" OnClientClick="return confirm('Are you sure you want to permanently delete the selected application(s) and all associated data?');" />
                     </div>
                 </div>
             </div>
@@ -59,6 +104,9 @@
                 <div class="col-md-12">
                     Please select the department application that you would like to view.
                 </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12" id="dvMessage" runat="server"></div>
             </div>
             <div class="row">
                 <div class="col-md-12">
@@ -86,6 +134,11 @@
                                 </telerik:GridBoundColumn>
                                 <telerik:GridBoundColumn DataField="ApplicationId" FilterControlAltText="Filter ApplicationId column" HeaderText="ApplicationId" UniqueName="ApplicationId" Display="False" Resizable="False">
                                 </telerik:GridBoundColumn>
+                                <telerik:GridTemplateColumn FilterControlAltText="Filter Delete column" HeaderText="Delete" UniqueName="Delete">
+                                    <ItemTemplate>
+                                        <asp:CheckBox ID="chkDelete" runat="server" CssClass="app-delete-chk" />
+                                    </ItemTemplate>
+                                </telerik:GridTemplateColumn>
                             </Columns>
                         </MasterTableView>
                     </telerik:RadGrid>

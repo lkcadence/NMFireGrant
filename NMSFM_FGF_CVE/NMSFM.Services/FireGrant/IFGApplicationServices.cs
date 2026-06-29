@@ -79,6 +79,8 @@ namespace NMSFM.Services.FireGrant
             Guid applicationId, string[] documentTypes);
         Task<bool> SaveApplicationDocumentAsync(FG_App_Documents model);
         Task<bool> DeleteApplicationDocumentAsync(Guid id);
+        Task<bool> DeleteFGApplicationAsync(Guid applicationId);
+        Task<int> DeleteFGApplicationsAsync(IEnumerable<Guid> applicationIds);
         Task<bool> SaveApplicationSignatures(FG_App_Signatures model);
         Task<FG_App_Signatures> GetReviewerSignature(string applicationId);
         Task<FG_App_Signatures> GetCounselorSignature(string applicationId);

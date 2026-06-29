@@ -243,6 +243,64 @@ namespace NMSFMFireGrantWF.Admin
             await LoadApplications();
         }
 
+        protected async void btnDelete_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                var ids = new List<Guid>();
+                foreach (GridDataItem item in rgDepartments.MasterTableView.Items)
+                {
+                    var chk = item.FindControl("chkDelete") as CheckBox;
+                    if (chk != null && chk.Checked)
+                    {
+                        string appIdText = item["ApplicationId"].Text;
+                        if (Guid.TryParse(appIdText, out Guid appId))
+                        {
+                            ids.Add(appId);
+                        }
+                    }
+                }
+
+                if (ids.Count == 0)
+                {
+                    dvMessage.InnerHtml =
+                        "<div class='alert alert-warning'>No applications selected.</div>";
+                    return;
+                }
+
+                int deleted = await fgAppService.DeleteFGApplicationsAsync(ids);
+                if (deleted == ids.Count)
+                {
+                    dvMessage.InnerHtml = string.Format(
+                        "<div class='alert alert-success'>{0} application(s) deleted.</div>",
+                        deleted);
+                }
+                else if (deleted > 0)
+                {
+                    dvMessage.InnerHtml = string.Format(
+                        "<div class='alert alert-warning'>{0} of {1} application(s) deleted. " +
+                        "Some deletions failed.</div>",
+                        deleted,
+                        ids.Count);
+                }
+                else
+                {
+                    dvMessage.InnerHtml =
+                        "<div class='alert alert-danger'>Delete failed. " +
+                        "No applications were removed.</div>";
+                }
+
+                await LoadApplications();
+            }
+            catch (Exception ex)
+            {
+                _ = ex;
+                dvMessage.InnerHtml =
+                    "<div class='alert alert-danger'>Delete failed. " +
+                    HttpUtility.HtmlEncode(ex.Message) + "</div>";
+            }
+        }
+
         protected async void ddlFiscalYear_SelectedIndexChanged(object sender, DropDownListEventArgs e)
         {
             try
