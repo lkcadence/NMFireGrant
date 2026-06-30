@@ -1,5 +1,12 @@
 <%@ Page Title="Fire Grant: Email Send Log" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="EmailSendLog.aspx.cs" Inherits="NMSFMFireGrantWF.Admin.EmailSendLog" Async="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+    <style>
+        .email-log-error {
+            max-width: 420px;
+            word-break: break-word;
+            white-space: normal;
+        }
+    </style>
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
     <div class="container">
@@ -22,7 +29,7 @@
                         <asp:BoundField DataField="SentByLogin" HeaderText="Sent By" />
                         <asp:BoundField DataField="SentByEmail" HeaderText="Sender Email" />
                         <asp:BoundField DataField="ContextType" HeaderText="Context" />
-                        <asp:BoundField DataField="FailReason" HeaderText="Error" />
+                        <asp:BoundField DataField="FailReason" HeaderText="Error" HtmlEncode="true" ItemStyle-CssClass="email-log-error" ItemStyle-Wrap="true" />
                     </Columns>
                 </asp:GridView>
             </div>
