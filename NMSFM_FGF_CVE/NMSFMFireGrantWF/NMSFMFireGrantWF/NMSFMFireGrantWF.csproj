@@ -254,6 +254,7 @@
     <Content Include="Admin\ManageFDIDs.aspx" />
     <Content Include="Admin\ManageHelpText.aspx" />
     <Content Include="Admin\ManageLegacyApps.aspx" />
+    <Content Include="Admin\EmailSendLog.aspx" />
     <Content Include="Admin\ManageSettings.aspx" />
     <Content Include="Admin\SearchHelp.aspx" />
     <Content Include="Admin\ViewLegacyApps.aspx" />
@@ -553,6 +554,13 @@
     </Compile>
     <Compile Include="Admin\ManageLegacyApps.aspx.designer.cs">
       <DependentUpon>ManageLegacyApps.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Admin\EmailSendLog.aspx.cs">
+      <DependentUpon>EmailSendLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Admin\EmailSendLog.aspx.designer.cs">
+      <DependentUpon>EmailSendLog.aspx</DependentUpon>
     </Compile>
     <Compile Include="Admin\ManageSettings.aspx.cs">
       <DependentUpon>ManageSettings.aspx</DependentUpon>

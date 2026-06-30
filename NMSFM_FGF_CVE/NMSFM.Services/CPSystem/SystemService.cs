@@ -1,5 +1,6 @@
 using NMSFM.Data;
 using NMSFM.Services.Audit;
+using NMSFM.Services.FireGrant;
 using NMSFM.Services.Logging;
 using NMSFM.Services.Models;
 using NMSFM.ViewModels;
@@ -593,6 +594,177 @@ namespace NMSFM.Services.CPSystem
 			result = Encryptor.Encrypt(Value);
 
 			return await Task.FromResult(result);
+		}
+
+		public async Task InsertEmailSendLogAsync(Guid messageId, EmailSendLogPayload payload, Guid? agencyId)
+		{
+			if (messageId == Guid.Empty || payload == null)
+			{
+				return;
+			}
+
+			try
+			{
+				var setting = new Setting
+				{
+					SettingsId = Guid.NewGuid(),
+					PropertyField = FireGrantSettingKeys.EmailLogPrefix + messageId,
+					ValueField = TruncateValueField(EmailSendLogJson.Serialize(payload)),
+					AgencyId = agencyId,
+					rowguid = Guid.NewGuid(),
+					DateInserted = DateTime.Now,
+					DateUpdated = DateTime.Now
+				};
+				cwmContext.Settings.Add(setting);
+
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error("Failed to insert email send log for message '" + messageId + "'.", ex);
+			}
+		}
+
+		public async Task UpdateEmailSendLogAsync(Guid messageId, EmailSendLogPayload payload)
+		{
+			if (messageId == Guid.Empty || payload == null)
+			{
+				return;
+			}
+
+			try
+			{
+				string propertyField = FireGrantSettingKeys.EmailLogPrefix + messageId;
+				var setting = await cwmContext.Settings.SingleOrDefaultAsync(
+					s => s.PropertyField == propertyField);
+				if (setting == null)
+				{
+					return;
+				}
+
+				setting.ValueField = TruncateValueField(EmailSendLogJson.Serialize(payload));
+				setting.DateUpdated = DateTime.Now;
+
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error("Failed to update email send log for message '" + messageId + "'.", ex);
+			}
+		}
+
+		public async Task<IReadOnlyList<EmailSendLogEntry>> GetRecentEmailSendLogsAsync(
+			Guid? agencyId,
+			int take)
+		{
+			var results = new List<EmailSendLogEntry>();
+			if (take <= 0)
+			{
+				return results;
+			}
+
+			try
+			{
+				string prefix = FireGrantSettingKeys.EmailLogPrefix;
+				IQueryable<Setting> query = cwmContext.Settings.Where(
+					s => s.PropertyField.StartsWith(prefix));
+				if (agencyId != null && agencyId != Guid.Empty)
+				{
+					query = query.Where(s => s.AgencyId == agencyId);
+				}
+
+				var rows = await query
+					.OrderByDescending(s => s.DateInserted)
+					.Take(take)
+					.ToListAsync();
+
+				foreach (Setting row in rows)
+				{
+					EmailSendLogPayload payload = EmailSendLogJson.Deserialize(row.ValueField);
+					Guid messageId = Guid.Empty;
+					if (row.PropertyField != null &&
+						row.PropertyField.Length > prefix.Length)
+					{
+						Guid.TryParse(row.PropertyField.Substring(prefix.Length), out messageId);
+					}
+
+					results.Add(new EmailSendLogEntry
+					{
+						MessageId = messageId,
+						DateInserted = row.DateInserted,
+						DateUpdated = row.DateUpdated,
+						Status = payload.status,
+						From = payload.from,
+						ReplyTo = payload.replyTo,
+						To = payload.to,
+						Subject = payload.subject,
+						ContextType = payload.ctx,
+						ContextId = payload.ctxId,
+						SentByLogin = payload.sentByLogin,
+						SentByEmail = payload.sentByEmail,
+						SentByRole = payload.sentByRole,
+						FailReason = payload.fail
+					});
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error("Failed to read recent email send logs.", ex);
+			}
+
+			return results;
+		}
+
+		public async Task<int> DeleteEmailSendLogsOlderThanAsync(DateTime cutoffUtc)
+		{
+			int deleted = 0;
+			try
+			{
+				string prefix = FireGrantSettingKeys.EmailLogPrefix;
+				var rows = await cwmContext.Settings.Where(
+					s => s.PropertyField.StartsWith(prefix) && s.DateInserted < cutoffUtc).ToListAsync();
+				if (rows.Count == 0)
+				{
+					return 0;
+				}
+
+				foreach (Setting row in rows)
+				{
+					cwmContext.Settings.Remove(row);
+					deleted++;
+				}
+
+				if (cwmContext is DbContext)
+				{
+					await ((DbContext)cwmContext).SaveChangesAsync();
+				}
+			}
+			catch (Exception ex)
+			{
+				_ = ex;
+				logger.Error("Failed to purge old email send logs.", ex);
+			}
+
+			return deleted;
+		}
+
+		private static string TruncateValueField(string value)
+		{
+			if (string.IsNullOrEmpty(value) || value.Length <= 3000)
+			{
+				return value ?? string.Empty;
+			}
+
+			return value.Substring(0, 3000);
 		}
 
 

@@ -601,91 +601,156 @@ accountService = new AccountService(userWebModel, logger);
             }
             if (await SaveForm(submit) == true)
             {
+                string saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved</div>";
                 if (isAdmin == false)
                 {
-                    if (submit == false)
+                    try
                     {
-                        SendSignatorEmails();
+                        if (submit == false)
+                        {
+                            int sentCount = await SendSignatorEmailsAsync();
+                            if (sentCount > 0)
+                            {
+                                saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved. " +
+                                    sentCount + " signatory email(s) sent.</div>";
+                            }
+                        }
+                        else
+                        {
+                            await SendSubmittalEmailsAsync();
+                            Session["SaveMessage"] = "<div class='alert alert-success'>Application submitted. Confirmation email sent.</div>";
+                            Session["SaveStatusMessage"] = 1;
+                            Response.Redirect("~/Application/AppConf", false);
+                            return;
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        SendSubmittalEmails();
+                        _ = ex;
+                        saveMessage = "<div class='alert alert-danger'>" + HttpUtility.HtmlEncode(ex.Message) + "</div>";
                     }
                 }
-                
-                //if (dvError.InnerText == "")
-                //{
-                //    dvError.InnerHtml = "<div class='alert alert-success'>Signatures and Documents Saved</div>";
-                //}
-                Session["SaveMessage"] = "<div class='alert alert-success'>Signatures and Documents Saved</div>";
+
+                Session["SaveMessage"] = saveMessage;
                 Session["SaveStatusMessage"] = 1;
                 Response.Redirect("~/Application/SignaturesDocs", false);
             }
         }
 
-        private async void SendSubmittalEmails()
+        private async Task SendSubmittalEmailsAsync()
         {
-            try
+            if (emailer == null || systemService == null)
             {
-                string appId = Session["ApplicationId"].ToString();
-                string fy = Session["FiscalYear"].ToString();
-                if (appId != null && appId != "")
-                {
-                    string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
-                    FG_App_GeneralInfo info = new FG_App_GeneralInfo();
-                    Guid appIdGuid = new Guid(appId);
-                    info = await fgAppService.GetFGApplicationGeneralInfoAsync(appIdGuid);
-                    string emailAdd = info.EmailAddress;
-                    
-                    string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
-                    string subject = "NMSFM Fire Grant Application submitted for " + department;
-                    string body = "Thank you for subitting the fire grant application for " + department + " for fiscal year " + fy + ".";
-                    body += "<br /><br />";
-                    emailer.SendMailMessage(from, emailAdd, "", "", subject, body);
+                throw new Exception("Email services are not available.");
+            }
 
-                }
-            }
-            catch (Exception ex)
+            string appId = Session["ApplicationId"].ToString();
+            string fy = Session["FiscalYear"].ToString();
+            if (string.IsNullOrWhiteSpace(appId))
             {
-                _ = ex;
-                dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
+                throw new Exception("Application id is not available for email.");
             }
+
+            string from = EmailSendContextHelper.GetDefaultSender();
+            Guid appIdGuid = new Guid(appId);
+            FG_App_GeneralInfo info = await fgAppService.GetFGApplicationGeneralInfoAsync(appIdGuid);
+            string emailAdd = info != null ? info.EmailAddress : string.Empty;
+            if (string.IsNullOrWhiteSpace(emailAdd) || !emailer.EmailIsValid(emailAdd))
+            {
+                throw new Exception("A valid General Information email address is required before submit confirmation can be sent.");
+            }
+
+            string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
+            string subject = "NMSFM Fire Grant Application submitted for " + department;
+            string body = EmailSendContextHelper.BuildExternalSenderBodyLine();
+            body += "Thank you for submitting the fire grant application for " + department + " for fiscal year " + fy + ".";
+            body += "<br /><br />";
+            var emailContext = EmailSendContextHelper.FromSession("ApplicationSubmitted", appId);
+            await emailer.SendMailMessageAsync(from, emailAdd, "", "", subject, body, "", "", emailContext, systemService);
         }
 
-        private async void SendSignatorEmails()
+        private async Task<int> SendSignatorEmailsAsync()
         {
-            try
+            if (emailer == null || systemService == null)
             {
-                List<FG_App_Signatures> signatures = (List<FG_App_Signatures>)ViewState["dtSignatures"];
-                if (signatures != null)
+                throw new Exception("Email services are not available.");
+            }
+
+            string appId = Session["ApplicationId"].ToString();
+            if (string.IsNullOrWhiteSpace(appId))
+            {
+                throw new Exception("Application id is not available for email.");
+            }
+
+            Guid appIdGuid = new Guid(appId);
+            DetailedFGAppSigsDocs model = await fgAppService.GetFGApplicationDocsSigsAsync(appIdGuid);
+            List<FG_App_Signatures> signatures = model != null && model.Signatures != null
+                ? model.Signatures
+                : new List<FG_App_Signatures>();
+
+            List<FG_App_Signatures> pending = signatures
+                .Where(sig => string.IsNullOrWhiteSpace(sig.Signature))
+                .ToList();
+
+            if (pending.Count == 0)
+            {
+                return 0;
+            }
+
+            string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null)
+                ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString()
+                : "https://fireservicesgrant.dhsem.nm.gov/";
+            string from = EmailSendContextHelper.GetDefaultSender();
+            string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
+            var emailErrors = new List<string>();
+            int sentCount = 0;
+
+            foreach (FG_App_Signatures sig in pending)
+            {
+                string email = sig.EmailAddress != null ? sig.EmailAddress.Trim() : string.Empty;
+                if (string.IsNullOrWhiteSpace(email) || !emailer.EmailIsValid(email))
                 {
-                    foreach (FG_App_Signatures sig in signatures)
-                    {
-                        if (sig.Signature == null || sig.Signature == "")
-                        {
-                            string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                            string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
-                            
-                            string email = sig.EmailAddress;
-                            string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
-                            string appId = Session["ApplicationId"].ToString();
-                            string decryptedLoginToken = await accountService.DecryptString(sig.LoginToken);
-                            string subject = "Approval Requested for NMSFM Fire Grant Application";
-                            string body = "Please click the link below to view and sign off on the fire grant application for " + department + ".";
-                            body += "<br /><br /><a href='" + url + "/LoginSignator/" + sig.ApplicationId + "/" + decryptedLoginToken + "'>View Application</a>";
-                            emailer.SendMailMessage(from, email, "", "", subject, body);
-                        }
-                    }
+                    string roleLabel = string.IsNullOrWhiteSpace(sig.SignatureRole) ? "Signatory" : sig.SignatureRole;
+                    emailErrors.Add(roleLabel + " has no valid email address.");
+                    continue;
                 }
+
+                if (string.IsNullOrWhiteSpace(sig.LoginToken))
+                {
+                    string roleLabel = string.IsNullOrWhiteSpace(sig.SignatureRole) ? "Signatory" : sig.SignatureRole;
+                    emailErrors.Add(roleLabel + " is missing a sign-in token.");
+                    continue;
+                }
+
+                string decryptedLoginToken = await accountService.DecryptString(sig.LoginToken);
+                string subject = "Approval Requested for NMSFM Fire Grant Application";
+                string body = EmailSendContextHelper.BuildExternalSenderBodyLine();
+                body += "Please click the link below to view and sign off on the fire grant application for " + department + ".";
+                body += "<br /><br /><a href='" + url + "/LoginSignator/" + sig.ApplicationId + "/" +
+                    decryptedLoginToken + "'>View Application</a>";
+                var emailContext = EmailSendContextHelper.FromSession("SignatoryRequest", appId);
+                await emailer.SendMailMessageAsync(from, email, "", "", subject, body, "", "", emailContext, systemService);
+                sentCount++;
             }
-            catch (Exception ex)
+
+            if (sentCount == 0)
             {
-                _ = ex;
-                dvError.InnerHtml = "<div class='alert alert-danger'>" + ex.Message.ToString() + "</div>";
+                string detail = emailErrors.Count > 0
+                    ? string.Join(" ", emailErrors)
+                    : "No signatory emails could be sent.";
+                throw new Exception(detail);
             }
+
+            if (emailErrors.Count > 0)
+            {
+                throw new Exception(
+                    sentCount + " signatory email(s) sent. Some could not be sent: " + string.Join(" ", emailErrors));
+            }
+
+            return sentCount;
         }
 
-        private async void SendFireChiefEmail()
+        private async Task SendFireChiefEmailAsync()
         {
             try
             {
@@ -696,17 +761,19 @@ accountService = new AccountService(userWebModel, logger);
                     {
                         if (sig.SignatureRole == "Fire Chief")
                         {
-                            string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                            string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
+                            string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "https://fireservicesgrant.dhsem.nm.gov/";
+                            string from = EmailSendContextHelper.GetDefaultSender();
 
                             string email = sig.EmailAddress;
                             string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
                             string appId = Session["ApplicationId"].ToString();
                             string decryptedLoginToken = await accountService.DecryptString(sig.LoginToken);
                             string subject = "NMSFM Fire Grant Application Ready for Submittal";
-                            string body = "Please click the link below to view and submit the fire grant application for " + department + ".";
+                            string body = EmailSendContextHelper.BuildExternalSenderBodyLine();
+                            body += "Please click the link below to view and submit the fire grant application for " + department + ".";
                             body += "<br /><br /><a href='" + url + "/LoginSignator/" + sig.ApplicationId + "/" + decryptedLoginToken + "'>View Application</a>";
-                            emailer.SendMailMessage(from, email, "", "", subject, body);
+                            var emailContext = EmailSendContextHelper.FromSession("FireChiefSubmit", appId);
+                            await emailer.SendMailMessageAsync(from, email, "", "", subject, body, "", "", emailContext, systemService);
                         }
                     }
                 }
@@ -879,7 +946,6 @@ accountService = new AccountService(userWebModel, logger);
                     app.SubmittedBy = submittedBy;
 
                     await fgAppService.UpdateApplication(app);
-                    Response.Redirect("~/Application/AppConf");
                 }
                 else
                 {

@@ -123,12 +123,17 @@ accountService = new AccountService(userWebModel, logger);
                         webUser.ForgotPasswordToken = forgotPasswordToken;
                         await accountService.UpdateExistingUser(webUser);
 
-                        string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                        string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
+                        string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "https://fireservicesgrant.dhsem.nm.gov/";
+                        string from = EmailSendContextHelper.GetDefaultSender();
                         string recoveryUrl = "<a href='" +  url + "/ResetUserPassword/" + webUser.UserId + "/" + forgotPasswordToken + "'>Reset Password</a>";
                         string subject = "Reset Password for NMSFM Fire Grant Application";
                         string body = "To reset your password for the NMSFM Fire Grant Application click the following link: <br /><br />" + recoveryUrl;
-                        emailer.SendMailMessage(from, webUser.Email, "", "", subject, body);
+                        var emailContext = new EmailSendContext
+                        {
+                            ContextType = "ForgotPassword",
+                            ContextId = webUser.UserId.ToString()
+                        };
+                        await emailer.SendMailMessageAsync(from, webUser.Email, "", "", subject, body, "", "", emailContext, systemService);
 
                         loginForm.Visible = false;
                         DisplayEmail.Visible = true;

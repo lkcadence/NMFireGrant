@@ -152,10 +152,15 @@ accountService = new AccountService(userWebModel, logger);
                     bool updated = await accountService.UpdateExistingUser(webUser);
                     if (updated)
                     {
-                        string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
-                        string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
+                        string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "https://fireservicesgrant.dhsem.nm.gov/";
+                        string from = EmailSendContextHelper.GetDefaultSender();
                         string successNotification = "The account registration for user name " + webUser.Login + " has been activated. You may now login to the application at <a href='" + url + "'>" + url + "</a> to submit your Fire Grant Application.";
-                        emailer.SendMailMessage(from, webUser.Email, "", "", "Registration for the NMSFM Fire Grant Application Approved", successNotification);
+                        var emailContext = new EmailSendContext
+                        {
+                            ContextType = "RegistrationApproval",
+                            ContextId = webUser.UserId.ToString()
+                        };
+                        await emailer.SendMailMessageAsync(from, webUser.Email, "", "", "Registration for the NMSFM Fire Grant Application Approved", successNotification, "", "", emailContext, systemService);
                     }
                     return updated;
                 }
@@ -393,13 +398,18 @@ accountService = new AccountService(userWebModel, logger);
                                     var savedUser = await accountService.GetWebUserByInfoAsync(user.Login, user.Password);
                                     string userId = savedUser.UserId.ToString();
                                     strDepartments = strDepartments.Substring(0, strDepartments.Length - 1);
-                                    string from = (ConfigurationManager.AppSettings["DefaultEmailSender"] != null) ? ConfigurationManager.AppSettings["DefaultEmailSender"].ToString() : "vance@vscomptech.com";
+                                    string from = EmailSendContextHelper.GetDefaultSender();
                                     string to = (ConfigurationManager.AppSettings["AccountEmailApprovers"] != null) ? ConfigurationManager.AppSettings["AccountEmailApprovers"].ToString() : "vance@vscomptech.com";
-                                    string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "http://firegranttest.vscomptech.com";
+                                    string url = (ConfigurationManager.AppSettings["ApplicationUrl"] != null) ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString() : "https://fireservicesgrant.dhsem.nm.gov/";
                                     string successAdminEmail = txtFirstName.Text + " " + txtLastName.Text + " (NERIS ID: " + txtFDID.Text + ") has submitted a registration for the Fire Grant Application for the (" + strDepartments + ") departments.";
                                     successAdminEmail += "<br />To approve this registration please click the approval link below or login to the Fire Grant Application and activate the user account.";
                                     successAdminEmail += "<br /><br /><a href=" + url + "/ApproveRegistration/appr/" + userId + "/" + _RegistrationToken + ">Approve Registration</a>";
-                                    emailer.SendMailMessage(from, to, "", "", "Fire Grant Registration Submitted", successAdminEmail, "");
+                                    var emailContext = new EmailSendContext
+                                    {
+                                        ContextType = "Registration",
+                                        ContextId = userId
+                                    };
+                                    await emailer.SendMailMessageAsync(from, to, "", "", "Fire Grant Registration Submitted", successAdminEmail, "", "", emailContext, systemService);
                                 }
                                 catch (Exception ex)
             {

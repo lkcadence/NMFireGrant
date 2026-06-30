@@ -125,6 +125,7 @@
                                             <li><a href="/Admin/ManageHelpText">Manage Help Text</a></li>
                                             <li><a href="/Admin/ManageLegacyApps">Manage Legacy Apps</a></li>
                                             <li><a href="/Admin/ManageAgencyInformation">Manage Agency Information</a></li>
+                                            <li><a href="/Admin/EmailSendLog">Email Send Log</a></li>
                                         </ul>
                                     </li>
                                     <li class="dropdown">

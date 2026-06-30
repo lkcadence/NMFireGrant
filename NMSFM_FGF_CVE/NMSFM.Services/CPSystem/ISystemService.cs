@@ -1,5 +1,6 @@
 ﻿using System;
 using NMSFM.ViewModels;
+using NMSFM.Services.FireGrant;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,5 +42,13 @@ namespace NMSFM.Services.CPSystem
 		Task<string> DecryptField(string Value);
 
 		Task<string> EncryptField(string Value);
+
+		Task InsertEmailSendLogAsync(Guid messageId, EmailSendLogPayload payload, Guid? agencyId);
+
+		Task UpdateEmailSendLogAsync(Guid messageId, EmailSendLogPayload payload);
+
+		Task<IReadOnlyList<EmailSendLogEntry>> GetRecentEmailSendLogsAsync(Guid? agencyId, int take);
+
+		Task<int> DeleteEmailSendLogsOlderThanAsync(DateTime cutoffUtc);
 	}
 }

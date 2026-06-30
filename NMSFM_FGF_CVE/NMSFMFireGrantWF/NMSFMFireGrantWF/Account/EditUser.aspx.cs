@@ -275,7 +275,7 @@ accountService = new AccountService(userWebModel, logger);
                     string connectionString = Session["userConnectionEncrypted"].ToString();
                     string dbName = "Codepal_NMSFM";
                     string organization = "New Mexico State Fire Marshal";
-                    NMSFM.Data.User user = new NMSFM.Data.User() {UserId = userId, Login = txtUsername.Text.Trim(), Password = EncryptString(txtPassword.Text.Trim()), ConnectionString = connectionString, CodepalId = codePalId, DatabaseName = dbName, Organization = organization, NMFGC = chkGrantAdmin.Checked, Inactive = chkInactive.Checked, Readonly = chkReadOnly.Checked };
+                    NMSFM.Data.User user = new NMSFM.Data.User() {UserId = userId, Login = txtUsername.Text.Trim(), Password = EncryptString(txtPassword.Text.Trim()), Email = txtEmail.Text.Trim(), ConnectionString = connectionString, CodepalId = codePalId, DatabaseName = dbName, Organization = organization, NMFGC = chkGrantAdmin.Checked, Inactive = chkInactive.Checked, Readonly = chkReadOnly.Checked };
                     var duplicate = await accountService.GetWebUserByIdAsync(user.UserId);
                     if (duplicate != null)
                     {

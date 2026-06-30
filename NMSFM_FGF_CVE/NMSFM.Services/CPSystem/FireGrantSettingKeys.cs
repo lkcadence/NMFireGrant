@@ -4,5 +4,6 @@ namespace NMSFM.Services.CPSystem
   {
     public const string TechnicalSupportEmail = "FireGrant_TechnicalSupportEmail";
     public const string FireServicesSupportEmail = "FireGrant_FireServicesSupportEmail";
+    public const string EmailLogPrefix = "FireGrant_EmailLog_";
   }
 }

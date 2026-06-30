@@ -255,7 +255,8 @@ accountService = new AccountService(userWebModel, logger);
                 //Encrypted Connection String Code
                 string decryptedConnectionString = await accountService.DecryptString(webUser.ConnectionString.ToString());
                 Session["WebUserId"] = webUser.UserId; // Used when checking Login records.
-                Session["userConnection"] = decryptedConnectionString; // Used to define the connection to the user's DB.      	
+                Session["WebUserEmail"] = webUser.Email;
+                Session["userConnection"] = decryptedConnectionString; // Used to define the connection to the user's DB.
                 Session["userConnectionEncrypted"] = webUser.ConnectionString;
                 var userContext = new CodepalWebModel(decryptedConnectionString);
                 //End Encrypted Connection String Code
