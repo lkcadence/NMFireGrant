@@ -591,61 +591,120 @@ accountService = new AccountService(userWebModel, logger);
             }
         }
 
-        protected async void btnSave_Click(object sender, EventArgs e)
+        protected void btnSave_Click(object sender, EventArgs e)
         {
-            bool submit = false;
-            bool isAdmin = dvAdmin.Visible;
-            if (btnSave.Text == "Submit Application")
-            {
-                submit = true;
-            }
-            if (await SaveForm(submit) == true)
-            {
-                string saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved</div>";
-                if (isAdmin == false)
-                {
-                    try
-                    {
-                        if (submit == false)
-                        {
-                            int sentCount = await SendSignatorEmailsAsync();
-                            if (sentCount > 0)
-                            {
-                                saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved. " +
-                                    sentCount + " signatory email(s) sent.</div>";
-                            }
-                        }
-                        else
-                        {
-                            await SendSubmittalEmailsAsync();
-                            Session["SaveMessage"] = "<div class='alert alert-success'>Application submitted. Confirmation email sent.</div>";
-                            Session["SaveStatusMessage"] = 1;
-                            Response.Redirect("~/Application/AppConf", false);
-                            return;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _ = ex;
-                        saveMessage = "<div class='alert alert-danger'>" + HttpUtility.HtmlEncode(ex.Message) + "</div>";
-                    }
-                }
-
-                Session["SaveMessage"] = saveMessage;
-                Session["SaveStatusMessage"] = 1;
-                Response.Redirect("~/Application/SignaturesDocs", false);
-            }
+            RegisterAsyncTask(new PageAsyncTask(SaveAndSendAsync));
         }
 
-        private async Task SendSubmittalEmailsAsync()
+        private sealed class EmailSendSnapshot
+        {
+            public string ApplicationId { get; set; }
+            public string FiscalYear { get; set; }
+            public string DepartmentName { get; set; }
+            public string ExternalSenderBodyLine { get; set; }
+            public EmailSendContext SignatoryContext { get; set; }
+            public EmailSendContext SubmittalContext { get; set; }
+        }
+
+        private EmailSendSnapshot CaptureEmailSendSnapshot()
+        {
+            string appId = Session["ApplicationId"] != null ? Session["ApplicationId"].ToString() : string.Empty;
+            Guid? agencyId = null;
+            if (Session["AgencyId"] != null && Guid.TryParse(Session["AgencyId"].ToString(), out Guid parsedAgency))
+            {
+                agencyId = parsedAgency;
+            }
+
+            string sentByUserId = Session["WebUserId"] != null ? Session["WebUserId"].ToString() : string.Empty;
+            string sentByEmail = Session["WebUserEmail"] != null ? Session["WebUserEmail"].ToString() : string.Empty;
+            string sentByLogin = Session["WebUser"] != null ? Session["WebUser"].ToString() : string.Empty;
+            string sentByRole = Session["Role"] != null ? Session["Role"].ToString() : string.Empty;
+            string role = sentByRole;
+            string login = sentByLogin;
+            string email = sentByEmail;
+
+            return new EmailSendSnapshot
+            {
+                ApplicationId = appId,
+                FiscalYear = Session["FiscalYear"] != null ? Session["FiscalYear"].ToString() : string.Empty,
+                DepartmentName = Session["DepartmentName"] != null ? Session["DepartmentName"].ToString() : string.Empty,
+                ExternalSenderBodyLine = EmailSendContextHelper.BuildExternalSenderBodyLine(role, login, email),
+                SignatoryContext = EmailSendContextHelper.FromValues(
+                    "SignatoryRequest", appId, sentByUserId, sentByEmail, sentByLogin, sentByRole, agencyId),
+                SubmittalContext = EmailSendContextHelper.FromValues(
+                    "ApplicationSubmitted", appId, sentByUserId, sentByEmail, sentByLogin, sentByRole, agencyId)
+            };
+        }
+
+        private bool IsSessionIntact()
+        {
+            return Session["WebUserId"] != null &&
+                !string.IsNullOrWhiteSpace(Convert.ToString(Session["WebUserId"]));
+        }
+
+        private async Task SaveAndSendAsync()
+        {
+            bool submit = btnSave.Text == "Submit Application";
+            bool isAdmin = dvAdmin.Visible;
+            if (await SaveForm(submit) != true)
+            {
+                return;
+            }
+
+            EmailSendSnapshot snapshot = CaptureEmailSendSnapshot();
+            string saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved</div>";
+            if (isAdmin == false)
+            {
+                try
+                {
+                    if (submit == false)
+                    {
+                        int sentCount = await SendSignatorEmailsAsync(snapshot);
+                        if (sentCount > 0)
+                        {
+                            saveMessage = "<div class='alert alert-success'>Signatures and Documents Saved. " +
+                                sentCount + " signatory email(s) sent.</div>";
+                        }
+                        dvError.InnerHtml = saveMessage;
+                        return;
+                    }
+
+                    await SendSubmittalEmailsAsync(snapshot);
+                    if (IsSessionIntact())
+                    {
+                        Session["SaveMessage"] =
+                            "<div class='alert alert-success'>Application submitted. Confirmation email sent.</div>";
+                        Session["SaveStatusMessage"] = 1;
+                        Response.Redirect("~/Application/AppConf", false);
+                        return;
+                    }
+
+                    dvError.InnerHtml = "<div class='alert alert-warning'>Application was submitted and " +
+                        "confirmation email was sent, but your session expired. Please log in again to confirm status.</div>";
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    _ = ex;
+                    dvError.InnerHtml = "<div class='alert alert-danger'>" + HttpUtility.HtmlEncode(ex.Message) + "</div>";
+                    return;
+                }
+            }
+
+            Session["SaveMessage"] = saveMessage;
+            Session["SaveStatusMessage"] = 1;
+            Response.Redirect("~/Application/SignaturesDocs", false);
+        }
+
+        private async Task SendSubmittalEmailsAsync(EmailSendSnapshot snapshot)
         {
             if (emailer == null || systemService == null)
             {
                 throw new Exception("Email services are not available.");
             }
 
-            string appId = Session["ApplicationId"].ToString();
-            string fy = Session["FiscalYear"].ToString();
+            string appId = snapshot.ApplicationId;
+            string fy = snapshot.FiscalYear;
             if (string.IsNullOrWhiteSpace(appId))
             {
                 throw new Exception("Application id is not available for email.");
@@ -660,23 +719,23 @@ accountService = new AccountService(userWebModel, logger);
                 throw new Exception("A valid General Information email address is required before submit confirmation can be sent.");
             }
 
-            string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
+            string department = snapshot.DepartmentName ?? string.Empty;
             string subject = "NMSFM Fire Grant Application submitted for " + department;
-            string body = EmailSendContextHelper.BuildExternalSenderBodyLine();
+            string body = snapshot.ExternalSenderBodyLine ?? string.Empty;
             body += "Thank you for submitting the fire grant application for " + department + " for fiscal year " + fy + ".";
             body += "<br /><br />";
-            var emailContext = EmailSendContextHelper.FromSession("ApplicationSubmitted", appId);
-            await emailer.SendMailMessageAsync(from, emailAdd, "", "", subject, body, "", "", emailContext, systemService);
+            await emailer.SendMailMessageAsync(from, emailAdd, "", "", subject, body, "", "",
+                snapshot.SubmittalContext, systemService);
         }
 
-        private async Task<int> SendSignatorEmailsAsync()
+        private async Task<int> SendSignatorEmailsAsync(EmailSendSnapshot snapshot)
         {
             if (emailer == null || systemService == null)
             {
                 throw new Exception("Email services are not available.");
             }
 
-            string appId = Session["ApplicationId"].ToString();
+            string appId = snapshot.ApplicationId;
             if (string.IsNullOrWhiteSpace(appId))
             {
                 throw new Exception("Application id is not available for email.");
@@ -701,7 +760,8 @@ accountService = new AccountService(userWebModel, logger);
                 ? ConfigurationManager.AppSettings["ApplicationUrl"].ToString()
                 : "https://fireservicesgrant.dhsem.nm.gov/";
             string from = EmailSendContextHelper.GetDefaultSender();
-            string department = (Session["DepartmentName"] != null) ? Session["DepartmentName"].ToString() : "";
+            string department = snapshot.DepartmentName ?? string.Empty;
+            string externalBodyLine = snapshot.ExternalSenderBodyLine ?? string.Empty;
             var emailErrors = new List<string>();
             int sentCount = 0;
 
@@ -724,12 +784,12 @@ accountService = new AccountService(userWebModel, logger);
 
                 string decryptedLoginToken = await accountService.DecryptString(sig.LoginToken);
                 string subject = "Approval Requested for NMSFM Fire Grant Application";
-                string body = EmailSendContextHelper.BuildExternalSenderBodyLine();
+                string body = externalBodyLine;
                 body += "Please click the link below to view and sign off on the fire grant application for " + department + ".";
                 body += "<br /><br /><a href='" + url + "/LoginSignator/" + sig.ApplicationId + "/" +
                     decryptedLoginToken + "'>View Application</a>";
-                var emailContext = EmailSendContextHelper.FromSession("SignatoryRequest", appId);
-                await emailer.SendMailMessageAsync(from, email, "", "", subject, body, "", "", emailContext, systemService);
+                await emailer.SendMailMessageAsync(from, email, "", "", subject, body, "", "",
+                    snapshot.SignatoryContext, systemService);
                 sentCount++;
             }
 

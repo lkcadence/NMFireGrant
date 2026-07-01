@@ -29,11 +29,8 @@ namespace NMSFM.Services.FireGrant
       var session = HttpContext.Current != null ? HttpContext.Current.Session : null;
       if (session == null)
       {
-        return new EmailSendContext
-        {
-          ContextType = contextType,
-          ContextId = contextId ?? string.Empty
-        };
+        return FromValues(contextType, contextId, string.Empty, string.Empty,
+          string.Empty, string.Empty, null);
       }
 
       Guid? agencyId = null;
@@ -42,15 +39,34 @@ namespace NMSFM.Services.FireGrant
         agencyId = parsedAgency;
       }
 
+      return FromValues(
+        contextType,
+        contextId,
+        session["WebUserId"] != null ? session["WebUserId"].ToString() : string.Empty,
+        session["WebUserEmail"] != null ? session["WebUserEmail"].ToString() : string.Empty,
+        session["WebUser"] != null ? session["WebUser"].ToString() : string.Empty,
+        session["Role"] != null ? session["Role"].ToString() : string.Empty,
+        agencyId);
+    }
+
+    public static EmailSendContext FromValues(
+      string contextType,
+      string contextId,
+      string sentByUserId,
+      string sentByEmail,
+      string sentByLogin,
+      string sentByRole,
+      Guid? agencyId)
+    {
       return new EmailSendContext
       {
-        ContextType = contextType,
+        ContextType = contextType ?? string.Empty,
         ContextId = contextId ?? string.Empty,
         AgencyId = agencyId,
-        SentByUserId = session["WebUserId"] != null ? session["WebUserId"].ToString() : string.Empty,
-        SentByEmail = session["WebUserEmail"] != null ? session["WebUserEmail"].ToString() : string.Empty,
-        SentByLogin = session["WebUser"] != null ? session["WebUser"].ToString() : string.Empty,
-        SentByRole = session["Role"] != null ? session["Role"].ToString() : string.Empty
+        SentByUserId = sentByUserId ?? string.Empty,
+        SentByEmail = sentByEmail ?? string.Empty,
+        SentByLogin = sentByLogin ?? string.Empty,
+        SentByRole = sentByRole ?? string.Empty
       };
     }
 
@@ -63,13 +79,18 @@ namespace NMSFM.Services.FireGrant
       }
 
       string role = session["Role"] != null ? session["Role"].ToString() : string.Empty;
+      string login = session["WebUser"] != null ? session["WebUser"].ToString() : string.Empty;
+      string email = session["WebUserEmail"] != null ? session["WebUserEmail"].ToString() : string.Empty;
+      return BuildExternalSenderBodyLine(role, login, email);
+    }
+
+    public static string BuildExternalSenderBodyLine(string role, string login, string email)
+    {
       if (!string.Equals(role, "External", StringComparison.OrdinalIgnoreCase))
       {
         return string.Empty;
       }
 
-      string login = session["WebUser"] != null ? session["WebUser"].ToString() : string.Empty;
-      string email = session["WebUserEmail"] != null ? session["WebUserEmail"].ToString() : string.Empty;
       if (string.IsNullOrWhiteSpace(login) && string.IsNullOrWhiteSpace(email))
       {
         return string.Empty;

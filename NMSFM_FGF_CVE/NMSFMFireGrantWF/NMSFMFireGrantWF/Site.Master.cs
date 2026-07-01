@@ -68,8 +68,6 @@ namespace NMSFMFireGrantWF
                 if (Session["WebUserId"] == null)
                 {
                     lnkSearchHelp.Visible = false;
-                    Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                    Session.Abandon();
                 }
                 else
                 {

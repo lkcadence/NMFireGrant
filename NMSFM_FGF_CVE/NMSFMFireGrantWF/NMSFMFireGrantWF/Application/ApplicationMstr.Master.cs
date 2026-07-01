@@ -112,8 +112,6 @@ namespace NMSFMFireGrantWF.Application
                 //Check Session (vwd)
                 if (Session["WebUserId"] == null)
                 {
-                    Context.GetOwinContext().Authentication.SignOut(DefaultAuthenticationTypes.ApplicationCookie);
-                    Session.Abandon();
                     Response.Redirect("/Account/Login.aspx");
                 }
             }
